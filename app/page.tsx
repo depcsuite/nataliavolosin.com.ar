@@ -98,7 +98,7 @@ const socialPosts = [
   {
     platform: "instagram",
     content:
-      "Preparando el análisis semanal desde la biblioteca. Esta semana: reformas institucionales que no pueden esperar más.",
+      "Preparando el análisis semanal desde mi oficina. Esta semana: reformas institucionales que no pueden esperar más.",
     date: "2025-01-15",
     engagement: "289 likes, 34 comentarios",
   },
@@ -425,8 +425,8 @@ export default function HomePage() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600 mb-4">
-                  Funcionaria de la Procuración General de la Nación y profesora en la UBA. Especialista en corrupción y
-                  reformas institucionales.
+                  Profesora en la UBA y especialista en Derecho Público. Experta en corrupción y reformas
+                  institucionales.
                 </p>
                 <div className="flex justify-center space-x-3">
                   <Button variant="outline" size="sm" asChild>

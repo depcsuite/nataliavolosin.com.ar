@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Calendar, Clock, Twitter, Instagram, Mail, Star, Eye, Share2, Search, Menu } from "lucide-react"
 
@@ -54,7 +55,7 @@ const articlesData = {
       <p>Las contrataciones públicas representan uno de los ámbitos más vulnerables a la corrupción en cualquier sistema democrático. En Argentina, esta problemática adquiere dimensiones particulares que requieren soluciones innovadoras y adaptadas a nuestra realidad institucional.</p>
       
       <h2>El diagnóstico actual</h2>
-      <p>Los datos disponibles muestran que las irregularidades en las contrataciones públicas representan una pérdida significativa de recursos del Estado. Desde mi experiencia en la Procuración General, he podido observar de primera mano los patrones más comunes de estas irregularidades.</p>
+      <p>Los datos disponibles muestran que las irregularidades en las contrataciones públicas representan una pérdida significativa de recursos del Estado.</p>
       
       <h2>Experiencias internacionales exitosas</h2>
       <p>Durante mis estudios en Yale, tuve la oportunidad de analizar sistemas de contratación pública de países como Estonia, Corea del Sur y Chile, que han implementado reformas exitosas en esta materia.</p>
@@ -82,7 +83,6 @@ const articlesData = {
     image: "/placeholder.svg?height=400&width=800",
     views: "1.8K",
   },
-  // Agregar más artículos según sea necesario
 }
 
 const breakingNews = [
@@ -196,7 +196,9 @@ export default function ArticlePage({ params }: ArticlePageProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Link href="/">
-                <h1 className="text-3xl font-bold text-gray-900 hover:text-blue-600 transition-colors">Natalia Volosin</h1>
+                <h1 className="text-3xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
+                  Natalia Volosin
+                </h1>
               </Link>
               <div className="hidden md:block text-sm text-gray-600">Portal de Análisis Jurídico y Político</div>
             </div>
@@ -315,7 +317,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
                         />
                         <div>
                           <p className="font-medium text-gray-900">Natalia Volosin</p>
-                          <p className="text-gray-500">Doctora en Derecho (Yale)</p>
+                          <p className="text-gray-500">Doctora en Derecho (Yale) • Especialista en Derecho Público</p>
                         </div>
                       </div>
                       <span className="flex items-center">
@@ -348,8 +350,8 @@ export default function ArticlePage({ params }: ArticlePageProps) {
                     <div className="bg-blue-50 p-8 rounded-lg max-w-md mx-auto">
                       <h3 className="text-xl font-bold text-blue-900 mb-4">Contenido Premium</h3>
                       <p className="text-blue-800 mb-6">
-                        Has alcanzado el límite de artículos gratuitos. Suscríbete para continuar leyendo este y todos los
-                        demás artículos.
+                        Has alcanzado el límite de artículos gratuitos. Suscríbete para continuar leyendo este y todos
+                        los demás artículos.
                       </p>
                       <Button onClick={handleSubscribe} className="w-full bg-blue-600 hover:bg-blue-700">
                         Suscribirse para continuar
@@ -379,8 +381,8 @@ export default function ArticlePage({ params }: ArticlePageProps) {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-700 mb-4">
-                  Funcionaria de la Procuración General de la Nación y profesora en la UBA. Especialista en corrupción y
-                  reformas institucionales. Publica análisis semanales sobre temas jurídicos y políticos.
+                  Profesora en la UBA y especialista en Derecho Público. Experta en corrupción y reformas
+                  institucionales. Publica análisis semanales sobre temas jurídicos y políticos.
                 </p>
                 <div className="flex space-x-3">
                   <Button variant="outline" size="sm" asChild>
@@ -441,8 +443,8 @@ export default function ArticlePage({ params }: ArticlePageProps) {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600 mb-4">
-                  Funcionaria de la Procuración General de la Nación y profesora en la UBA. Especialista en corrupción y
-                  reformas institucionales.
+                  Profesora en la UBA y especialista en Derecho Público. Experta en corrupción y reformas
+                  institucionales.
                 </p>
                 <div className="flex justify-center space-x-3">
                   <Button variant="outline" size="sm" asChild>
@@ -636,4 +638,27 @@ export default function ArticlePage({ params }: ArticlePageProps) {
           <div className="space-y-4">
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg">
               <h4 className="font-semibold text-gray-900 mb-2">Plan Premium - $2.500/mes</h4>
-              <ul\
+              <ul className="text-sm text-gray-700 space-y-1">
+                <li>✓ Acceso ilimitado a todos los artículos</li>
+                <li>✓ Análisis exclusivos para suscriptores</li>
+                <li>✓ Newsletter semanal con contenido adicional</li>
+                <li>✓ Archivo completo de publicaciones</li>
+                <li>✓ Sin publicidad</li>
+              </ul>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" type="email" placeholder="tu@email.com" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="name">Nombre completo</Label>
+              <Input id="name" type="text" placeholder="Tu nombre" />
+            </div>
+            <Button className="w-full bg-blue-600 hover:bg-blue-700">Suscribirse - $2.500/mes</Button>
+            <p className="text-xs text-gray-500 text-center">Puedes cancelar tu suscripción en cualquier momento</p>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+}
