@@ -3,37 +3,31 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
 import { TagBadge } from "@/components/ui/tag-badge"
 import {
-  Filter,
-  Calendar,
   Eye,
-  Clock,
-  ArrowLeft,
   TrendingUp,
   Menu,
   Star,
-  Music,
-  Twitter,
-  Instagram,
   MessageCircle,
   Share2,
   Bookmark,
-  ChevronRight,
-  Flame,
   AlertCircle,
   Tag,
   Zap,
+  ChevronRight,
+  Flame,
 } from "lucide-react"
 
 // Datos de ejemplo para newsletters con más contenido tipo portal de noticias
 const newsletters = [
   {
     id: 1,
+    slug: "exclusivo-peligra-decomiso-cristina-kirchner",
     title: "EXCLUSIVO: Peligra el decomiso de $5.000 millones contra Cristina Kirchner",
     subtitle: "Error procesal podría anular la medida judicial más importante contra la expresidenta",
     excerpt:
@@ -51,6 +45,7 @@ const newsletters = [
   },
   {
     id: 2,
+    slug: "procuracion-general-reformas-investigaciones-economicas",
     title: "Procuración General anuncia reformas estructurales en investigaciones económicas",
     subtitle: "Nuevas directivas buscan acelerar los tiempos procesales en casos de corrupción",
     excerpt:
@@ -67,6 +62,7 @@ const newsletters = [
   },
   {
     id: 3,
+    slug: "congreso-debate-transparencia-contrataciones-publicas",
     title: "Congreso debate nuevas medidas de transparencia en contrataciones públicas",
     subtitle: "Proyecto incluye publicación en tiempo real y sistema de alertas ciudadanas",
     excerpt:
@@ -83,6 +79,7 @@ const newsletters = [
   },
   {
     id: 4,
+    slug: "crisis-institucional-reformas-estructurales",
     title: "Crisis institucional abre ventana de oportunidad para reformas estructurales",
     subtitle: "Análisis: Cómo la coyuntura actual puede catalizar cambios profundos",
     excerpt:
@@ -99,6 +96,7 @@ const newsletters = [
   },
   {
     id: 5,
+    slug: "sociedad-civil-mecanismos-control-ciudadano",
     title: "Sociedad civil impulsa nuevos mecanismos de control ciudadano",
     subtitle: "ONGs presentan propuesta para fortalecer la transparencia gubernamental",
     excerpt:
@@ -115,6 +113,7 @@ const newsletters = [
   },
   {
     id: 6,
+    slug: "criminalidad-economica-herramientas-innovadoras",
     title: "Nuevos desafíos en criminalidad económica requieren herramientas innovadoras",
     subtitle: "La digitalización transforma los métodos de investigación judicial",
     excerpt:
@@ -137,8 +136,6 @@ const breakingNews = [
   "🚨 Debate sobre transparencia en contrataciones públicas gana impulso",
 ]
 
-// Tags principales que aparecen como filtros rápidos
-const mainTags = ["Todos", "Política", "Justicia", "Análisis", "Sociedad"]
 // Todos los tags disponibles
 const allTags = ["Justicia", "Política", "Corrupción", "Reformas", "Transparencia", "Análisis", "Sociedad"]
 
@@ -175,12 +172,12 @@ const trendingNews = [
 ]
 
 export default function NewsletterPage() {
+  const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [selectedMainTag, setSelectedMainTag] = useState("Todos")
   const [selectedYear, setSelectedYear] = useState("all-years")
   const [selectedMonth, setSelectedMonth] = useState("all-months")
-  const [selectedNewsletter, setSelectedNewsletter] = useState<any>(null)
   const [isScrolled, setIsScrolled] = useState(false)
 
   // Scroll listener para ocultar el top bar
@@ -257,102 +254,8 @@ export default function NewsletterPage() {
   const featuredNewsletter = newsletters.find((n) => n.featured)
   const regularNewsletters = filteredNewsletters.filter((n) => !n.featured)
 
-  if (selectedNewsletter) {
-    return (
-      <div className="min-h-screen bg-brand-light-gray font-serif">
-        {/* Compact Header for Full View */}
-        <header className="bg-brand-white border-b border-brand-gray/20 commercial-shadow sticky top-0 z-50">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <Button
-                  variant="ghost"
-                  onClick={() => setSelectedNewsletter(null)}
-                  className="flex items-center space-x-2 hover:bg-brand-green/20"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  <span className="font-sans sans-modern font-medium">Volver</span>
-                </Button>
-                <Separator orientation="vertical" className="h-6" />
-                <h1 className="text-2xl font-serif serif-elegant font-medium text-brand-black">
-                  Natalia <span className="font-script script-enhanced text-3xl text-brand-purple">Volosin</span>
-                </h1>
-              </div>
-              <Link href="/suscripcion">
-                <Button className="bg-gradient-to-r from-brand-green to-brand-teal hover:from-brand-green/80 hover:to-brand-teal/80 text-brand-black font-sans sans-modern font-bold px-4 py-2 rounded-xl">
-                  <Star className="w-4 h-4 mr-2" />
-                  Suscribirse
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </header>
-
-        {/* Full Newsletter View */}
-        <main className="container mx-auto px-4 py-8">
-          <article className="max-w-4xl mx-auto">
-            <header className="mb-8">
-              <div className="flex items-center space-x-4 mb-4">
-                {selectedNewsletter.tags.map((tag: string) => (
-                  <Badge
-                    key={tag}
-                    variant="secondary"
-                    className="bg-brand-purple text-brand-white px-3 py-1 rounded-full font-sans sans-modern font-medium"
-                  >
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-              <h1 className="text-4xl md:text-5xl font-serif serif-elegant font-medium text-brand-black mb-6 leading-tight">
-                {selectedNewsletter.title}
-              </h1>
-              <div className="flex items-center justify-between text-brand-gray mb-6">
-                <div className="flex items-center space-x-6 font-sans sans-modern">
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="w-4 h-4" />
-                    <span>{new Date(selectedNewsletter.date).toLocaleDateString("es-AR")}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Clock className="w-4 h-4" />
-                    <span>{selectedNewsletter.readTime}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Eye className="w-4 h-4" />
-                    <span>{selectedNewsletter.views}</span>
-                  </div>
-                </div>
-              </div>
-              <p className="text-xl text-brand-gray font-serif serif-elegant leading-relaxed">
-                {selectedNewsletter.excerpt}
-              </p>
-            </header>
-
-            <div className="prose prose-lg max-w-none">
-              <div
-                className="font-serif serif-elegant text-brand-black leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: selectedNewsletter.content }}
-              />
-            </div>
-
-            <footer className="mt-12 pt-8 border-t border-brand-gray/20">
-              <div className="bg-gradient-to-r from-brand-green/20 to-brand-teal/20 p-8 rounded-2xl text-center">
-                <h3 className="text-2xl font-serif serif-elegant font-medium text-brand-black mb-4">
-                  ¿Te gustó este análisis?
-                </h3>
-                <p className="text-brand-gray font-serif serif-elegant mb-6">
-                  Suscríbete para recibir análisis exclusivos y contenido sin límites
-                </p>
-                <Link href="/suscripcion">
-                  <Button className="bg-brand-black hover:bg-brand-gray text-brand-white font-sans sans-modern font-bold px-8 py-3 rounded-xl text-lg">
-                    Quiero bancar a La Justa
-                  </Button>
-                </Link>
-              </div>
-            </footer>
-          </article>
-        </main>
-      </div>
-    )
+  const handleNewsletterClick = (slug: string) => {
+    router.push(`/newsletter/${slug}`)
   }
 
   const tagColors = [
@@ -403,20 +306,22 @@ export default function NewsletterPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-4">
-                <h1
-                  className={`font-serif serif-elegant font-medium text-brand-black transition-all duration-300 ${
-                    isScrolled ? "text-2xl" : "text-3xl"
-                  }`}
-                >
-                  Natalia{" "}
-                  <span
-                    className={`font-script script-enhanced text-brand-purple transition-all duration-300 ${
-                      isScrolled ? "text-3xl" : "text-4xl"
+                <Link href="/">
+                  <h1
+                    className={`font-serif serif-elegant font-medium text-brand-black transition-all duration-300 ${
+                      isScrolled ? "text-2xl" : "text-3xl"
                     }`}
                   >
-                    Volosin
-                  </span>
-                </h1>
+                    Natalia{" "}
+                    <span
+                      className={`font-script script-enhanced text-brand-purple transition-all duration-300 ${
+                        isScrolled ? "text-3xl" : "text-4xl"
+                      }`}
+                    >
+                      Volosin
+                    </span>
+                  </h1>
+                </Link>
                 <span
                   className={`font-sans sans-modern font-black text-brand-black transition-all duration-300 ${
                     isScrolled ? "text-lg" : "text-xl"
@@ -447,7 +352,7 @@ export default function NewsletterPage() {
                   }`}
                 >
                   <Star className="w-4 h-4 mr-2" />
-                  {isScrolled ? "Suscribirse" : "Quiero bancar a La Justa"}
+                  {isScrolled ? "Bancar a La Justa" : "Quiero bancar a La Justa"}
                 </Button>
               </Link>
               <Button variant="ghost" size="sm" className="md:hidden">
@@ -547,7 +452,7 @@ export default function NewsletterPage() {
             <section className="mb-8">
               <div className="bg-gradient-to-r from-brand-gray/10 to-brand-light-gray border-2 border-dashed border-brand-gray/30 rounded-lg p-6 text-center commercial-shadow">
                 <p className="text-brand-gray text-sm font-sans sans-modern font-bold mb-2">Espacio Publicitario</p>
-                <p className="text-brand-gray text-xs font-serif serif-elegant">728x90 - Banner Superior</p>
+                <p className="text-brand-gray text-xs font-arimo">728x90 - Banner Superior</p>
               </div>
             </section>
 
@@ -556,7 +461,7 @@ export default function NewsletterPage() {
               <section className="mb-8">
                 <Card
                   className="overflow-hidden commercial-shadow border-2 border-red-200 rounded-lg cursor-pointer hover:shadow-lg transition-all duration-300 bg-gradient-to-r from-red-50 to-orange-50"
-                  onClick={() => setSelectedNewsletter(featuredNewsletter)}
+                  onClick={() => handleNewsletterClick(featuredNewsletter.slug)}
                 >
                   <div className="relative">
                     {featuredNewsletter.urgent && (
@@ -603,9 +508,7 @@ export default function NewsletterPage() {
                           {featuredNewsletter.subtitle}
                         </h3>
 
-                        <p className="text-brand-gray font-serif serif-elegant leading-relaxed mb-4">
-                          {featuredNewsletter.excerpt}
-                        </p>
+                        <p className="text-brand-gray font-arimo leading-relaxed mb-4">{featuredNewsletter.excerpt}</p>
 
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-4 text-sm text-brand-gray font-sans sans-modern">
@@ -636,7 +539,7 @@ export default function NewsletterPage() {
             <section className="mb-8">
               <div className="bg-gradient-to-br from-brand-purple/5 to-brand-teal/5 border-2 border-dashed border-brand-purple/20 rounded-lg p-8 text-center commercial-shadow">
                 <p className="text-brand-purple text-lg font-sans sans-modern font-bold mb-2">Publicidad</p>
-                <p className="text-brand-gray text-sm font-serif serif-elegant">300x250 - Rectángulo Medio</p>
+                <p className="text-brand-gray text-sm font-arimo">300x250 - Rectángulo Medio</p>
               </div>
             </section>
 
@@ -646,12 +549,6 @@ export default function NewsletterPage() {
                 <h2 className="text-2xl font-sans sans-modern font-black text-brand-black tracking-wide">
                   ÚLTIMAS NOTICIAS
                 </h2>
-                <div className="flex items-center space-x-2">
-                  <Button variant="ghost" size="sm" className="text-brand-gray hover:text-brand-purple">
-                    <Filter className="w-4 h-4 mr-1" />
-                    Filtros
-                  </Button>
-                </div>
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -659,7 +556,7 @@ export default function NewsletterPage() {
                   <Card
                     key={newsletter.id}
                     className="overflow-hidden commercial-shadow border border-brand-gray/20 rounded-lg cursor-pointer hover:shadow-lg transition-all duration-300 group"
-                    onClick={() => setSelectedNewsletter(newsletter)}
+                    onClick={() => handleNewsletterClick(newsletter.slug)}
                   >
                     <div className="relative">
                       <Image
@@ -682,7 +579,7 @@ export default function NewsletterPage() {
                       <h3 className="text-lg font-serif serif-elegant font-bold text-brand-black mb-2 leading-tight hover:text-brand-purple transition-colors line-clamp-2 group-hover:text-brand-purple">
                         {newsletter.title}
                       </h3>
-                      <p className="text-sm text-brand-gray font-serif serif-elegant line-clamp-2 mb-3 leading-relaxed">
+                      <p className="text-sm text-brand-gray font-arimo line-clamp-2 mb-3 leading-relaxed">
                         {newsletter.subtitle}
                       </p>
                       <div className="flex items-center justify-between text-xs text-brand-gray font-sans sans-modern">
@@ -708,7 +605,7 @@ export default function NewsletterPage() {
             <section className="mb-8">
               <div className="bg-gradient-to-r from-brand-green/10 to-brand-teal/10 border-2 border-dashed border-brand-green/30 rounded-lg p-6 text-center commercial-shadow">
                 <p className="text-brand-green text-lg font-sans sans-modern font-bold mb-2">Espacio Comercial</p>
-                <p className="text-brand-gray text-xs font-serif serif-elegant">468x60 - Banner Medio</p>
+                <p className="text-brand-gray text-xs font-arimo">468x60 - Banner Medio</p>
               </div>
             </section>
 
@@ -728,13 +625,13 @@ export default function NewsletterPage() {
           <div className="lg:col-span-1 space-y-6">
             {/* Trending News */}
             <Card className="commercial-shadow rounded-lg">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg font-sans sans-modern font-black text-brand-black flex items-center">
+              <div className="p-4 border-b border-brand-gray/20">
+                <h3 className="text-lg font-sans sans-modern font-black text-brand-black flex items-center">
                   <Flame className="w-5 h-5 mr-2 text-red-500" />
                   LO MÁS LEÍDO
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
+                </h3>
+              </div>
+              <div className="p-0">
                 <div className="space-y-0">
                   {trendingNews.map((news, index) => (
                     <div
@@ -764,24 +661,18 @@ export default function NewsletterPage() {
                     </div>
                   ))}
                 </div>
-              </CardContent>
+              </div>
             </Card>
 
             {/* Sidebar Ad Space 1 */}
             <div className="bg-gradient-to-br from-brand-teal/10 to-brand-green/10 border-2 border-dashed border-brand-teal/30 rounded-lg p-6 text-center commercial-shadow">
               <p className="text-brand-teal text-sm font-sans sans-modern font-bold mb-2">Publicidad</p>
-              <p className="text-brand-gray text-xs font-serif serif-elegant">300x250</p>
+              <p className="text-brand-gray text-xs font-arimo">300x250</p>
             </div>
 
-            {/* Sidebar Ad Space 2 */}
-            <div className="bg-gradient-to-br from-brand-purple/10 to-brand-gray/10 border-2 border-dashed border-brand-purple/30 rounded-lg p-4 text-center commercial-shadow">
-              <p className="text-brand-purple text-sm font-sans sans-modern font-bold mb-2">Banner</p>
-              <p className="text-brand-gray text-xs font-serif serif-elegant">300x100</p>
-            </div>
-
-            {/* Newsletter Signup - Unificado */}
+            {/* Newsletter Signup */}
             <Card className="bg-gradient-to-br from-brand-green/40 to-brand-green/60 border-2 border-brand-green commercial-shadow rounded-lg">
-              <CardHeader className="text-center">
+              <div className="text-center p-6">
                 <div className="mb-4">
                   <h3 className="text-2xl font-serif serif-elegant font-medium text-brand-black mb-2">
                     LA INVITACIÓN A{" "}
@@ -791,16 +682,12 @@ export default function NewsletterPage() {
                     ES <span className="bg-brand-gray text-brand-white px-3 py-1 rounded">URGENTE</span>
                   </h4>
                 </div>
-                <p className="text-sm font-sans sans-modern text-brand-black font-medium">
+                <p className="text-sm font-sans sans-modern text-brand-black font-medium mb-4">
                   Recibe análisis semanales los viernes
                 </p>
-              </CardHeader>
-              <CardContent className="text-center">
-                <div className="space-y-4 mb-6">
-                  <p className="text-sm text-brand-black font-serif serif-elegant">
-                    Suscríbete al newsletter gratuito de los viernes haciendo clic en el enlace:
-                  </p>
-                </div>
+                <p className="text-sm text-brand-black font-arimo mb-6">
+                  Suscríbete al newsletter gratuito de los viernes haciendo clic en el enlace:
+                </p>
                 <Link href="https://substack.com/@nataliavolosin" target="_blank">
                   <Button className="w-full bg-brand-black hover:bg-brand-gray text-brand-white font-sans sans-modern font-bold py-3 rounded-xl transition-all duration-300">
                     Suscribirse Gratis
@@ -809,42 +696,13 @@ export default function NewsletterPage() {
                 <p className="text-sm text-brand-black font-sans sans-modern font-medium mt-4">
                   Newsletter gratuito • Análisis semanales • Sin compromisos
                 </p>
-              </CardContent>
+              </div>
             </Card>
 
-            {/* Social Media */}
-            <Card className="commercial-shadow rounded-lg">
-              <CardHeader>
-                <CardTitle className="text-lg font-serif serif-elegant">Sígueme en redes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
-                    <Link href="https://x.com/nataliavolosin" target="_blank">
-                      <Twitter className="w-4 h-4 mr-2" />
-                      @nataliavolosin
-                    </Link>
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
-                    <Link href="https://www.instagram.com/nataliavolosin" target="_blank">
-                      <Instagram className="w-4 h-4 mr-2" />
-                      @nataliavolosin
-                    </Link>
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
-                    <Link href="https://www.tiktok.com/@nataliaavolosin" target="_blank">
-                      <Music className="w-4 h-4 mr-2" />
-                      @nataliaavolosin
-                    </Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Ad Space */}
-            <div className="bg-gradient-to-br from-brand-purple/10 to-brand-teal/10 border-2 border-dashed border-brand-gray rounded-lg p-8 text-center commercial-shadow">
-              <p className="text-brand-gray text-sm font-sans sans-modern font-bold mb-2">Espacio Publicitario</p>
-              <p className="text-brand-gray text-xs font-serif serif-elegant">300x250</p>
+            {/* Sidebar Ad Space 2 */}
+            <div className="bg-gradient-to-br from-brand-purple/10 to-brand-gray/10 border-2 border-dashed border-brand-purple/30 rounded-lg p-4 text-center commercial-shadow">
+              <p className="text-brand-purple text-sm font-sans sans-modern font-bold mb-2">Banner</p>
+              <p className="text-brand-gray text-xs font-arimo">300x100</p>
             </div>
           </div>
         </div>
@@ -853,58 +711,14 @@ export default function NewsletterPage() {
       {/* Footer */}
       <footer className="bg-brand-black text-brand-white py-16 mt-20">
         <div className="container mx-auto px-4">
-          {/* Logo y tagline centrados */}
           <div className="text-center mb-12">
             <h4 className="text-3xl font-serif serif-elegant font-medium mb-2">
               Natalia <span className="font-script script-enhanced text-4xl text-brand-purple">Volosin</span>
             </h4>
             <h5 className="text-2xl font-sans sans-modern font-black mb-4 tracking-wider">LA JUSTA</h5>
-            <p className="text-brand-gray text-lg font-serif serif-elegant">Portal de análisis independiente</p>
+            <p className="text-brand-gray text-lg font-arimo">Portal de análisis independiente</p>
           </div>
 
-          {/* Información de contacto en dos columnas */}
-          <div className="grid md:grid-cols-2 gap-12 mb-12">
-            <div>
-              <h4 className="text-brand-green font-sans sans-modern font-bold text-lg mb-4">
-                Charlas, eventos, consultoría y capacitaciones:
-              </h4>
-              <p className="text-brand-gray font-serif serif-elegant text-lg">lajusta@nataliavolosin.com</p>
-            </div>
-            <div>
-              <h4 className="text-brand-teal font-sans sans-modern font-bold text-lg mb-4">Consultas comerciales:</h4>
-              <p className="text-brand-gray font-serif serif-elegant text-lg">comercial@nataliavolosin.com</p>
-            </div>
-          </div>
-
-          {/* Separador */}
-          <Separator className="bg-brand-gray/30 mb-12" />
-
-          {/* Redes sociales centradas */}
-          <div className="flex justify-center space-x-8 mb-8">
-            <Link
-              href="https://x.com/nataliavolosin"
-              target="_blank"
-              className="text-brand-gray hover:text-brand-white transition-colors p-3 rounded-full hover:bg-brand-gray/20"
-            >
-              <Twitter className="w-8 h-8" />
-            </Link>
-            <Link
-              href="https://www.instagram.com/nataliavolosin"
-              target="_blank"
-              className="text-brand-gray hover:text-brand-white transition-colors p-3 rounded-full hover:bg-brand-gray/20"
-            >
-              <Instagram className="w-8 h-8" />
-            </Link>
-            <Link
-              href="https://www.tiktok.com/@nataliaavolosin"
-              target="_blank"
-              className="text-brand-gray hover:text-brand-white transition-colors p-3 rounded-full hover:bg-brand-gray/20"
-            >
-              <Music className="w-8 h-8" />
-            </Link>
-          </div>
-
-          {/* Copyright centrado */}
           <div className="text-center text-sm text-brand-gray font-sans sans-modern font-medium">
             © 2025 Natalia Volosin. Todos los derechos reservados.
           </div>

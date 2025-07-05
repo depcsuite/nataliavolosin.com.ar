@@ -146,7 +146,7 @@ export default function AboutPage() {
                   size="lg"
                 >
                   <Star className="w-5 h-5 mr-2" />
-                  {isScrolled ? "Suscribirse" : "Quiero bancar a La Justa"}
+                  {isScrolled ? "Bancar a La Justa" : "Quiero bancar a La Justa"}
                 </Button>
               </Link>
               <Button variant="ghost" size="sm" className="md:hidden">
@@ -531,17 +531,151 @@ export default function AboutPage() {
             <p className="text-brand-gray text-lg font-serif serif-elegant">Portal de análisis independiente</p>
           </div>
 
-          {/* Información de contacto en dos columnas */}
-          <div className="grid md:grid-cols-2 gap-12 mb-12">
-            <div>
-              <h4 className="text-brand-green font-sans sans-modern font-bold text-lg mb-4">
-                Charlas, eventos, consultoría y capacitaciones:
-              </h4>
-              <p className="text-brand-gray font-serif serif-elegant text-lg">lajusta@nataliavolosin.com</p>
+          {/* Sección comercial rediseñada */}
+          <div className="grid md:grid-cols-2 gap-8 mb-16">
+            {/* Servicios Profesionales */}
+            <div className="bg-gradient-to-br from-brand-green/20 to-brand-teal/20 rounded-2xl p-8 border-2 border-brand-green/30 commercial-shadow hover:scale-[1.02] transition-all duration-300">
+              <div className="text-center mb-6">
+                <div className="bg-brand-green/30 p-4 rounded-full w-16 h-16 mx-auto flex items-center justify-center mb-4">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-brand-green"
+                  >
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-sans sans-modern font-black text-brand-white mb-2 tracking-wide">
+                  SERVICIOS PROFESIONALES
+                </h3>
+                <p className="text-brand-green font-sans sans-modern font-bold text-lg">
+                  Charlas • Eventos • Consultoría • Capacitaciones
+                </p>
+              </div>
+
+              <div className="space-y-4 mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-green rounded-full"></div>
+                  <span className="text-brand-white font-serif serif-elegant">Conferencias magistrales</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-green rounded-full"></div>
+                  <span className="text-brand-white font-serif serif-elegant">
+                    Asesoramiento jurídico especializado
+                  </span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-green rounded-full"></div>
+                  <span className="text-brand-white font-serif serif-elegant">Capacitaciones institucionales</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-green rounded-full"></div>
+                  <span className="text-brand-white font-serif serif-elegant">Análisis de políticas públicas</span>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <Link
+                  href="mailto:lajusta@nataliavolosin.com"
+                  className="inline-flex items-center space-x-2 bg-brand-green hover:bg-brand-green/80 text-brand-black font-sans sans-modern font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect width="20" height="16" x="2" y="4" rx="2" />
+                    <path d="m22 7-10 5L2 7" />
+                  </svg>
+                  <span>lajusta@nataliavolosin.com</span>
+                </Link>
+              </div>
             </div>
-            <div>
-              <h4 className="text-brand-teal font-sans sans-modern font-bold text-lg mb-4">Consultas comerciales:</h4>
-              <p className="text-brand-gray font-serif serif-elegant text-lg">comercial@nataliavolosin.com</p>
+
+            {/* Consultas Comerciales */}
+            <div className="bg-gradient-to-br from-brand-purple/20 to-brand-teal/20 rounded-2xl p-8 border-2 border-brand-purple/30 commercial-shadow hover:scale-[1.02] transition-all duration-300">
+              <div className="text-center mb-6">
+                <div className="bg-brand-purple/30 p-4 rounded-full w-16 h-16 mx-auto flex items-center justify-center mb-4">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-brand-purple"
+                  >
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="m22 21-3-3m0 0a5.5 5.5 0 1 0-7.78-7.78 5.5 5.5 0 0 0 7.78 7.78Z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-sans sans-modern font-black text-brand-white mb-2 tracking-wide">
+                  CONSULTAS COMERCIALES
+                </h3>
+                <p className="text-brand-purple font-sans sans-modern font-bold text-lg">
+                  Publicidad • Patrocinios • Colaboraciones
+                </p>
+              </div>
+
+              <div className="space-y-4 mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-purple rounded-full"></div>
+                  <span className="text-brand-white font-serif serif-elegant">Espacios publicitarios premium</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-purple rounded-full"></div>
+                  <span className="text-brand-white font-serif serif-elegant">Patrocinios de contenido</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-purple rounded-full"></div>
+                  <span className="text-brand-white font-serif serif-elegant">Colaboraciones estratégicas</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-purple rounded-full"></div>
+                  <span className="text-brand-white font-serif serif-elegant">Branded content</span>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <Link
+                  href="mailto:comercial@nataliavolosin.com"
+                  className="inline-flex items-center space-x-2 bg-brand-purple hover:bg-brand-purple/80 text-brand-white font-sans sans-modern font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect width="20" height="16" x="2" y="4" rx="2" />
+                    <path d="m22 7-10 5L2 7" />
+                  </svg>
+                  <span>comercial@nataliavolosin.com</span>
+                </Link>
+              </div>
             </div>
           </div>
 

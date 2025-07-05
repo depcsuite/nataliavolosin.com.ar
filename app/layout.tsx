@@ -13,6 +13,8 @@ const arimo = Arimo({
   subsets: ["latin"],
   variable: "--font-arimo",
   display: "swap",
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
 })
 
 export const metadata: Metadata = {
@@ -28,6 +30,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${ebGaramond.variable} ${arimo.variable}`}>
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className="font-arimo">{children}</body>
     </html>
   )

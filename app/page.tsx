@@ -19,9 +19,11 @@ import {
   Eye,
   Twitter,
   Music,
+  Heart,
+  MessageCircle,
+  Share,
 } from "lucide-react"
 import Image from "next/image"
-import { Separator } from "@/components/ui/separator"
 import { TagBadge } from "@/components/ui/tag-badge"
 
 // Datos de ejemplo para los artículos
@@ -116,19 +118,38 @@ interface Tweet {
   }
 }
 
-// Instagram Reels data
-const instagramReels = [
+// Instagram Videos data
+const instagramVideos = [
   {
-    id: "DKvV_ReM1Hl",
-    url: "https://www.instagram.com/reel/DKvV_ReM1Hl/?utm_source=ig_embed&utm_campaign=loading",
+    id: "1",
+    videoUrl:
+      "https://s3.us-east-1.amazonaws.com/nataliavolosin.com.ar/videos/el-fallo-de-la-Corte-en-la-causa-vialidad.mp4",
+    caption: "#cfk : el fallo de la Corte en la causa #vialidad",
+    likes: 1247,
+    comments: 89,
+    shares: 156,
+    timeAgo: "2h",
   },
   {
-    id: "DKfm0PQx0mn",
-    url: "https://www.instagram.com/reel/DKfm0PQx0mn/?utm_source=ig_embed&utm_campaign=loading",
+    id: "2",
+    videoUrl:
+      "https://s3.us-east-1.amazonaws.com/nataliavolosin.com.ar/videos/las-mentiras-de-juliana-santilla%CC%81n-ante-el-reclamo-de-las-me%CC%81dicas.mp4",
+    caption: "#garrahan las mentiras de Juliana Santillán ante el reclamo de las médicas del hospital",
+    likes: 892,
+    comments: 67,
+    shares: 134,
+    timeAgo: "5h",
   },
   {
-    id: "DJpvWLDMVSb",
-    url: "https://www.instagram.com/reel/DJpvWLDMVSb/?utm_source=ig_embed&utm_campaign=loading",
+    id: "3",
+    videoUrl:
+      "https://s3.us-east-1.amazonaws.com/nataliavolosin.com.ar/videos/El-llanto-de-la-mujer-de-Jorge-Macri.mp4",
+    caption:
+      "El llanto de la mujer de Jorge Macri, Belén Ludueña, ante una simple pregunta de su panelista al Jefe de Gobierno. #jorgemacri #belenludueña #amaliaguiñazú #bicisenda",
+    likes: 2156,
+    comments: 234,
+    shares: 298,
+    timeAgo: "8h",
   },
 ]
 
@@ -165,27 +186,12 @@ export default function HomePage() {
   const [tweets, setTweets] = useState<Tweet[]>([])
   const [isLoadingTweets, setIsLoadingTweets] = useState(true)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [playingVideo, setPlayingVideo] = useState<string | null>(null)
 
   useEffect(() => {
     const stored = localStorage.getItem("freeArticlesRead")
     if (stored) {
       setFreeArticlesRead(Number.parseInt(stored))
-    }
-  }, [])
-
-  // Load Instagram embed script
-  useEffect(() => {
-    const script = document.createElement("script")
-    script.src = "//www.instagram.com/embed.js"
-    script.async = true
-    document.body.appendChild(script)
-
-    return () => {
-      // Cleanup script on unmount
-      const existingScript = document.querySelector('script[src="//www.instagram.com/embed.js"]')
-      if (existingScript) {
-        document.body.removeChild(existingScript)
-      }
     }
   }, [])
 
@@ -277,6 +283,10 @@ export default function HomePage() {
     const url = encodeURIComponent(`${window.location.origin}/articulo/${article.slug}`)
     const twitterUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`
     window.open(twitterUrl, "_blank", "width=550,height=420")
+  }
+
+  const handleVideoPlay = (videoId: string) => {
+    setPlayingVideo(videoId)
   }
 
   return (
@@ -558,11 +568,11 @@ export default function HomePage() {
               </Card>
             </section>
 
-            {/* Instagram Reels Section */}
+            {/* Instagram Videos Section */}
             <section className="mb-16">
               <div className="flex items-center justify-between mb-8">
                 <h2 className="text-3xl font-sans sans-modern font-black text-brand-black tracking-wide">
-                  ÚLTIMOS REELS DE INSTAGRAM
+                  ÚLTIMOS VIDEOS DE INSTAGRAM
                 </h2>
                 <Link href="https://www.instagram.com/nataliavolosin" target="_blank">
                   <Button
@@ -577,15 +587,130 @@ export default function HomePage() {
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {instagramReels.map((reel) => (
-                  <iframe
-                    key={reel.id}
-                    src={`${reel.url}&embed=true`}
-                    className="w-full h-96 rounded-2xl commercial-shadow"
-                    allow="autoplay; encrypted-media; fullscreen"
-                    loading="lazy"
-                    title={reel.id}
-                  />
+                {instagramVideos.map((video) => (
+                  <Card
+                    key={video.id}
+                    className="bg-brand-white commercial-shadow border-2 border-brand-gray/20 rounded-2xl overflow-hidden hover:scale-[1.02] transition-transform duration-300"
+                  >
+                    <div className="relative group">
+                      <video
+                        className="w-full h-96 object-cover cursor-pointer"
+                        preload="metadata"
+                        muted
+                        playsInline
+                        onLoadedMetadata={(e) => {
+                          // Set the video to show the first frame
+                          const video = e.target as HTMLVideoElement
+                          video.currentTime = 0.1
+                        }}
+                        onClick={() => {
+                          const videoElement = document.getElementById(`video-${video.id}`) as HTMLVideoElement
+                          if (videoElement) {
+                            if (playingVideo === video.id) {
+                              videoElement.pause()
+                              setPlayingVideo(null)
+                            } else {
+                              // Pause all other videos
+                              instagramVideos.forEach((v) => {
+                                if (v.id !== video.id) {
+                                  const otherVideo = document.getElementById(`video-${v.id}`) as HTMLVideoElement
+                                  if (otherVideo) {
+                                    otherVideo.pause()
+                                  }
+                                }
+                              })
+                              videoElement.play()
+                              setPlayingVideo(video.id)
+                            }
+                          }
+                        }}
+                        id={`video-${video.id}`}
+                        onPause={() => setPlayingVideo(null)}
+                        onEnded={() => setPlayingVideo(null)}
+                      >
+                        <source src={video.videoUrl} type="video/mp4" />
+                        Tu navegador no soporta el elemento de video.
+                      </video>
+
+                      {/* Play button overlay - only show when not playing */}
+                      {playingVideo !== video.id && (
+                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center group-hover:bg-black/40 transition-all duration-300">
+                          <div className="bg-white/90 hover:bg-white rounded-full p-4 transform group-hover:scale-110 transition-all duration-300 shadow-lg">
+                            <Play className="w-8 h-8 text-brand-black ml-1" fill="currentColor" />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Instagram badge */}
+                      <div className="absolute top-4 left-4">
+                        <Badge className="bg-brand-purple text-brand-white px-3 py-1 text-xs font-sans sans-modern font-bold">
+                          <Instagram className="w-3 h-3 mr-1" />
+                          Instagram
+                        </Badge>
+                      </div>
+
+                      {/* Time ago badge */}
+                      <div className="absolute top-4 right-4">
+                        <span className="bg-black/70 text-white px-2 py-1 rounded text-xs font-sans sans-modern">
+                          {video.timeAgo}
+                        </span>
+                      </div>
+
+                      {/* Video duration indicator */}
+                      <div className="absolute bottom-4 right-4">
+                        <span className="bg-black/70 text-white px-2 py-1 rounded text-xs font-sans sans-modern">
+                          Video
+                        </span>
+                      </div>
+                    </div>
+
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <Image
+                          src="/natalia-volosin.jpg"
+                          alt="Natalia Volosin"
+                          width={32}
+                          height={32}
+                          className="w-8 h-8 rounded-full border-2 border-brand-gray/20"
+                        />
+                        <div>
+                          <h4 className="font-sans sans-modern font-bold text-brand-black text-sm">nataliavolosin</h4>
+                          <Badge className="bg-brand-green text-brand-black text-xs font-sans sans-modern font-bold">
+                            VERIFICADO
+                          </Badge>
+                        </div>
+                      </div>
+                      <p className="text-brand-black font-arimo text-sm leading-relaxed mb-4 line-clamp-3">
+                        {video.caption}
+                      </p>
+                      <div className="flex items-center justify-between pt-3 border-t border-brand-gray/20">
+                        <div className="flex items-center space-x-4">
+                          <div className="flex items-center space-x-1 text-brand-gray hover:text-red-500 transition-colors cursor-pointer">
+                            <Heart className="w-4 h-4" />
+                            <span className="text-xs font-sans sans-modern font-medium">
+                              {video.likes.toLocaleString()}
+                            </span>
+                          </div>
+                          <div className="flex items-center space-x-1 text-brand-gray hover:text-brand-purple transition-colors cursor-pointer">
+                            <MessageCircle className="w-4 h-4" />
+                            <span className="text-xs font-sans sans-modern font-medium">{video.comments}</span>
+                          </div>
+                          <div className="flex items-center space-x-1 text-brand-gray hover:text-brand-teal transition-colors cursor-pointer">
+                            <Share className="w-4 h-4" />
+                            <span className="text-xs font-sans sans-modern font-medium">{video.shares}</span>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-brand-gray hover:text-brand-purple transition-colors"
+                          onClick={() => window.open("https://www.instagram.com/nataliavolosin", "_blank")}
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             </section>
@@ -1118,13 +1243,13 @@ export default function HomePage() {
             </Card>
 
             {/* Sidebar Ad Space 1 */}
-            <div className="bg-gradient-to-br from-brand-teal/10 to-brand-green/10 border-2 border-dashed border-brand-teal/30 rounded-2xl p-6 text-center commercial-shadow">
+            <div className="bg-gradient-to-br from-brand-teal/10 to-brand-green/10 border-2 border-dashed border-brand-teal/30 rounded-2xl p-6 text-center commercial-shadow mb-8">
               <p className="text-brand-teal text-sm font-sans sans-modern font-bold mb-2">Publicidad</p>
               <p className="text-brand-gray text-xs font-serif serif-elegant">300x250</p>
             </div>
 
             {/* Sidebar Ad Space 2 */}
-            <div className="bg-gradient-to-br from-brand-purple/10 to-brand-gray/10 border-2 border-dashed border-brand-purple/30 rounded-2xl p-6 text-center commercial-shadow">
+            <div className="bg-gradient-to-br from-brand-purple/10 to-brand-gray/10 border-2 border-dashed border-brand-purple/30 rounded-2xl p-6 text-center commercial-shadow mb-8">
               <p className="text-brand-purple text-sm font-sans sans-modern font-bold mb-2">Banner</p>
               <p className="text-brand-gray text-xs font-serif serif-elegant">300x100</p>
             </div>
@@ -1177,22 +1302,156 @@ export default function HomePage() {
             <p className="text-brand-gray text-lg font-arimo">Portal de análisis independiente</p>
           </div>
 
-          {/* Información de contacto en dos columnas */}
-          <div className="grid md:grid-cols-2 gap-12 mb-12">
-            <div>
-              <h4 className="text-brand-green font-sans sans-modern font-bold text-lg mb-4">
-                Charlas, eventos, consultoría y capacitaciones:
-              </h4>
-              <p className="text-brand-gray font-arimo text-lg">lajusta@nataliavolosin.com</p>
+          {/* Sección comercial rediseñada */}
+          <div className="grid md:grid-cols-2 gap-8 mb-16">
+            {/* Servicios Profesionales */}
+            <div className="bg-gradient-to-br from-brand-green/20 to-brand-teal/20 rounded-2xl p-8 border-2 border-brand-green/30 commercial-shadow hover:scale-[1.02] transition-all duration-300">
+              <div className="text-center mb-6">
+                <div className="bg-brand-green/30 p-4 rounded-full w-16 h-16 mx-auto flex items-center justify-center mb-4">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-brand-green"
+                  >
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-sans sans-modern font-black text-brand-white mb-2 tracking-wide">
+                  SERVICIOS PROFESIONALES
+                </h3>
+                <p className="text-brand-green font-sans sans-modern font-bold text-lg">
+                  Charlas • Eventos • Consultoría • Capacitaciones
+                </p>
+              </div>
+
+              <div className="space-y-4 mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-green rounded-full"></div>
+                  <span className="text-brand-white font-serif serif-elegant">Conferencias magistrales</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-green rounded-full"></div>
+                  <span className="text-brand-white font-serif serif-elegant">
+                    Asesoramiento jurídico especializado
+                  </span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-green rounded-full"></div>
+                  <span className="text-brand-white font-serif serif-elegant">Capacitaciones institucionales</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-green rounded-full"></div>
+                  <span className="text-brand-white font-serif serif-elegant">Análisis de políticas públicas</span>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <Link
+                  href="mailto:lajusta@nataliavolosin.com"
+                  className="inline-flex items-center space-x-2 bg-brand-green hover:bg-brand-green/80 text-brand-black font-sans sans-modern font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect width="20" height="16" x="2" y="4" rx="2" />
+                    <path d="m22 7-10 5L2 7" />
+                  </svg>
+                  <span>lajusta@nataliavolosin.com</span>
+                </Link>
+              </div>
             </div>
-            <div>
-              <h4 className="text-brand-teal font-sans sans-modern font-bold text-lg mb-4">Consultas comerciales:</h4>
-              <p className="text-brand-gray font-arimo text-lg">comercial@nataliavolosin.com</p>
+
+            {/* Consultas Comerciales */}
+            <div className="bg-gradient-to-br from-brand-purple/20 to-brand-teal/20 rounded-2xl p-8 border-2 border-brand-purple/30 commercial-shadow hover:scale-[1.02] transition-all duration-300">
+              <div className="text-center mb-6">
+                <div className="bg-brand-purple/30 p-4 rounded-full w-16 h-16 mx-auto flex items-center justify-center mb-4">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-brand-purple"
+                  >
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="m22 21-3-3m0 0a5.5 5.5 0 1 0-7.78-7.78 5.5 5.5 0 0 0 7.78 7.78Z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-sans sans-modern font-black text-brand-white mb-2 tracking-wide">
+                  CONSULTAS COMERCIALES
+                </h3>
+                <p className="text-brand-purple font-sans sans-modern font-bold text-lg">
+                  Publicidad • Patrocinios • Colaboraciones
+                </p>
+              </div>
+
+              <div className="space-y-4 mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-purple rounded-full"></div>
+                  <span className="text-brand-white font-serif serif-elegant">Espacios publicitarios premium</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-purple rounded-full"></div>
+                  <span className="text-brand-white font-serif serif-elegant">Patrocinios de contenido</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-purple rounded-full"></div>
+                  <span className="text-brand-white font-serif serif-elegant">Colaboraciones estratégicas</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-purple rounded-full"></div>
+                  <span className="text-brand-white font-serif serif-elegant">Branded content</span>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <Link
+                  href="mailto:comercial@nataliavolosin.com"
+                  className="inline-flex items-center space-x-2 bg-brand-purple hover:bg-brand-purple/80 text-brand-white font-sans sans-modern font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect width="20" height="16" x="2" y="4" rx="2" />
+                    <path d="m22 7-10 5L2 7" />
+                  </svg>
+                  <span>comercial@nataliavolosin.com</span>
+                </Link>
+              </div>
             </div>
           </div>
 
           {/* Separador */}
-          <Separator className="bg-brand-gray/30 mb-12" />
+          <div className="bg-brand-gray/30 mb-12 h-px" />
 
           {/* Redes sociales centradas */}
           <div className="flex justify-center space-x-8 mb-8">

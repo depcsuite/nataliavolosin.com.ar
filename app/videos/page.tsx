@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -11,7 +12,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
-  Calendar,
   Clock,
   Search,
   Play,
@@ -166,12 +166,22 @@ const breakingNews = [
   "🚨 Debate sobre transparencia en contrataciones públicas gana impulso",
 ]
 
+// Function to generate slug from title
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, "") // Remove special characters except spaces and hyphens
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
+    .trim()
+}
+
 export default function VideosPage() {
+  const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [selectedYear, setSelectedYear] = useState("all-years")
   const [selectedMonth, setSelectedMonth] = useState("all-months")
-  const [selectedVideo, setSelectedVideo] = useState<number | null>(null)
   const [isScrolled, setIsScrolled] = useState(false)
   const [isFiltersOpen, setIsFiltersOpen] = useState(false)
 
@@ -237,7 +247,10 @@ export default function VideosPage() {
     return matchesSearch && matchesTags && matchesYear && matchesMonth
   })
 
-  const currentVideo = videos.find((v) => v.id === selectedVideo)
+  const handleVideoClick = (video: (typeof videos)[0]) => {
+    const slug = generateSlug(video.title)
+    router.push(`/videos/${slug}`)
+  }
 
   const tagColors = [
     { bg: "bg-brand-purple", text: "text-brand-white" },
@@ -361,7 +374,7 @@ export default function VideosPage() {
               >
                 <Link href="/suscripcion">
                   <Star className="w-5 h-5 mr-2" />
-                  {isScrolled ? "Suscribirse" : "Quiero bancar a La Justa"}
+                  {isScrolled ? "Bancar a La Justa" : "Quiero bancar a La Justa"}
                 </Link>
               </Button>
               <Button variant="ghost" size="sm" className="md:hidden">
@@ -431,308 +444,232 @@ export default function VideosPage() {
         <div className="grid lg:grid-cols-4 gap-8">
           {/* Video Content */}
           <div className="lg:col-span-3">
-            {selectedVideo ? (
-              <div>
-                <Button variant="ghost" onClick={() => setSelectedVideo(null)} className="mb-6">
-                  ← Volver a videos
-                </Button>
+            {/* Header */}
+            <div className="mb-8">
+              <h1 className="text-3xl font-sans sans-modern font-black text-brand-black mb-4">VIDEOS</h1>
+              <p className="text-brand-gray font-arimo">
+                Conferencias, entrevistas y análisis en video sobre temas jurídicos, políticos y sociales.
+              </p>
+            </div>
 
-                <div className="bg-brand-white rounded-2xl commercial-shadow overflow-hidden">
-                  {/* Video Player */}
-                  <div className="relative aspect-video bg-black">
-                    <iframe
-                      src={`https://www.youtube.com/embed/${currentVideo?.youtubeId}?si=qYIAJw15T9O7ss9e`}
-                      title={currentVideo?.title}
-                      className="w-full h-full"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      allowFullScreen
-                    />
-                  </div>
+            {/* Advertising Banner - After Header */}
+            <section className="mb-8">
+              <div className="bg-gradient-to-r from-brand-gray/10 to-brand-light-gray border-2 border-dashed border-brand-gray/30 rounded-2xl p-8 text-center commercial-shadow">
+                <p className="text-brand-gray text-sm font-sans sans-modern font-bold mb-2">Espacio Publicitario</p>
+                <p className="text-brand-gray text-xs font-arimo">728x90 - Banner Superior</p>
+              </div>
+            </section>
 
-                  {/* Video Info */}
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-2">
-                        {currentVideo?.tags.slice(0, 3).map((tag) => (
-                          <Badge key={tag} className="bg-brand-purple text-brand-white text-xs">
+            {/* Collapsible Search and Filters */}
+            <div className="bg-brand-white rounded-2xl commercial-shadow mb-8">
+              <Collapsible open={isFiltersOpen} onOpenChange={setIsFiltersOpen}>
+                <CollapsibleTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="w-full flex items-center justify-between p-6 hover:bg-brand-gray/5"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Filter className="w-5 h-5 text-brand-gray" />
+                      <span className="font-sans sans-modern font-bold text-brand-black">Filtros y búsqueda</span>
+                      {hasActiveFilters && (
+                        <Badge className="bg-brand-purple text-brand-white text-xs">
+                          {[
+                            searchQuery && "búsqueda",
+                            selectedTags.length > 0 && `${selectedTags.length} tags`,
+                            selectedYear !== "all-years" && "año",
+                            selectedMonth !== "all-months" && "mes",
+                          ]
+                            .filter(Boolean)
+                            .join(", ")}
+                        </Badge>
+                      )}
+                    </div>
+                    {isFiltersOpen ? (
+                      <ChevronUp className="w-5 h-5 text-brand-gray" />
+                    ) : (
+                      <ChevronDown className="w-5 h-5 text-brand-gray" />
+                    )}
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="px-6 pb-6">
+                  <div className="space-y-6">
+                    {/* Search */}
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-brand-gray w-4 h-4" />
+                      <Input
+                        type="text"
+                        placeholder="Buscar videos..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-10 bg-brand-light-gray border-2 border-brand-gray/30 focus:border-brand-green rounded-xl font-sans sans-modern"
+                      />
+                    </div>
+
+                    {/* Date Filters */}
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <Select value={selectedYear} onValueChange={setSelectedYear}>
+                        <SelectTrigger className="bg-brand-light-gray border-2 border-brand-gray/30 focus:border-brand-green rounded-xl font-sans sans-modern">
+                          <SelectValue placeholder="Año" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all-years">Todos los años</SelectItem>
+                          {years.map((year) => (
+                            <SelectItem key={year} value={year.toString()}>
+                              {year}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                        <SelectTrigger className="bg-brand-light-gray border-2 border-brand-gray/30 focus:border-brand-green rounded-xl font-sans sans-modern">
+                          <SelectValue placeholder="Mes" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all-months">Todos los meses</SelectItem>
+                          {months.map((month) => (
+                            <SelectItem key={month.value} value={month.value}>
+                              {month.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      {hasActiveFilters && (
+                        <Button
+                          variant="outline"
+                          onClick={clearFilters}
+                          className="border-2 border-brand-gray/30 hover:bg-brand-green/20 rounded-xl font-sans sans-modern bg-transparent"
+                        >
+                          Limpiar filtros
+                        </Button>
+                      )}
+                    </div>
+
+                    {/* Tags Filter */}
+                    <div>
+                      <p className="text-sm font-sans sans-modern font-medium text-brand-black mb-3 flex items-center">
+                        <Tag className="w-4 h-4 mr-2" />
+                        Filtrar por temas:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {allTags.map((tag, index) => (
+                          <Button
+                            key={tag}
+                            variant={selectedTags.includes(tag) ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => toggleTag(tag)}
+                            className={`text-xs rounded-full font-arimo font-medium transition-all duration-200 ${
+                              selectedTags.includes(tag)
+                                ? tagColors[index % tagColors.length].bg +
+                                  " " +
+                                  tagColors[index % tagColors.length].text
+                                : "border-brand-gray/30 hover:bg-brand-purple/20 hover:border-brand-purple/50"
+                            }`}
+                          >
                             {tag}
-                          </Badge>
+                          </Button>
                         ))}
                       </div>
-                      <div className="flex items-center space-x-4 text-sm text-brand-gray">
-                        <span className="flex items-center">
-                          <Eye className="w-4 h-4 mr-1" />
-                          {currentVideo?.views} visualizaciones
-                        </span>
-                        <span className="flex items-center">
-                          <Calendar className="w-4 h-4 mr-1" />
-                          {currentVideo && new Date(currentVideo.date).toLocaleDateString("es-AR")}
-                        </span>
-                      </div>
-                    </div>
-
-                    <h1 className="text-2xl md:text-3xl font-serif serif-elegant font-medium text-brand-black mb-4">
-                      {currentVideo?.title}
-                    </h1>
-
-                    <p className="text-brand-gray mb-6 font-serif serif-elegant">{currentVideo?.description}</p>
-
-                    <Separator className="my-6" />
-
-                    <div className="flex items-center space-x-4">
-                      <Image
-                        src="https://s3.us-east-1.amazonaws.com/nataliavolosin.com.ar/natalia-volosin.jpg"
-                        alt="Natalia Volosin"
-                        width={50}
-                        height={50}
-                        className="rounded-full"
-                      />
-                      <div>
-                        <h3 className="font-sans sans-modern font-bold">Natalia Volosin</h3>
-                        <p className="text-sm text-brand-gray font-serif serif-elegant">
-                          Doctora en Derecho (Yale) • Especialista en Derecho Público
-                        </p>
-                      </div>
                     </div>
                   </div>
-                </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
+
+            {/* Advertising Banner - After Filters */}
+            <section className="mb-8">
+              <div className="bg-gradient-to-br from-brand-purple/5 to-brand-teal/5 border-2 border-dashed border-brand-purple/20 rounded-2xl p-10 text-center commercial-shadow">
+                <p className="text-brand-purple text-lg font-sans sans-modern font-bold mb-2">Publicidad</p>
+                <p className="text-brand-gray text-sm font-arimo">300x250 - Rectángulo Medio</p>
               </div>
-            ) : (
-              <div>
-                {/* Header */}
-                <div className="mb-8">
-                  <h1 className="text-3xl font-sans sans-modern font-black text-brand-black mb-4">VIDEOS</h1>
-                  <p className="text-brand-gray font-serif serif-elegant">
-                    Conferencias, entrevistas y análisis en video sobre temas jurídicos, políticos y sociales.
-                  </p>
-                </div>
+            </section>
 
-                {/* Advertising Banner - After Header */}
-                <section className="mb-8">
-                  <div className="bg-gradient-to-r from-brand-gray/10 to-brand-light-gray border-2 border-dashed border-brand-gray/30 rounded-2xl p-8 text-center commercial-shadow">
-                    <p className="text-brand-gray text-sm font-sans sans-modern font-bold mb-2">Espacio Publicitario</p>
-                    <p className="text-brand-gray text-xs font-serif serif-elegant">728x90 - Banner Superior</p>
-                  </div>
-                </section>
-
-                {/* Collapsible Search and Filters */}
-                <div className="bg-brand-white rounded-2xl commercial-shadow mb-8">
-                  <Collapsible open={isFiltersOpen} onOpenChange={setIsFiltersOpen}>
-                    <CollapsibleTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        className="w-full flex items-center justify-between p-6 hover:bg-brand-gray/5"
-                      >
-                        <div className="flex items-center space-x-3">
-                          <Filter className="w-5 h-5 text-brand-gray" />
-                          <span className="font-sans sans-modern font-bold text-brand-black">Filtros y búsqueda</span>
-                          {hasActiveFilters && (
-                            <Badge className="bg-brand-purple text-brand-white text-xs">
-                              {[
-                                searchQuery && "búsqueda",
-                                selectedTags.length > 0 && `${selectedTags.length} tags`,
-                                selectedYear !== "all-years" && "año",
-                                selectedMonth !== "all-months" && "mes",
-                              ]
-                                .filter(Boolean)
-                                .join(", ")}
-                            </Badge>
-                          )}
-                        </div>
-                        {isFiltersOpen ? (
-                          <ChevronUp className="w-5 h-5 text-brand-gray" />
-                        ) : (
-                          <ChevronDown className="w-5 h-5 text-brand-gray" />
-                        )}
-                      </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="px-6 pb-6">
-                      <div className="space-y-6">
-                        {/* Search */}
-                        <div className="relative">
-                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-brand-gray w-4 h-4" />
-                          <Input
-                            type="text"
-                            placeholder="Buscar videos..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-10 bg-brand-light-gray border-2 border-brand-gray/30 focus:border-brand-green rounded-xl font-sans sans-modern"
-                          />
-                        </div>
-
-                        {/* Date Filters */}
-                        <div className="grid md:grid-cols-3 gap-4">
-                          <Select value={selectedYear} onValueChange={setSelectedYear}>
-                            <SelectTrigger className="bg-brand-light-gray border-2 border-brand-gray/30 focus:border-brand-green rounded-xl font-sans sans-modern">
-                              <SelectValue placeholder="Año" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="all-years">Todos los años</SelectItem>
-                              {years.map((year) => (
-                                <SelectItem key={year} value={year.toString()}>
-                                  {year}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-
-                          <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                            <SelectTrigger className="bg-brand-light-gray border-2 border-brand-gray/30 focus:border-brand-green rounded-xl font-sans sans-modern">
-                              <SelectValue placeholder="Mes" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="all-months">Todos los meses</SelectItem>
-                              {months.map((month) => (
-                                <SelectItem key={month.value} value={month.value}>
-                                  {month.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-
-                          {hasActiveFilters && (
-                            <Button
-                              variant="outline"
-                              onClick={clearFilters}
-                              className="border-2 border-brand-gray/30 hover:bg-brand-green/20 rounded-xl font-sans sans-modern bg-transparent"
-                            >
-                              Limpiar filtros
-                            </Button>
-                          )}
-                        </div>
-
-                        {/* Tags Filter */}
-                        <div>
-                          <p className="text-sm font-sans sans-modern font-medium text-brand-black mb-3 flex items-center">
-                            <Tag className="w-4 h-4 mr-2" />
-                            Filtrar por temas:
-                          </p>
-                          <div className="flex flex-wrap gap-2">
-                            {allTags.map((tag, index) => (
-                              <Button
-                                key={tag}
-                                variant={selectedTags.includes(tag) ? "default" : "outline"}
-                                size="sm"
-                                onClick={() => toggleTag(tag)}
-                                className={`text-xs rounded-full font-arimo font-medium transition-all duration-200 ${
-                                  selectedTags.includes(tag)
-                                    ? tagColors[index % tagColors.length].bg +
-                                      " " +
-                                      tagColors[index % tagColors.length].text
-                                    : "border-brand-gray/30 hover:bg-brand-purple/20 hover:border-brand-purple/50"
-                                }`}
-                              >
-                                {tag}
-                              </Button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </div>
-
-                {/* Advertising Banner - After Filters */}
-                <section className="mb-8">
-                  <div className="bg-gradient-to-br from-brand-purple/5 to-brand-teal/5 border-2 border-dashed border-brand-purple/20 rounded-2xl p-10 text-center commercial-shadow">
-                    <p className="text-brand-purple text-lg font-sans sans-modern font-bold mb-2">Publicidad</p>
-                    <p className="text-brand-gray text-sm font-serif serif-elegant">300x250 - Rectángulo Medio</p>
-                  </div>
-                </section>
-
-                {/* Videos Grid */}
-                <div className="grid md:grid-cols-2 gap-6">
-                  {filteredVideos.map((video) => (
-                    <Card
-                      key={video.id}
-                      className="overflow-hidden hover:scale-[1.02] transition-all duration-300 cursor-pointer commercial-shadow rounded-2xl"
-                      onClick={() => setSelectedVideo(video.id)}
-                    >
-                      <div className="relative">
-                        <Image
-                          src={video.thumbnail || "/placeholder.svg"}
-                          alt={video.title}
-                          width={350}
-                          height={200}
-                          className="w-full h-48 object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                          <Play className="w-12 h-12 text-white" />
-                        </div>
-                        <div className="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white px-2 py-1 rounded text-xs">
-                          {video.duration}
-                        </div>
-                        <div className="absolute top-2 left-2">
-                          <TagBadge index={0} className="text-xs">
-                            {video.tags[0]}
-                          </TagBadge>
-                        </div>
-                      </div>
-                      <CardHeader className="p-4">
-                        <CardTitle className="text-lg hover:text-brand-purple transition-colors line-clamp-2 font-serif serif-elegant">
-                          {video.title}
-                        </CardTitle>
-                        <CardDescription className="text-sm line-clamp-2 font-serif serif-elegant">
-                          {video.description}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="p-4 pt-0">
-                        <div className="flex items-center justify-between text-xs text-brand-gray mb-3">
-                          <div className="flex items-center space-x-3">
-                            <span className="flex items-center">
-                              <Eye className="w-3 h-3 mr-1" />
-                              {video.views}
-                            </span>
-                            <span>{new Date(video.date).toLocaleDateString("es-AR")}</span>
-                          </div>
-                          <div className="flex items-center">
-                            <Clock className="w-3 h-3 mr-1" />
-                            {video.duration}
-                          </div>
-                        </div>
-                        <div className="flex flex-wrap gap-1">
-                          {video.tags.slice(0, 3).map((tag) => (
-                            <Badge key={tag} variant="outline" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                          {video.tags.length > 3 && (
-                            <Badge variant="outline" className="text-xs">
-                              +{video.tags.length - 3}
-                            </Badge>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-
-                {/* Advertising Banner - After Videos Grid */}
-                {filteredVideos.length > 0 && (
-                  <section className="mt-12 mb-8">
-                    <div className="bg-gradient-to-r from-brand-green/10 to-brand-teal/10 border-2 border-dashed border-brand-green/30 rounded-2xl p-8 text-center commercial-shadow">
-                      <p className="text-brand-green text-lg font-sans sans-modern font-bold mb-2">Espacio Comercial</p>
-                      <p className="text-brand-gray text-xs font-serif serif-elegant">728x90 - Banner Inferior</p>
+            {/* Videos Grid */}
+            <div className="grid md:grid-cols-2 gap-6">
+              {filteredVideos.map((video) => (
+                <Card
+                  key={video.id}
+                  className="overflow-hidden hover:scale-[1.02] transition-all duration-300 cursor-pointer commercial-shadow rounded-2xl"
+                  onClick={() => handleVideoClick(video)}
+                >
+                  <div className="relative">
+                    <Image
+                      src={video.thumbnail || "/placeholder.svg"}
+                      alt={video.title}
+                      width={350}
+                      height={200}
+                      className="w-full h-48 object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                      <Play className="w-12 h-12 text-white" />
                     </div>
-                  </section>
-                )}
-
-                {filteredVideos.length === 0 && (
-                  <div className="text-center py-12">
-                    <p className="text-brand-gray font-serif serif-elegant">
-                      No se encontraron videos con los criterios seleccionados.
-                    </p>
-                    <Button
-                      variant="outline"
-                      onClick={clearFilters}
-                      className="mt-4 border-2 border-brand-gray/30 hover:bg-brand-green/20 rounded-xl font-sans sans-modern bg-transparent"
-                    >
-                      Limpiar filtros
-                    </Button>
+                    <div className="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white px-2 py-1 rounded text-xs">
+                      {video.duration}
+                    </div>
+                    <div className="absolute top-2 left-2">
+                      <TagBadge index={0} className="text-xs">
+                        {video.tags[0]}
+                      </TagBadge>
+                    </div>
                   </div>
-                )}
+                  <CardHeader className="p-4">
+                    <CardTitle className="text-lg hover:text-brand-purple transition-colors line-clamp-2 font-serif serif-elegant">
+                      {video.title}
+                    </CardTitle>
+                    <CardDescription className="text-sm line-clamp-2 font-arimo">{video.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-4 pt-0">
+                    <div className="flex items-center justify-between text-xs text-brand-gray mb-3">
+                      <div className="flex items-center space-x-3">
+                        <span className="flex items-center">
+                          <Eye className="w-3 h-3 mr-1" />
+                          {video.views}
+                        </span>
+                        <span>{new Date(video.date).toLocaleDateString("es-AR")}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Clock className="w-3 h-3 mr-1" />
+                        {video.duration}
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {video.tags.slice(0, 3).map((tag) => (
+                        <Badge key={tag} variant="outline" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                      {video.tags.length > 3 && (
+                        <Badge variant="outline" className="text-xs">
+                          +{video.tags.length - 3}
+                        </Badge>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Advertising Banner - After Videos Grid */}
+            {filteredVideos.length > 0 && (
+              <section className="mt-12 mb-8">
+                <div className="bg-gradient-to-r from-brand-green/10 to-brand-teal/10 border-2 border-dashed border-brand-green/30 rounded-2xl p-8 text-center commercial-shadow">
+                  <p className="text-brand-green text-lg font-sans sans-modern font-bold mb-2">Espacio Comercial</p>
+                  <p className="text-brand-gray text-xs font-arimo">728x90 - Banner Inferior</p>
+                </div>
+              </section>
+            )}
+
+            {filteredVideos.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-brand-gray font-arimo">No se encontraron videos con los criterios seleccionados.</p>
+                <Button
+                  variant="outline"
+                  onClick={clearFilters}
+                  className="mt-4 border-2 border-brand-gray/30 hover:bg-brand-green/20 rounded-xl font-sans sans-modern bg-transparent"
+                >
+                  Limpiar filtros
+                </Button>
               </div>
             )}
           </div>
@@ -750,7 +687,7 @@ export default function VideosPage() {
                   className="rounded-full mx-auto border-2 border-brand-gray/20"
                 />
                 <CardTitle className="text-lg font-serif serif-elegant">Canal de Natalia Volosin</CardTitle>
-                <CardDescription className="text-sm font-serif serif-elegant">
+                <CardDescription className="text-sm font-arimo">
                   Análisis jurídicos y políticos en video
                 </CardDescription>
               </CardHeader>
@@ -759,11 +696,11 @@ export default function VideosPage() {
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <div className="font-sans sans-modern font-bold text-lg">6</div>
-                      <div className="text-brand-gray font-serif serif-elegant">Videos</div>
+                      <div className="text-brand-gray font-arimo">Videos</div>
                     </div>
                     <div>
                       <div className="font-sans sans-modern font-bold text-lg">16.1K</div>
-                      <div className="text-brand-gray font-serif serif-elegant">Visualizaciones</div>
+                      <div className="text-brand-gray font-arimo">Visualizaciones</div>
                     </div>
                   </div>
                   <Button variant="outline" className="w-full bg-transparent" asChild>
@@ -785,43 +722,46 @@ export default function VideosPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {mostViewedVideos.map((video, index) => (
-                    <div
-                      key={video.id}
-                      className="flex items-start space-x-3 cursor-pointer hover:bg-brand-gray/10 p-2 rounded-lg transition-colors"
-                      onClick={() => setSelectedVideo(video.id)}
-                    >
-                      <div className="relative flex-shrink-0">
-                        <Image
-                          src={video.thumbnail || "/placeholder.svg"}
-                          alt={video.title}
-                          width={80}
-                          height={60}
-                          className="rounded-lg object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center rounded-lg">
-                          <Play className="w-4 h-4 text-white" />
+                  {mostViewedVideos.map((video, index) => {
+                    const fullVideo = videos.find((v) => v.id === video.id)
+                    return (
+                      <div
+                        key={video.id}
+                        className="flex items-start space-x-3 cursor-pointer hover:bg-brand-gray/10 p-2 rounded-lg transition-colors"
+                        onClick={() => fullVideo && handleVideoClick(fullVideo)}
+                      >
+                        <div className="relative flex-shrink-0">
+                          <Image
+                            src={video.thumbnail || "/placeholder.svg"}
+                            alt={video.title}
+                            width={80}
+                            height={60}
+                            className="rounded-lg object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center rounded-lg">
+                            <Play className="w-4 h-4 text-white" />
+                          </div>
+                          <div className="absolute bottom-1 right-1 bg-black bg-opacity-75 text-white px-1 text-xs rounded">
+                            {video.duration}
+                          </div>
                         </div>
-                        <div className="absolute bottom-1 right-1 bg-black bg-opacity-75 text-white px-1 text-xs rounded">
-                          {video.duration}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center space-x-2 mb-1">
+                            <span className="bg-brand-purple text-brand-white text-xs px-2 py-1 rounded-full font-sans sans-modern font-bold">
+                              #{index + 1}
+                            </span>
+                            <span className="text-xs text-brand-gray font-sans sans-modern">
+                              <Eye className="w-3 h-3 inline mr-1" />
+                              {video.views}
+                            </span>
+                          </div>
+                          <h4 className="text-sm font-serif serif-elegant font-medium text-brand-black line-clamp-2 hover:text-brand-purple transition-colors">
+                            {video.title}
+                          </h4>
                         </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <span className="bg-brand-purple text-brand-white text-xs px-2 py-1 rounded-full font-sans sans-modern font-bold">
-                            #{index + 1}
-                          </span>
-                          <span className="text-xs text-brand-gray font-sans sans-modern">
-                            <Eye className="w-3 h-3 inline mr-1" />
-                            {video.views}
-                          </span>
-                        </div>
-                        <h4 className="text-sm font-serif serif-elegant font-medium text-brand-black line-clamp-2 hover:text-brand-purple transition-colors">
-                          {video.title}
-                        </h4>
-                      </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </CardContent>
             </Card>
@@ -829,13 +769,13 @@ export default function VideosPage() {
             {/* Sidebar Ad Space 1 */}
             <div className="bg-gradient-to-br from-brand-teal/10 to-brand-green/10 border-2 border-dashed border-brand-teal/30 rounded-2xl p-6 text-center commercial-shadow">
               <p className="text-brand-teal text-sm font-sans sans-modern font-bold mb-2">Publicidad</p>
-              <p className="text-brand-gray text-xs font-serif serif-elegant">300x250</p>
+              <p className="text-brand-gray text-xs font-arimo">300x250</p>
             </div>
 
             {/* Sidebar Ad Space 2 */}
             <div className="bg-gradient-to-br from-brand-purple/10 to-brand-gray/10 border-2 border-dashed border-brand-purple/30 rounded-2xl p-4 text-center commercial-shadow">
               <p className="text-brand-purple text-sm font-sans sans-modern font-bold mb-2">Banner</p>
-              <p className="text-brand-gray text-xs font-serif serif-elegant">300x100</p>
+              <p className="text-brand-gray text-xs font-arimo">300x100</p>
             </div>
 
             {/* Newsletter Signup */}
@@ -856,7 +796,7 @@ export default function VideosPage() {
               </CardHeader>
               <CardContent className="text-center p-8 pt-0">
                 <div className="space-y-4 mb-6">
-                  <p className="text-sm text-brand-black font-serif serif-elegant">
+                  <p className="text-sm text-brand-black font-arimo">
                     Suscríbete al newsletter gratuito de los viernes haciendo clic en el enlace:
                   </p>
                 </div>
@@ -921,7 +861,7 @@ export default function VideosPage() {
               Natalia <span className="font-script script-enhanced text-4xl text-brand-purple">Volosin</span>
             </h4>
             <h5 className="text-2xl font-sans sans-modern font-black mb-4 tracking-wider">LA JUSTA</h5>
-            <p className="text-brand-gray text-lg font-serif serif-elegant">Portal de análisis independiente</p>
+            <p className="text-brand-gray text-lg font-arimo">Portal de análisis independiente</p>
           </div>
 
           {/* Información de contacto en dos columnas */}
@@ -930,16 +870,162 @@ export default function VideosPage() {
               <h4 className="text-brand-green font-sans sans-modern font-bold text-lg mb-4">
                 Charlas, eventos, consultoría y capacitaciones:
               </h4>
-              <p className="text-brand-gray font-serif serif-elegant text-lg">lajusta@nataliavolosin.com</p>
+              <p className="text-brand-gray font-arimo text-lg">lajusta@nataliavolosin.com</p>
             </div>
             <div>
               <h4 className="text-brand-teal font-sans sans-modern font-bold text-lg mb-4">Consultas comerciales:</h4>
-              <p className="text-brand-gray font-serif serif-elegant text-lg">comercial@nataliavolosin.com</p>
+              <p className="text-brand-gray font-arimo text-lg">comercial@nataliavolosin.com</p>
             </div>
           </div>
 
           {/* Separador */}
           <Separator className="bg-brand-gray/30 mb-12" />
+
+          {/* Sección comercial rediseñada */}
+          <div className="grid md:grid-cols-2 gap-8 mb-16">
+            {/* Servicios Profesionales */}
+            <div className="bg-gradient-to-br from-brand-green/20 to-brand-teal/20 rounded-2xl p-8 border-2 border-brand-green/30 commercial-shadow hover:scale-[1.02] transition-all duration-300">
+              <div className="text-center mb-6">
+                <div className="bg-brand-green/30 p-4 rounded-full w-16 h-16 mx-auto flex items-center justify-center mb-4">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-brand-green"
+                  >
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-sans sans-modern font-black text-brand-white mb-2 tracking-wide">
+                  SERVICIOS PROFESIONALES
+                </h3>
+                <p className="text-brand-green font-sans sans-modern font-bold text-lg">
+                  Charlas • Eventos • Consultoría • Capacitaciones
+                </p>
+              </div>
+
+              <div className="space-y-4 mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-green rounded-full"></div>
+                  <span className="text-brand-white font-arimo">Conferencias magistrales</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-green rounded-full"></div>
+                  <span className="text-brand-white font-arimo">Asesoramiento jurídico especializado</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-green rounded-full"></div>
+                  <span className="text-brand-white font-arimo">Capacitaciones institucionales</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-green rounded-full"></div>
+                  <span className="text-brand-white font-arimo">Análisis de políticas públicas</span>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <Link
+                  href="mailto:lajusta@nataliavolosin.com"
+                  className="inline-flex items-center space-x-2 bg-brand-green hover:bg-brand-green/80 text-brand-black font-sans sans-modern font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect width="20" height="16" x="2" y="4" rx="2" />
+                    <path d="m22 7-10 5L2 7" />
+                  </svg>
+                  <span>lajusta@nataliavolosin.com</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Consultas Comerciales */}
+            <div className="bg-gradient-to-br from-brand-purple/20 to-brand-teal/20 rounded-2xl p-8 border-2 border-brand-purple/30 commercial-shadow hover:scale-[1.02] transition-all duration-300">
+              <div className="text-center mb-6">
+                <div className="bg-brand-purple/30 p-4 rounded-full w-16 h-16 mx-auto flex items-center justify-center mb-4">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-brand-purple"
+                  >
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="m22 21-3-3m0 0a5.5 5.5 0 1 0-7.78-7.78 5.5 5.5 0 0 0 7.78 7.78Z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-sans sans-modern font-black text-brand-white mb-2 tracking-wide">
+                  CONSULTAS COMERCIALES
+                </h3>
+                <p className="text-brand-purple font-sans sans-modern font-bold text-lg">
+                  Publicidad • Patrocinios • Colaboraciones
+                </p>
+              </div>
+
+              <div className="space-y-4 mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-purple rounded-full"></div>
+                  <span className="text-brand-white font-arimo">Espacios publicitarios premium</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-purple rounded-full"></div>
+                  <span className="text-brand-white font-arimo">Patrocinios de contenido</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-purple rounded-full"></div>
+                  <span className="text-brand-white font-arimo">Colaboraciones estratégicas</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-brand-purple rounded-full"></div>
+                  <span className="text-brand-white font-arimo">Branded content</span>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <Link
+                  href="mailto:comercial@nataliavolosin.com"
+                  className="inline-flex items-center space-x-2 bg-brand-purple hover:bg-brand-purple/80 text-brand-white font-sans sans-modern font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect width="20" height="16" x="2" y="4" rx="2" />
+                    <path d="m22 7-10 5L2 7" />
+                  </svg>
+                  <span>comercial@nataliavolosin.com</span>
+                </Link>
+              </div>
+            </div>
+          </div>
 
           {/* Redes sociales centradas */}
           <div className="flex justify-center space-x-8 mb-8">
