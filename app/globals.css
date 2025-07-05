@@ -66,6 +66,24 @@
   body {
     @apply bg-background text-foreground font-arimo;
   }
+  h1 {
+    @apply font-garamond;
+  }
+  h2,
+  h3,
+  h4,
+  h5,
+  p,
+  ul,
+  li,
+  ol,
+  button,
+  span {
+    @apply font-arimo;
+  }
+  .animate-marquee {
+    @apply font-arimo;
+  }
 }
 
 @layer utilities {

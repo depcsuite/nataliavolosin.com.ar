@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { Separator } from "@/components/ui/separator"
 import {
   Instagram,
   Star,
@@ -16,12 +17,12 @@ import {
   Users,
   ExternalLink,
   Play,
-  Eye,
   Twitter,
   Music,
   Heart,
   MessageCircle,
   Share,
+  Mail,
 } from "lucide-react"
 import Image from "next/image"
 import { TagBadge } from "@/components/ui/tag-badge"
@@ -153,47 +154,13 @@ const instagramVideos = [
   },
 ]
 
-// Mock data for videos
-const popularVideos = [
-  {
-    id: "1",
-    title: "Debate sobre la corrupción en Argentina",
-    thumbnail: "/placeholder.svg?height=100&width=200",
-    views: "12K",
-    duration: "15:30",
-  },
-  {
-    id: "2",
-    title: "Análisis de las reformas judiciales",
-    thumbnail: "/placeholder.svg?height=100&width=200",
-    views: "8.5K",
-    duration: "22:45",
-  },
-  {
-    id: "3",
-    title: "El rol de la sociedad civil en la transparencia",
-    thumbnail: "/placeholder.svg?height=100&width=200",
-    views: "6.2K",
-    duration: "18:10",
-  },
-]
-
 export default function HomePage() {
-  const [freeArticlesRead, setFreeArticlesRead] = useState(0)
-  const [showPaywall, setShowPaywall] = useState(false)
-  const [isSubscriptionOpen, setIsSubscriptionOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [tweets, setTweets] = useState<Tweet[]>([])
   const [isLoadingTweets, setIsLoadingTweets] = useState(true)
-  const [isScrolled, setIsScrolled] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false) // Changed to false to show top bar initially
   const [playingVideo, setPlayingVideo] = useState<string | null>(null)
-
-  useEffect(() => {
-    const stored = localStorage.getItem("freeArticlesRead")
-    if (stored) {
-      setFreeArticlesRead(Number.parseInt(stored))
-    }
-  }, [])
+  const [showPlayButton, setShowPlayButton] = useState<{ [key: string]: boolean }>({})
 
   // Scroll listener para ocultar el top bar
   useEffect(() => {
@@ -260,22 +227,8 @@ export default function HomePage() {
   }
 
   const handleArticleClick = (article: any) => {
-    if (freeArticlesRead >= 3) {
-      setShowPaywall(true)
-      return
-    }
-
-    const newCount = freeArticlesRead + 1
-    setFreeArticlesRead(newCount)
-    localStorage.setItem("freeArticlesRead", newCount.toString())
-
-    // Navegar a la página del artículo
+    // Navegar directamente a la página del artículo sin validación
     window.location.href = `/articulo/${article.slug}`
-  }
-
-  const handleSubscribe = () => {
-    setIsSubscriptionOpen(true)
-    setShowPaywall(false)
   }
 
   const shareOnTwitter = (article: any) => {
@@ -285,12 +238,53 @@ export default function HomePage() {
     window.open(twitterUrl, "_blank", "width=550,height=420")
   }
 
-  const handleVideoPlay = (videoId: string) => {
-    setPlayingVideo(videoId)
+  // Inicializar el estado para mostrar todos los botones de play
+  useEffect(() => {
+    const initialState: { [key: string]: boolean } = {}
+    instagramVideos.forEach((video) => {
+      initialState[video.id] = true
+    })
+    setShowPlayButton(initialState)
+  }, [])
+
+  const handleVideoClick = (videoId: string) => {
+    const videoElement = document.getElementById(`video-${videoId}`) as HTMLVideoElement
+
+    if (!videoElement) return
+
+    if (playingVideo === videoId) {
+      // Pause the current video
+      videoElement.pause()
+      setPlayingVideo(null)
+      setShowPlayButton((prev) => ({ ...prev, [videoId]: true }))
+    } else {
+      // Pause all other videos first
+      instagramVideos.forEach((v) => {
+        if (v.id !== videoId) {
+          const otherVideo = document.getElementById(`video-${v.id}`) as HTMLVideoElement
+          if (otherVideo && !otherVideo.paused) {
+            otherVideo.pause()
+            setShowPlayButton((prev) => ({ ...prev, [v.id]: true }))
+          }
+        }
+      })
+
+      // Play the clicked video
+      videoElement.muted = false // Asegurar que el audio esté habilitado
+      videoElement
+        .play()
+        .then(() => {
+          setPlayingVideo(videoId)
+          setShowPlayButton((prev) => ({ ...prev, [videoId]: false }))
+        })
+        .catch((error) => {
+          console.error("Error playing video:", error)
+        })
+    }
   }
 
   return (
-    <div className="min-h-screen bg-brand-light-gray font-serif">
+    <div className="min-h-screen bg-brand-light-gray font-arimo">
       {/* Header */}
       <header className="bg-brand-white border-b border-brand-gray/20 commercial-shadow sticky top-0 z-50">
         {/* Top Bar - Se oculta al hacer scroll */}
@@ -300,7 +294,7 @@ export default function HomePage() {
           }`}
         >
           <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between text-sm font-sans sans-modern">
+            <div className="flex items-center justify-between text-sm font-arimo">
               <div className="flex items-center space-x-4">
                 <span className="font-bold flex items-center">
                   <TrendingUp className="w-4 h-4 mr-2" />
@@ -331,7 +325,7 @@ export default function HomePage() {
               <div className="flex items-center space-x-4">
                 <Link href="/">
                   <h1
-                    className={`font-serif serif-elegant font-medium text-brand-black hover:text-brand-purple transition-all duration-300 ${
+                    className={`font-garamond font-medium text-brand-black hover:text-brand-purple transition-all duration-300 ${
                       isScrolled ? "text-2xl" : "text-4xl"
                     }`}
                   >
@@ -346,14 +340,14 @@ export default function HomePage() {
                   </h1>
                 </Link>
                 <span
-                  className={`font-sans sans-modern font-black text-brand-black transition-all duration-300 ${
+                  className={`font-arimo font-black text-brand-black transition-all duration-300 ${
                     isScrolled ? "text-lg" : "text-2xl"
                   }`}
                 >
                   →
                 </span>
                 <h2
-                  className={`font-sans sans-modern font-black text-brand-black tracking-wider transition-all duration-300 ${
+                  className={`font-arimo font-black text-brand-black tracking-wider transition-all duration-300 ${
                     isScrolled ? "text-xl" : "text-3xl"
                   }`}
                 >
@@ -361,9 +355,7 @@ export default function HomePage() {
                 </h2>
               </div>
               {!isScrolled && (
-                <div className="hidden lg:block text-sm text-brand-gray font-sans sans-modern font-medium">
-                  Pensar es urgente
-                </div>
+                <div className="hidden lg:block text-sm text-brand-gray font-arimo font-medium">Pensar es urgente</div>
               )}
             </div>
 
@@ -377,7 +369,7 @@ export default function HomePage() {
                     placeholder="Buscar noticias..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-12 pr-4 py-3 w-72 bg-brand-light-gray border-2 border-brand-gray/30 focus:bg-brand-white focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 transition-all duration-300 rounded-xl font-sans sans-modern"
+                    className="pl-12 pr-4 py-3 w-72 bg-brand-light-gray border-2 border-brand-gray/30 focus:bg-brand-white focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 transition-all duration-300 rounded-xl font-arimo"
                   />
                   {searchQuery && (
                     <Button
@@ -396,7 +388,7 @@ export default function HomePage() {
               </Button>
               <Link href="/suscripcion">
                 <Button
-                  className={`bg-gradient-to-r from-brand-green to-brand-teal hover:from-brand-green/80 hover:to-brand-teal/80 text-brand-black font-sans sans-modern font-bold rounded-xl neon-glow transition-all duration-300 ${
+                  className={`bg-gradient-to-r from-brand-green to-brand-teal hover:from-brand-green/80 hover:to-brand-teal/80 text-brand-black font-arimo font-bold rounded-xl neon-glow transition-all duration-300 ${
                     isScrolled ? "px-4 py-2 text-sm" : "px-6 py-3"
                   }`}
                   size="lg"
@@ -413,33 +405,30 @@ export default function HomePage() {
 
           {/* Navigation - Altura reducida */}
           <nav className="hidden md:flex items-center space-x-8 mt-4 pt-3 border-t border-brand-gray/20">
-            <Link
-              href="/"
-              className="text-brand-purple font-sans sans-modern font-bold text-base transition-colors tracking-wide"
-            >
+            <Link href="/" className="text-brand-purple font-arimo font-bold text-base transition-colors tracking-wide">
               INICIO
             </Link>
             <Link
               href="/sobre-mi"
-              className="text-brand-black hover:text-brand-teal font-sans sans-modern font-bold text-base transition-colors tracking-wide"
+              className="text-brand-black hover:text-brand-teal font-arimo font-bold text-base transition-colors tracking-wide"
             >
               QUIÉN
             </Link>
             <Link
               href="/newsletter"
-              className="text-brand-black hover:text-brand-purple font-sans sans-modern font-bold text-base transition-colors tracking-wide"
+              className="text-brand-black hover:text-brand-purple font-arimo font-bold text-base transition-colors tracking-wide"
             >
               LA JUSTA
             </Link>
             <Link
               href="/suscripcion"
-              className="text-brand-black hover:text-brand-teal font-sans sans-modern font-bold text-base transition-colors tracking-wide"
+              className="text-brand-black hover:text-brand-teal font-arimo font-bold text-base transition-colors tracking-wide"
             >
               POR QUÉ
             </Link>
             <Link
               href="/videos"
-              className="text-brand-black hover:text-brand-purple font-sans sans-modern font-bold text-base transition-colors tracking-wide"
+              className="text-brand-black hover:text-brand-purple font-arimo font-bold text-base transition-colors tracking-wide"
             >
               VIDEOS
             </Link>
@@ -455,12 +444,12 @@ export default function HomePage() {
       >
         <div className="container mx-auto px-4">
           <div className="flex items-center">
-            <span className="bg-brand-black text-brand-white px-4 py-2 text-sm font-sans sans-modern font-bold mr-6 rounded-full flex items-center">
+            <span className="bg-brand-black text-brand-white px-4 py-2 text-sm font-arimo font-bold mr-6 rounded-full flex items-center">
               <Zap className="w-4 h-4 mr-2" />
               BREAKING
             </span>
             <div className="flex-1 overflow-hidden">
-              <div className="animate-marquee whitespace-nowrap text-lg font-serif serif-elegant font-medium text-brand-black">
+              <div className="animate-marquee whitespace-nowrap text-lg font-arimo font-medium text-brand-black">
                 {breakingNews.join(" • ")}
               </div>
             </div>
@@ -476,41 +465,41 @@ export default function HomePage() {
             {/* Hero Section with Slogan */}
             <section className="mb-16 text-center bg-gradient-to-br from-brand-purple/10 via-brand-green/20 to-brand-teal/10 p-12 rounded-3xl commercial-shadow">
               <div className="mb-6">
-                <Badge className="bg-brand-purple text-brand-white px-4 py-2 font-sans sans-modern font-bold text-sm mb-4">
+                <Badge className="bg-brand-purple text-brand-white px-4 py-2 font-arimo font-bold text-sm mb-4">
                   Bienvenid@ a La Justa
                 </Badge>
               </div>
-              <h1 className="text-4xl md:text-5xl font-serif serif-elegant font-medium text-brand-black mb-6">
+              <h1 className="text-4xl md:text-5xl font-garamond font-medium text-brand-black mb-6">
                 La plataforma de contenidos digitales de{" "}
                 <span className="font-script script-enhanced text-brand-purple">Natalia Volosin</span>
               </h1>
-              <p className="text-xl font-sans sans-modern font-medium text-brand-black mb-6 tracking-wide">
+              <p className="text-xl font-arimo font-medium text-brand-black mb-6 tracking-wide">
                 DATOS • INVESTIGACIÓN • ANÁLISIS INDEPENDIENTE
               </p>
               <div className="max-w-4xl mx-auto space-y-4 text-lg font-arimo leading-relaxed text-brand-black mb-8">
-                <p>
+                <p className="font-arimo">
                   <strong>La Justa</strong> te trae lo que los medios tradicionales no te quieren contar, con la
                   independencia, la claridad y la irreverencia de siempre.
                 </p>
-                <p>
+                <p className="font-arimo">
                   <span className="bg-brand-green/30 px-2 py-1 rounded">
                     No recibimos ni vamos a recibir pauta de ningún gobierno ni de empresas vinculadas al juego,
                     servicios públicos o sindicatos.
                   </span>{" "}
                   Esto nos diferencia de TODOS los medios y periodistas.
                 </p>
-                <p>
+                <p className="font-arimo">
                   <strong>La Justa te va a incomodar, porque no somos neutrales.</strong> Pero nunca te va a manipular,
                   porque sí somos independientes.
                 </p>
-                <p className="text-brand-purple font-medium">
+                <p className="text-brand-purple font-medium font-arimo">
                   Y porque no exageramos cuando decimos que{" "}
                   <span className="font-script script-enhanced text-2xl">la invitación a pensar es urgente.</span>
                 </p>
               </div>
               <div className="flex justify-center">
                 <Link href="/suscripcion">
-                  <Button className="bg-gradient-to-r from-brand-purple to-brand-teal text-brand-white font-sans sans-modern font-bold px-8 py-4 rounded-2xl text-lg hover:scale-105 transition-transform duration-300">
+                  <Button className="bg-gradient-to-r from-brand-purple to-brand-teal text-brand-white font-arimo font-bold px-8 py-4 rounded-2xl text-lg hover:scale-105 transition-transform duration-300">
                     <Users className="w-5 h-5 mr-2" />
                     Quiero bancar a La Justa
                   </Button>
@@ -521,219 +510,20 @@ export default function HomePage() {
             {/* Advertising Banner - After Hero */}
             <section className="mb-16">
               <div className="bg-gradient-to-r from-brand-gray/10 to-brand-light-gray border-2 border-dashed border-brand-gray/30 rounded-2xl p-8 text-center commercial-shadow">
-                <p className="text-brand-gray text-sm font-sans sans-modern font-bold mb-2">Espacio Publicitario</p>
-                <p className="text-brand-gray text-xs font-serif serif-elegant">728x90 - Banner Superior</p>
-              </div>
-            </section>
-
-            {/* Latest Newsletter Preview */}
-            <section className="mb-16">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-3xl font-sans sans-modern font-black text-brand-black tracking-wide">
-                  ÚLTIMO NEWSLETTER
-                </h2>
-                <Link href="/newsletter">
-                  <Button
-                    variant="outline"
-                    className="border-2 border-brand-purple text-brand-purple hover:bg-brand-purple hover:text-brand-white font-sans sans-modern font-bold px-6 py-3 rounded-xl transition-all duration-300 bg-transparent"
-                  >
-                    Ver todos
-                  </Button>
-                </Link>
-              </div>
-              <Card className="overflow-hidden commercial-shadow border-2 border-brand-gray/20 rounded-2xl hover:scale-[1.02] transition-transform duration-300">
-                <CardHeader className="bg-gradient-to-r from-brand-green/20 to-brand-teal/20 p-8">
-                  <div className="flex items-center justify-between">
-                    <Badge className="bg-brand-black text-brand-white px-4 py-2 text-sm font-sans sans-modern font-bold rounded-full">
-                      Newsletter #47
-                    </Badge>
-                    <span className="text-sm text-brand-gray font-sans sans-modern font-medium">16 de enero, 2025</span>
-                  </div>
-                  <CardTitle className="text-2xl font-serif serif-elegant font-medium text-brand-black mt-4">
-                    Peligra el decomiso contra Cristina
-                  </CardTitle>
-                  <CardDescription className="text-brand-gray text-lg font-arimo leading-relaxed">
-                    La Cámara Federal de Casación Penal podría anular el decomiso de $5.000 millones contra Cristina
-                    Kirchner por un error procesal. Un análisis de las implicancias jurídicas y políticas de esta
-                    decisión que va más allá de las preferencias partidarias...
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="p-8">
-                  <Link href="/newsletter">
-                    <Button className="w-full bg-gradient-to-r from-brand-black to-brand-gray hover:from-brand-gray hover:to-brand-black text-brand-white font-sans sans-modern font-bold py-4 rounded-xl text-lg mb-4 transition-all duration-300 hover:scale-105">
-                      Leer newsletter completo
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            </section>
-
-            {/* Instagram Videos Section */}
-            <section className="mb-16">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-3xl font-sans sans-modern font-black text-brand-black tracking-wide">
-                  ÚLTIMOS VIDEOS DE INSTAGRAM
-                </h2>
-                <Link href="https://www.instagram.com/nataliavolosin" target="_blank">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="border-2 border-brand-purple text-brand-purple hover:bg-brand-purple hover:text-brand-white font-sans sans-modern font-bold px-6 py-3 rounded-xl transition-all duration-300 bg-transparent"
-                  >
-                    <Instagram className="w-5 h-5 mr-2" />
-                    Ver en Instagram
-                  </Button>
-                </Link>
-              </div>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {instagramVideos.map((video) => (
-                  <Card
-                    key={video.id}
-                    className="bg-brand-white commercial-shadow border-2 border-brand-gray/20 rounded-2xl overflow-hidden hover:scale-[1.02] transition-transform duration-300"
-                  >
-                    <div className="relative group">
-                      <video
-                        className="w-full h-96 object-cover cursor-pointer"
-                        preload="metadata"
-                        muted
-                        playsInline
-                        onLoadedMetadata={(e) => {
-                          // Set the video to show the first frame
-                          const video = e.target as HTMLVideoElement
-                          video.currentTime = 0.1
-                        }}
-                        onClick={() => {
-                          const videoElement = document.getElementById(`video-${video.id}`) as HTMLVideoElement
-                          if (videoElement) {
-                            if (playingVideo === video.id) {
-                              videoElement.pause()
-                              setPlayingVideo(null)
-                            } else {
-                              // Pause all other videos
-                              instagramVideos.forEach((v) => {
-                                if (v.id !== video.id) {
-                                  const otherVideo = document.getElementById(`video-${v.id}`) as HTMLVideoElement
-                                  if (otherVideo) {
-                                    otherVideo.pause()
-                                  }
-                                }
-                              })
-                              videoElement.play()
-                              setPlayingVideo(video.id)
-                            }
-                          }
-                        }}
-                        id={`video-${video.id}`}
-                        onPause={() => setPlayingVideo(null)}
-                        onEnded={() => setPlayingVideo(null)}
-                      >
-                        <source src={video.videoUrl} type="video/mp4" />
-                        Tu navegador no soporta el elemento de video.
-                      </video>
-
-                      {/* Play button overlay - only show when not playing */}
-                      {playingVideo !== video.id && (
-                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center group-hover:bg-black/40 transition-all duration-300">
-                          <div className="bg-white/90 hover:bg-white rounded-full p-4 transform group-hover:scale-110 transition-all duration-300 shadow-lg">
-                            <Play className="w-8 h-8 text-brand-black ml-1" fill="currentColor" />
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Instagram badge */}
-                      <div className="absolute top-4 left-4">
-                        <Badge className="bg-brand-purple text-brand-white px-3 py-1 text-xs font-sans sans-modern font-bold">
-                          <Instagram className="w-3 h-3 mr-1" />
-                          Instagram
-                        </Badge>
-                      </div>
-
-                      {/* Time ago badge */}
-                      <div className="absolute top-4 right-4">
-                        <span className="bg-black/70 text-white px-2 py-1 rounded text-xs font-sans sans-modern">
-                          {video.timeAgo}
-                        </span>
-                      </div>
-
-                      {/* Video duration indicator */}
-                      <div className="absolute bottom-4 right-4">
-                        <span className="bg-black/70 text-white px-2 py-1 rounded text-xs font-sans sans-modern">
-                          Video
-                        </span>
-                      </div>
-                    </div>
-
-                    <CardContent className="p-4">
-                      <div className="flex items-center space-x-2 mb-3">
-                        <Image
-                          src="/natalia-volosin.jpg"
-                          alt="Natalia Volosin"
-                          width={32}
-                          height={32}
-                          className="w-8 h-8 rounded-full border-2 border-brand-gray/20"
-                        />
-                        <div>
-                          <h4 className="font-sans sans-modern font-bold text-brand-black text-sm">nataliavolosin</h4>
-                          <Badge className="bg-brand-green text-brand-black text-xs font-sans sans-modern font-bold">
-                            VERIFICADO
-                          </Badge>
-                        </div>
-                      </div>
-                      <p className="text-brand-black font-arimo text-sm leading-relaxed mb-4 line-clamp-3">
-                        {video.caption}
-                      </p>
-                      <div className="flex items-center justify-between pt-3 border-t border-brand-gray/20">
-                        <div className="flex items-center space-x-4">
-                          <div className="flex items-center space-x-1 text-brand-gray hover:text-red-500 transition-colors cursor-pointer">
-                            <Heart className="w-4 h-4" />
-                            <span className="text-xs font-sans sans-modern font-medium">
-                              {video.likes.toLocaleString()}
-                            </span>
-                          </div>
-                          <div className="flex items-center space-x-1 text-brand-gray hover:text-brand-purple transition-colors cursor-pointer">
-                            <MessageCircle className="w-4 h-4" />
-                            <span className="text-xs font-sans sans-modern font-medium">{video.comments}</span>
-                          </div>
-                          <div className="flex items-center space-x-1 text-brand-gray hover:text-brand-teal transition-colors cursor-pointer">
-                            <Share className="w-4 h-4" />
-                            <span className="text-xs font-sans sans-modern font-medium">{video.shares}</span>
-                          </div>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-brand-gray hover:text-brand-purple transition-colors"
-                          onClick={() => window.open("https://www.instagram.com/nataliavolosin", "_blank")}
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </section>
-
-            {/* Advertising Banner - Mid Content */}
-            <section className="mb-16">
-              <div className="bg-gradient-to-br from-brand-purple/5 to-brand-teal/5 border-2 border-dashed border-brand-purple/20 rounded-2xl p-12 text-center commercial-shadow">
-                <p className="text-brand-purple text-lg font-sans sans-modern font-bold mb-2">Publicidad</p>
-                <p className="text-brand-gray text-sm font-serif serif-elegant">300x250 - Rectángulo Medio</p>
+                <p className="text-brand-gray text-sm font-arimo font-bold mb-2">Espacio Publicitario</p>
+                <p className="text-brand-gray text-xs font-arimo">728x90 - Banner Superior</p>
               </div>
             </section>
 
             {/* Real Twitter Feed */}
             <section className="mb-16">
               <div className="flex items-center justify-between mb-8">
-                <h2 className="text-3xl font-sans sans-modern font-black text-brand-black tracking-wide">
-                  EN VIVO DESDE X
-                </h2>
+                <h2 className="text-3xl font-arimo font-black text-brand-black tracking-wide">En vivo desde X</h2>
                 <Link href="https://twitter.com/nataliavolosin" target="_blank">
                   <Button
                     variant="outline"
                     size="lg"
-                    className="border-2 border-brand-purple text-brand-purple hover:bg-brand-purple hover:text-brand-white font-sans sans-modern font-bold px-6 py-3 rounded-xl transition-all duration-300 bg-transparent"
+                    className="border-2 border-brand-purple text-brand-purple hover:bg-brand-purple hover:text-brand-white font-arimo font-bold px-6 py-3 rounded-xl transition-all duration-300 bg-transparent"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -755,8 +545,8 @@ export default function HomePage() {
               </div>
 
               {isLoadingTweets ? (
-                <div className="grid md:grid-cols-2 gap-6">
-                  {[1, 2, 3, 4].map((i) => (
+                <div className="grid md:grid-cols-3 gap-6">
+                  {[1, 2, 3].map((i) => (
                     <Card
                       key={i}
                       className="bg-brand-white commercial-shadow border-2 border-brand-gray/20 rounded-2xl"
@@ -781,8 +571,8 @@ export default function HomePage() {
                   ))}
                 </div>
               ) : tweets.length > 0 ? (
-                <div className="grid md:grid-cols-2 gap-6">
-                  {tweets.slice(0, 4).map((tweet) => (
+                <div className="grid md:grid-cols-3 gap-6">
+                  {tweets.slice(0, 3).map((tweet) => (
                     <Card
                       key={tweet.id}
                       className="bg-brand-white commercial-shadow border-2 border-brand-gray/20 rounded-2xl hover:scale-[1.02] transition-all duration-300 cursor-pointer group"
@@ -813,14 +603,14 @@ export default function HomePage() {
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center space-x-2">
-                              <h3 className="font-sans sans-modern font-bold text-brand-black group-hover:text-brand-purple transition-colors">
+                              <h3 className="font-arimo font-bold text-brand-black group-hover:text-brand-purple transition-colors">
                                 {tweet.author?.name}
                               </h3>
-                              <Badge className="bg-brand-green text-brand-black text-xs font-sans sans-modern font-bold">
+                              <Badge className="bg-brand-green text-brand-black text-xs font-arimo font-bold">
                                 VERIFICADO
                               </Badge>
                             </div>
-                            <p className="text-sm text-brand-gray font-sans sans-modern">
+                            <p className="text-sm text-brand-gray font-arimo">
                               @{tweet.author?.username} • {formatTimeAgo(tweet.created_at)}
                             </p>
                           </div>
@@ -844,9 +634,7 @@ export default function HomePage() {
                               >
                                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                               </svg>
-                              <span className="text-xs font-sans sans-modern font-medium">
-                                {tweet.public_metrics.reply_count}
-                              </span>
+                              <span className="text-xs font-arimo font-medium">{tweet.public_metrics.reply_count}</span>
                             </div>
                             <div className="flex items-center space-x-1 text-brand-gray hover:text-brand-teal transition-colors">
                               <svg
@@ -865,7 +653,7 @@ export default function HomePage() {
                                 <path d="M4 12v8a2 2 0 0 0 2 2h14" />
                                 <path d="M20 12V4a2 2 0 0 0-2-2H4" />
                               </svg>
-                              <span className="text-xs font-sans sans-modern font-medium">
+                              <span className="text-xs font-arimo font-medium">
                                 {tweet.public_metrics.retweet_count}
                               </span>
                             </div>
@@ -883,9 +671,7 @@ export default function HomePage() {
                               >
                                 <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.04 0-2.07.27-3 .75A5.5 5.5 0 0 0 8.5 3A5.5 5.5 0 0 0 3 8.5c0 2.29 1.51 4.04 3 5.5l6 6 6-6Z" />
                               </svg>
-                              <span className="text-xs font-sans sans-modern font-medium">
-                                {tweet.public_metrics.like_count}
-                              </span>
+                              <span className="text-xs font-arimo font-medium">{tweet.public_metrics.like_count}</span>
                             </div>
                           </div>
                           <Button
@@ -893,7 +679,7 @@ export default function HomePage() {
                             size="sm"
                             className="text-brand-gray hover:text-brand-purple transition-colors"
                             onClick={(e) => {
-                              e.stopPropagation()
+                              e.stopPropagation() // Prevent Card onClick
                               window.open(`https://twitter.com/${tweet.author?.username}/status/${tweet.id}`, "_blank")
                             }}
                           >
@@ -923,7 +709,7 @@ export default function HomePage() {
                         <path d="M22 4s-.7 2.1-2 3.4c1.6 1.6 3.4 1.6 5.1 0-1.2-1.2-3-1.2-4.6 0C2 16 3.5 12 12 14 8 21.9 1 20.4 0 18c2.2 3 4.7 3 6.5 1 2-2 4.9-1 6.2 1 1.2-1 2.1-2.1 3-3.1 0 2.2.9 4.3 2 5.1-2-3-6.1-9.3-6.1-9.3l1.5 3.6" />
                       </svg>
                     </div>
-                    <h3 className="text-lg font-sans sans-modern font-bold text-brand-black mb-2">
+                    <h3 className="text-lg font-arimo font-bold text-brand-black mb-2">
                       No se pudieron cargar los tweets
                     </h3>
                     <p className="text-brand-gray font-arimo mb-4">
@@ -939,83 +725,198 @@ export default function HomePage() {
               )}
             </section>
 
+            {/* Instagram Videos Section */}
+            <section className="mb-16">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-3xl font-arimo font-black text-brand-black tracking-wide">
+                  Últimos reels de Instagram
+                </h2>
+                <Link href="https://www.instagram.com/nataliavolosin" target="_blank">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="border-2 border-brand-purple text-brand-purple hover:bg-brand-purple hover:text-brand-white font-arimo font-bold px-6 py-3 rounded-xl transition-all duration-300 bg-transparent"
+                  >
+                    <Instagram className="w-5 h-5 mr-2" />
+                    Ver en Instagram
+                  </Button>
+                </Link>
+              </div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {instagramVideos.map((video) => (
+                  <Card
+                    key={video.id}
+                    className="bg-brand-white commercial-shadow border-2 border-brand-gray/20 rounded-2xl overflow-hidden hover:scale-[1.02] transition-transform duration-300"
+                  >
+                    <div className="relative group">
+                      <video
+                        id={`video-${video.id}`}
+                        className="w-full h-96 object-cover cursor-pointer"
+                        preload="metadata"
+                        muted={playingVideo !== video.id} // Solo mutear si no es el video que se está reproduciendo
+                        playsInline
+                        onLoadedMetadata={(e) => {
+                          // Set the video to show the first frame
+                          const videoElement = e.target as HTMLVideoElement
+                          videoElement.currentTime = 0.1
+                        }}
+                        onPause={() => {
+                          if (playingVideo === video.id) {
+                            setPlayingVideo(null)
+                            setShowPlayButton((prev) => ({ ...prev, [video.id]: true }))
+                          }
+                        }}
+                        onEnded={() => {
+                          if (playingVideo === video.id) {
+                            setPlayingVideo(null)
+                            setShowPlayButton((prev) => ({ ...prev, [video.id]: true }))
+                          }
+                        }}
+                        onClick={() => handleVideoClick(video.id)}
+                      >
+                        <source src={video.videoUrl} type="video/mp4" />
+                        Tu navegador no soporta el elemento de video.
+                      </video>
+
+                      {/* Play/Pause button overlay */}
+                      {showPlayButton[video.id] && (
+                        <div
+                          className="absolute inset-0 bg-black/20 flex items-center justify-center group-hover:bg-black/40 transition-all duration-300 cursor-pointer"
+                          onClick={() => handleVideoClick(video.id)}
+                        >
+                          <div className="bg-white/90 hover:bg-white rounded-full p-4 transform group-hover:scale-110 transition-all duration-300 shadow-lg">
+                            <Play className="w-8 h-8 text-brand-black ml-1" fill="currentColor" />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Instagram badge */}
+                      <div className="absolute top-4 left-4">
+                        <Badge className="bg-brand-purple text-brand-white px-3 py-1 text-xs font-arimo font-bold">
+                          <Instagram className="w-3 h-3 mr-1" />
+                          Instagram
+                        </Badge>
+                      </div>
+
+                      {/* Time ago badge */}
+                      <div className="absolute top-4 right-4">
+                        <span className="bg-black/70 text-white px-2 py-1 rounded text-xs font-arimo">
+                          {video.timeAgo}
+                        </span>
+                      </div>
+
+                      {/* Video duration indicator */}
+                      <div className="absolute bottom-4 right-4">
+                        <span className="bg-black/70 text-white px-2 py-1 rounded text-xs font-arimo">Video</span>
+                      </div>
+                    </div>
+
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <Image
+                          src="/natalia-volosin.jpg"
+                          alt="Natalia Volosin"
+                          width={32}
+                          height={32}
+                          className="w-8 h-8 rounded-full border-2 border-brand-gray/20"
+                        />
+                        <div>
+                          <h4 className="font-arimo font-bold text-brand-black text-sm">nataliavolosin</h4>
+                          <Badge className="bg-brand-green text-brand-black text-xs font-arimo font-bold">
+                            VERIFICADO
+                          </Badge>
+                        </div>
+                      </div>
+                      <p className="text-brand-black font-arimo text-sm leading-relaxed mb-4 line-clamp-3">
+                        {video.caption}
+                      </p>
+                      <div className="flex items-center justify-between pt-3 border-t border-brand-gray/20">
+                        <div className="flex items-center space-x-4">
+                          <div className="flex items-center space-x-1 text-brand-gray hover:text-red-500 transition-colors cursor-pointer">
+                            <Heart className="w-4 h-4" />
+                            <span className="text-xs font-arimo font-medium">{video.likes.toLocaleString()}</span>
+                          </div>
+                          <div className="flex items-center space-x-1 text-brand-gray hover:text-brand-purple transition-colors cursor-pointer">
+                            <MessageCircle className="w-4 h-4" />
+                            <span className="text-xs font-arimo font-medium">{video.comments}</span>
+                          </div>
+                          <div className="flex items-center space-x-1 text-brand-gray hover:text-brand-teal transition-colors cursor-pointer">
+                            <Share className="w-4 h-4" />
+                            <span className="text-xs font-arimo font-medium">{video.shares}</span>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-brand-gray hover:text-brand-purple transition-colors"
+                          onClick={() => window.open("https://www.instagram.com/nataliavolosin", "_blank")}
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+
+            {/* New Black Section - IMPACTO DE LA JUSTA */}
+            <section className="mb-16">
+              <div className="bg-gradient-to-br from-brand-black via-gray-900 to-brand-black rounded-3xl p-12 relative overflow-hidden">
+                {/* Background decorative elements */}
+                <div className="absolute inset-0 opacity-5">
+                  <div className="absolute top-10 left-10 w-32 h-32 bg-brand-purple rounded-full blur-2xl"></div>
+                  <div className="absolute bottom-10 right-10 w-24 h-24 bg-brand-teal rounded-full blur-2xl"></div>
+                  <div className="absolute top-1/2 right-1/4 w-20 h-20 bg-yellow-400 rounded-full blur-xl"></div>
+                </div>
+
+                <div className="relative z-10 text-center max-w-3xl mx-auto">
+                  <Badge className="bg-gradient-to-r from-brand-purple to-brand-teal text-white font-arimo font-bold px-6 py-3 text-sm mb-8 rounded-full shadow-lg">
+                    IMPACTO DE LA JUSTA
+                  </Badge>
+
+                  <p className="text-white font-garamond text-lg mb-6 italic">
+                    "La Justa no solo informa, sino que educa y empodera a los ciudadanos para que puedan participar
+                    activamente en la vida democrática del país."
+                  </p>
+
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Link href="/suscripcion">
+                      <Button className="bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-black font-arimo font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105">
+                        <Heart className="w-5 h-5 mr-2" />
+                        Apoyar La Justa
+                      </Button>
+                    </Link>
+                    <Link href="https://substack.com/@nataliavolosin" target="_blank">
+                      <Button
+                        variant="outline"
+                        className="border-2 border-gray-600 text-white hover:bg-gray-800 font-arimo font-bold px-6 py-3 rounded-xl bg-transparent"
+                      >
+                        <Mail className="w-5 h-5 mr-2" />
+                        Suscribirse Gratis
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </section>
+
             {/* Featured Articles Section */}
             <section className="mb-16">
               <div className="flex items-center justify-between mb-8">
-                <h2 className="text-3xl font-sans sans-modern font-black text-brand-black tracking-wide">
-                  ARTÍCULOS DESTACADOS
+                <h2 className="text-3xl font-arimo font-black text-brand-black tracking-wide">
+                  Newsletters destacados
                 </h2>
                 <Link href="/articulos">
                   <Button
                     variant="outline"
-                    className="border-2 border-brand-purple text-brand-purple hover:bg-brand-purple hover:text-brand-white font-sans sans-modern font-bold px-6 py-3 rounded-xl transition-all duration-300 bg-transparent"
+                    className="border-2 border-brand-purple text-brand-purple hover:bg-brand-purple hover:text-brand-white font-arimo font-bold px-6 py-3 rounded-xl transition-all duration-300 bg-transparent"
                   >
                     Ver todos
                   </Button>
                 </Link>
               </div>
-
-              {/* Featured Article Card */}
-              <Card
-                onClick={() => handleArticleClick(featuredArticle)}
-                className="bg-brand-white commercial-shadow border-2 border-brand-gray/20 rounded-2xl cursor-pointer hover:scale-[1.02] transition-transform duration-300"
-              >
-                <CardHeader className="p-0">
-                  <img
-                    src={featuredArticle.image || "/placeholder.svg"}
-                    alt={featuredArticle.title}
-                    className="w-full h-64 object-cover rounded-t-2xl"
-                  />
-                </CardHeader>
-                <CardContent className="p-8">
-                  <div className="flex items-center justify-between mb-4">
-                    <TagBadge index={0} className="text-sm font-sans sans-modern font-bold">
-                      {featuredArticle.category}
-                    </TagBadge>
-                    <span className="text-sm text-brand-gray font-sans sans-modern font-medium">
-                      {featuredArticle.date} • {featuredArticle.readTime}
-                    </span>
-                  </div>
-                  <CardTitle className="text-2xl font-serif serif-elegant font-medium text-brand-black">
-                    {featuredArticle.title}
-                  </CardTitle>
-                  <CardDescription className="text-brand-gray text-lg font-arimo leading-relaxed">
-                    {featuredArticle.excerpt}
-                  </CardDescription>
-                  <div className="flex items-center justify-between mt-6">
-                    <div className="flex items-center space-x-2">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="lucide lucide-eye w-5 h-5 text-brand-gray"
-                      >
-                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-                        <circle cx="12" cy="12" r="3" />
-                      </svg>
-                      <span className="text-sm text-brand-gray font-sans sans-modern font-medium">
-                        {featuredArticle.views}
-                      </span>
-                    </div>
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation() // Prevent Card onClick
-                        shareOnTwitter(featuredArticle)
-                      }}
-                    >
-                      Compartir
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
 
               {/* Other Articles Grid */}
               <div className="grid md:grid-cols-2 gap-8 mt-12">
@@ -1034,14 +935,14 @@ export default function HomePage() {
                     </CardHeader>
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between mb-4">
-                        <TagBadge index={article.id} className="text-sm font-sans sans-modern font-bold">
+                        <TagBadge index={article.id} className="text-sm font-arimo font-bold">
                           {article.category}
                         </TagBadge>
-                        <span className="text-sm text-brand-gray font-sans sans-modern font-medium">
+                        <span className="text-sm text-brand-gray font-arimo font-medium">
                           {article.date} • {article.readTime}
                         </span>
                       </div>
-                      <CardTitle className="text-xl font-serif serif-elegant font-medium text-brand-black">
+                      <CardTitle className="text-xl font-garamond font-medium text-brand-black">
                         {article.title}
                       </CardTitle>
                       <CardDescription className="text-brand-gray text-base font-arimo leading-relaxed">
@@ -1064,9 +965,7 @@ export default function HomePage() {
                             <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
                             <circle cx="12" cy="12" r="3" />
                           </svg>
-                          <span className="text-sm text-brand-gray font-sans sans-modern font-medium">
-                            {article.views}
-                          </span>
+                          <span className="text-sm text-brand-gray font-arimo font-medium">{article.views}</span>
                         </div>
                         <Button
                           variant="secondary"
@@ -1084,14 +983,6 @@ export default function HomePage() {
                 ))}
               </div>
             </section>
-
-            {/* Advertising Banner - Bottom Content */}
-            <section className="mb-16">
-              <div className="bg-gradient-to-r from-brand-green/10 to-brand-teal/10 border-2 border-dashed border-brand-green/30 rounded-2xl p-8 text-center commercial-shadow">
-                <p className="text-brand-green text-lg font-sans sans-modern font-bold mb-2">Espacio Comercial</p>
-                <p className="text-brand-gray text-xs font-serif serif-elegant">728x90 - Banner Inferior</p>
-              </div>
-            </section>
           </div>
 
           {/* Sidebar */}
@@ -1106,12 +997,12 @@ export default function HomePage() {
                   height={120}
                   className="w-32 h-32 object-cover rounded-full mx-auto mb-4 border-4 border-brand-gray/20"
                 />
-                <h3 className="text-xl font-serif serif-elegant font-medium text-brand-black mb-2">Natalia Volosin</h3>
-                <p className="text-brand-gray font-sans sans-modern font-medium mb-3">Mamá de 2/Bostera 💙💛🎾⚽️</p>
+                <h3 className="text-xl font-arimo font-medium text-brand-black mb-2">Natalia Volosin</h3>
+                <p className="text-brand-gray font-arimo font-medium mb-3">Mamá de 2/Bostera 💙💛🎾⚽️</p>
                 <p className="text-brand-black font-arimo leading-relaxed mb-2">
                   Abogada, consultora, académica y comunicadora
                 </p>
-                <p className="text-brand-purple font-sans sans-modern font-bold text-sm mb-4">
+                <p className="text-brand-purple font-arimo font-bold text-sm mb-4">
                   Máster y Doctora en Derecho (Yale)
                 </p>
                 <Button asChild variant="secondary" className="w-full">
@@ -1122,54 +1013,43 @@ export default function HomePage() {
 
             {/* Social Media Card */}
             <Card className="mb-8 bg-brand-white commercial-shadow border-2 border-brand-gray/20 rounded-2xl">
-              <CardHeader className="p-6">
-                <CardTitle className="text-xl font-sans sans-modern font-black text-brand-black tracking-wide">
-                  SÍGUEME EN REDES
-                </CardTitle>
+              <CardHeader>
+                <CardTitle className="text-lg font-arimo">Seguime en redes</CardTitle>
               </CardHeader>
-              <CardContent className="p-6">
+              <CardContent>
                 <div className="space-y-3">
-                  <Link
-                    href="https://x.com/nataliavolosin"
-                    target="_blank"
-                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-brand-light-gray/50 transition-colors group"
-                  >
-                    <Twitter className="w-5 h-5 text-brand-gray group-hover:text-brand-black" />
-                    <span className="font-sans sans-modern font-medium text-brand-black">@nataliavolosin</span>
-                    <ExternalLink className="w-4 h-4 text-brand-gray ml-auto" />
-                  </Link>
-                  <Link
-                    href="https://www.instagram.com/nataliavolosin"
-                    target="_blank"
-                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-brand-light-gray/50 transition-colors group"
-                  >
-                    <Instagram className="w-5 h-5 text-brand-gray group-hover:text-brand-black" />
-                    <span className="font-sans sans-modern font-medium text-brand-black">@nataliavolosin</span>
-                    <ExternalLink className="w-4 h-4 text-brand-gray ml-auto" />
-                  </Link>
-                  <Link
-                    href="https://www.tiktok.com/@nataliaavolosin"
-                    target="_blank"
-                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-brand-light-gray/50 transition-colors group"
-                  >
-                    <Music className="w-5 h-5 text-brand-gray group-hover:text-brand-black" />
-                    <span className="font-sans sans-modern font-medium text-brand-black">@nataliaavolosin</span>
-                    <ExternalLink className="w-4 h-4 text-brand-gray ml-auto" />
-                  </Link>
+                  <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
+                    <Link href="https://x.com/nataliavolosin" target="_blank">
+                      <Twitter className="w-4 h-4 mr-2" />
+                      @nataliavolosin
+                    </Link>
+                  </Button>
+                  <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
+                    <Link href="https://www.instagram.com/nataliavolosin" target="_blank">
+                      <Instagram className="w-4 h-4 mr-2" />
+                      @nataliavolosin
+                    </Link>
+                  </Button>
+                  <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
+                    <Link href="https://www.tiktok.com/@nataliaavolosin" target="_blank">
+                      <Music className="w-4 h-4 mr-2" />
+                      @nataliaavolosin
+                    </Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Popular Videos Section - Updated to match /videos page */}
+            {/* Popular Videos Section - YouTube Style Design with Vertical Layout */}
             <Card className="mb-8 bg-brand-white commercial-shadow border-2 border-brand-gray/20 rounded-2xl">
               <CardHeader className="p-6">
-                <CardTitle className="text-xl font-sans sans-modern font-black text-brand-black tracking-wide flex items-center">
+                <CardTitle className="text-xl font-arimo font-black text-brand-black tracking-wide flex items-center">
                   <TrendingUp className="w-5 h-5 mr-2 text-brand-purple" />
                   VIDEOS MÁS VISTOS
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-6">
-                <div className="space-y-4">
+              <CardContent className="p-6 pt-0">
+                <div className="grid grid-cols-1 gap-3">
                   {[
                     {
                       id: 4,
@@ -1178,6 +1058,7 @@ export default function HomePage() {
                       views: "4.2K",
                       duration: "45:33",
                       thumbnail: "https://img.youtube.com/vi/KWikXTJIoC8/maxresdefault.jpg",
+                      publishedAt: "hace 3 días",
                     },
                     {
                       id: 3,
@@ -1185,6 +1066,7 @@ export default function HomePage() {
                       views: "3.1K",
                       duration: "31:28",
                       thumbnail: "https://img.youtube.com/vi/Tnctnmyon-c/maxresdefault.jpg",
+                      publishedAt: "hace 1 semana",
                     },
                     {
                       id: 6,
@@ -1192,6 +1074,7 @@ export default function HomePage() {
                       views: "2.7K",
                       duration: "12:18",
                       thumbnail: "https://img.youtube.com/vi/dxNn_9UdN1o/maxresdefault.jpg",
+                      publishedAt: "hace 2 semanas",
                     },
                     {
                       id: 1,
@@ -1199,76 +1082,56 @@ export default function HomePage() {
                       views: "2.3K",
                       duration: "18:45",
                       thumbnail: "https://img.youtube.com/vi/qXjxRHPMZqo/maxresdefault.jpg",
+                      publishedAt: "hace 2 semanas",
                     },
                   ].map((video, index) => (
                     <Link key={video.id} href="/videos" className="block">
-                      <div className="flex items-start space-x-3 cursor-pointer hover:bg-brand-gray/10 p-2 rounded-lg transition-colors group">
-                        <div className="relative flex-shrink-0">
+                      <div className="cursor-pointer hover:bg-brand-gray/5 p-2 rounded-lg transition-all duration-200 group">
+                        {/* Thumbnail - Arriba */}
+                        <div className="relative mb-2">
                           <Image
                             src={video.thumbnail || "/placeholder.svg"}
                             alt={video.title}
-                            width={80}
-                            height={60}
-                            className="rounded-lg object-cover"
+                            width={160}
+                            height={90}
+                            className="w-full aspect-video rounded-lg object-cover"
                           />
-                          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Play className="w-4 h-4 text-white" />
-                          </div>
-                          <div className="absolute bottom-1 right-1 bg-black bg-opacity-75 text-white px-1 text-xs rounded">
-                            {video.duration}
+                          {/* Play button overlay */}
+                          <div className="absolute inset-0 bg-black/30 flex items-center justify-center rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Play className="w-6 h-6 text-white" />
                           </div>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center space-x-2 mb-1">
-                            <span className="bg-brand-purple text-brand-white text-xs px-2 py-1 rounded-full font-sans sans-modern font-bold">
-                              #{index + 1}
-                            </span>
-                            <span className="text-xs text-brand-gray font-sans sans-modern">
-                              <Eye className="w-3 h-3 inline mr-1" />
-                              {video.views}
-                            </span>
-                          </div>
-                          <h4 className="text-sm font-arimo font-medium text-brand-black line-clamp-2 hover:text-brand-purple transition-colors">
+                        {/* Title and Views - Abajo */}
+                        <div className="space-y-1">
+                          <h4 className="text-sm font-arimo font-bold text-brand-black line-clamp-2 group-hover:text-brand-purple transition-colors">
                             {video.title}
                           </h4>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-brand-gray font-arimo">{video.views} views</span>
+                            <span className="text-xs text-brand-gray font-arimo">{video.duration}</span>
+                          </div>
+                          <span className="text-xs text-brand-gray font-arimo">{video.publishedAt}</span>
                         </div>
                       </div>
                     </Link>
                   ))}
                 </div>
-                <Button asChild variant="secondary" className="w-full mt-4">
-                  <Link href="/videos">Ver todos los videos</Link>
-                </Button>
               </CardContent>
             </Card>
 
-            {/* Sidebar Ad Space 1 */}
-            <div className="bg-gradient-to-br from-brand-teal/10 to-brand-green/10 border-2 border-dashed border-brand-teal/30 rounded-2xl p-6 text-center commercial-shadow mb-8">
-              <p className="text-brand-teal text-sm font-sans sans-modern font-bold mb-2">Publicidad</p>
-              <p className="text-brand-gray text-xs font-serif serif-elegant">300x250</p>
-            </div>
-
-            {/* Sidebar Ad Space 2 */}
-            <div className="bg-gradient-to-br from-brand-purple/10 to-brand-gray/10 border-2 border-dashed border-brand-purple/30 rounded-2xl p-6 text-center commercial-shadow mb-8">
-              <p className="text-brand-purple text-sm font-sans sans-modern font-bold mb-2">Banner</p>
-              <p className="text-brand-gray text-xs font-serif serif-elegant">300x100</p>
-            </div>
-
-            {/* Newsletter Subscription Card */}
+            {/* Newsletter Signup - Unificado */}
             <Card className="bg-gradient-to-br from-brand-green/40 to-brand-green/60 border-2 border-brand-green commercial-shadow rounded-2xl neon-glow">
               <CardHeader className="text-center p-8">
                 <div className="mb-4">
-                  <h3 className="text-2xl font-serif serif-elegant font-medium text-brand-black mb-2">
+                  <h3 className="text-2xl font-garamond font-medium text-brand-black mb-2">
                     LA INVITACIÓN A{" "}
                     <span className="font-script script-enhanced text-3xl text-brand-purple">pensar</span>
                   </h3>
-                  <h4 className="text-2xl font-sans sans-modern font-black text-brand-black">
+                  <h4 className="text-2xl font-arimo font-black text-brand-black">
                     ES <span className="bg-brand-gray text-brand-white px-3 py-1 rounded">URGENTE</span>
                   </h4>
                 </div>
-                <p className="text-sm font-sans sans-modern text-brand-black font-medium">
-                  Recibe análisis semanales los viernes
-                </p>
+                <p className="text-sm font-arimo text-brand-black font-medium">Recibe análisis semanales los viernes</p>
               </CardHeader>
               <CardContent className="text-center p-8 pt-0">
                 <div className="space-y-4 mb-6">
@@ -1277,29 +1140,37 @@ export default function HomePage() {
                   </p>
                 </div>
                 <Link href="https://substack.com/@nataliavolosin" target="_blank">
-                  <Button className="w-full bg-brand-black hover:bg-brand-gray text-brand-white font-sans sans-modern font-bold py-4 rounded-xl text-lg mb-4 transition-all duration-300 hover:scale-105">
+                  <Button className="w-full bg-brand-black hover:bg-brand-gray text-brand-white font-arimo font-bold py-4 rounded-xl text-lg mb-4 transition-all duration-300 hover:scale-105">
                     Suscribirse Gratis
                   </Button>
                 </Link>
-                <p className="text-sm text-brand-black font-sans sans-modern font-medium">
+                <p className="text-sm text-brand-black font-arimo font-medium">
                   Newsletter gratuito • Análisis semanales • Sin compromisos
                 </p>
               </CardContent>
+            </Card>
+
+            {/* Advertising Banner - Sidebar */}
+            <Card className="mb-8 mt-6 bg-gradient-to-br from-brand-purple/5 to-brand-teal/5 border-2 border-dashed border-brand-purple/20 rounded-2xl p-8 text-center commercial-shadow">
+              <p className="text-brand-purple text-lg font-arimo font-bold mb-2">Publicidad</p>
+              <p className="text-brand-gray text-sm font-arimo">300x250 - Rectángulo Medio</p>
             </Card>
           </aside>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="bg-brand-black text-brand-white py-16">
+      <footer className="bg-brand-black text-brand-white py-16 mt-20">
         <div className="container mx-auto px-4">
           {/* Logo y tagline centrados */}
           <div className="text-center mb-12">
-            <h4 className="text-3xl font-serif serif-elegant font-medium mb-2">
+            <h4 className="text-3xl font-garamond font-medium mb-2">
               Natalia <span className="font-script script-enhanced text-4xl text-brand-purple">Volosin</span>
             </h4>
-            <h5 className="text-2xl font-sans sans-modern font-black mb-4 tracking-wider">LA JUSTA</h5>
-            <p className="text-brand-gray text-lg font-arimo">Portal de análisis independiente</p>
+            <h5 className="text-2xl font-arimo font-black mb-4 tracking-wider">LA JUSTA</h5>
+            <p className="text-brand-gray text-lg font-serif serif-elegant font-arimo">
+              Portal de análisis independiente
+            </p>
           </div>
 
           {/* Sección comercial rediseñada */}
@@ -1324,15 +1195,15 @@ export default function HomePage() {
                     <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-sans sans-modern font-black text-brand-white mb-2 tracking-wide">
+                <h3 className="font-garamond font-arimo font-black text-brand-white mb-2 tracking-wide">
                   SERVICIOS PROFESIONALES
                 </h3>
-                <p className="text-brand-green font-sans sans-modern font-bold text-lg">
+                <p className="text-brand-green font-arimo font-bold text-lg">
                   Charlas • Eventos • Consultoría • Capacitaciones
                 </p>
               </div>
 
-              <div className="space-y-4 mb-6">
+              <div className="space-y-4 mb-6 font-arimo">
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-brand-green rounded-full"></div>
                   <span className="text-brand-white font-serif serif-elegant">Conferencias magistrales</span>
@@ -1356,7 +1227,7 @@ export default function HomePage() {
               <div className="text-center">
                 <Link
                   href="mailto:lajusta@nataliavolosin.com"
-                  className="inline-flex items-center space-x-2 bg-brand-green hover:bg-brand-green/80 text-brand-black font-sans sans-modern font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105"
+                  className="inline-flex items-center space-x-2 bg-brand-green hover:bg-brand-green/80 text-brand-black font-arimo font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -1398,15 +1269,15 @@ export default function HomePage() {
                     <path d="m22 21-3-3m0 0a5.5 5.5 0 1 0-7.78-7.78 5.5 5.5 0 0 0 7.78 7.78Z" />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-sans sans-modern font-black text-brand-white mb-2 tracking-wide">
+                <h3 className="font-garamond font-arimo font-black text-brand-white mb-2 tracking-wide">
                   CONSULTAS COMERCIALES
                 </h3>
-                <p className="text-brand-purple font-sans sans-modern font-bold text-lg">
+                <p className="text-brand-purple font-arimo font-bold text-lg">
                   Publicidad • Patrocinios • Colaboraciones
                 </p>
               </div>
 
-              <div className="space-y-4 mb-6">
+              <div className="space-y-4 mb-6 font-arimo">
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-brand-purple rounded-full"></div>
                   <span className="text-brand-white font-serif serif-elegant">Espacios publicitarios premium</span>
@@ -1428,7 +1299,7 @@ export default function HomePage() {
               <div className="text-center">
                 <Link
                   href="mailto:comercial@nataliavolosin.com"
-                  className="inline-flex items-center space-x-2 bg-brand-purple hover:bg-brand-purple/80 text-brand-white font-sans sans-modern font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105"
+                  className="inline-flex items-center space-x-2 bg-brand-purple hover:bg-brand-purple/80 text-brand-white font-arimo font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -1451,7 +1322,7 @@ export default function HomePage() {
           </div>
 
           {/* Separador */}
-          <div className="bg-brand-gray/30 mb-12 h-px" />
+          <Separator className="bg-brand-gray/30 mb-12" />
 
           {/* Redes sociales centradas */}
           <div className="flex justify-center space-x-8 mb-8">
@@ -1478,73 +1349,12 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Copyright centrado */}
-          <div className="text-center text-sm text-brand-gray font-sans sans-modern font-medium">
+          {/* Copyright */}
+          <div className="text-center text-sm text-brand-gray font-arimo font-medium">
             © 2025 Natalia Volosin. Todos los derechos reservados.
           </div>
         </div>
       </footer>
-
-      {/* Paywall Popup */}
-      {showPaywall && (
-        <div className="fixed top-0 left-0 w-full h-full bg-brand-black/50 z-50 flex items-center justify-center">
-          <Card className="max-w-md w-full p-8 rounded-2xl commercial-shadow">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl font-sans sans-modern font-black text-brand-black tracking-wide">
-                ¡Llegaste al límite de artículos gratis!
-              </CardTitle>
-              <CardDescription className="text-brand-gray font-arimo leading-relaxed">
-                Suscribite para seguir disfrutando de contenido exclusivo.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center">
-              <p className="text-brand-black font-arimo leading-relaxed mb-6">
-                Con tu suscripción, accedés a todos los artículos, newsletters y videos de La Justa.
-              </p>
-              <Button
-                onClick={handleSubscribe}
-                className="bg-gradient-to-r from-brand-purple to-brand-teal text-brand-white font-sans sans-modern font-bold px-8 py-4 rounded-2xl text-lg hover:scale-105 transition-transform duration-300"
-              >
-                Quiero suscribirme
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={() => setShowPaywall(false)}
-                className="mt-4 text-brand-gray hover:text-brand-black"
-              >
-                Cerrar
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Subscription Modal */}
-      {isSubscriptionOpen && (
-        <div className="fixed top-0 left-0 w-full h-full bg-brand-black/50 z-50 flex items-center justify-center">
-          <Card className="max-w-md w-full p-8 rounded-2xl commercial-shadow">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl font-sans sans-modern font-black text-brand-black tracking-wide">
-                ¡Gracias por suscribirte!
-              </CardTitle>
-              <CardDescription className="text-brand-gray font-arimo leading-relaxed">
-                Ya podés disfrutar de todo el contenido exclusivo de La Justa.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center">
-              <p className="text-brand-black font-arimo leading-relaxed mb-6">
-                Te damos la bienvenida a la comunidad de La Justa.
-              </p>
-              <Button
-                onClick={() => setIsSubscriptionOpen(false)}
-                className="bg-gradient-to-r from-brand-purple to-brand-teal text-brand-white font-sans sans-modern font-bold px-8 py-4 rounded-2xl text-lg hover:scale-105 transition-transform duration-300"
-              >
-                ¡A disfrutar!
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
     </div>
   )
 }

@@ -1,16 +1,7 @@
-const SubscriptionLoading = () => {
+export default function Loading() {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="animate-pulse">
-        <div className="h-64 bg-brand-gray/30 rounded-lg mb-6"></div>
-        <div className="h-8 bg-brand-gray/30 rounded-md w-1/2 mb-4"></div>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="h-48 bg-brand-gray/30 rounded-lg"></div>
-          <div className="h-48 bg-brand-gray/30 rounded-lg"></div>
-        </div>
-      </div>
+    <div className="min-h-screen bg-brand-light-gray flex items-center justify-center">
+      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-brand-purple"></div>
     </div>
   )
 }
-
-export default SubscriptionLoading
