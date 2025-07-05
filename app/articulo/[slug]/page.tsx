@@ -5,12 +5,12 @@ import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Calendar, Clock, Twitter, Instagram, Mail, Star, Eye, Share2, Search, Menu } from "lucide-react"
+import { TagBadge } from "@/components/ui/tag-badge"
 
 // Datos de ejemplo para los artículos (en una app real vendrían de una API/base de datos)
 const articlesData = {
@@ -45,6 +45,7 @@ const articlesData = {
     category: "Análisis Político",
     image: "/placeholder.svg?height=400&width=800",
     views: "2.3K",
+    tags: ["reforma institucional", "crisis argentina", "transparencia"],
   },
   "corrupcion-contrataciones-publicas-mecanismos-control": {
     id: 2,
@@ -82,6 +83,7 @@ const articlesData = {
     category: "Derecho Público",
     image: "/placeholder.svg?height=400&width=800",
     views: "1.8K",
+    tags: ["corrupción", "contrataciones públicas", "transparencia"],
   },
 }
 
@@ -200,7 +202,9 @@ export default function ArticlePage({ params }: ArticlePageProps) {
                   Natalia Volosin
                 </h1>
               </Link>
-              <div className="hidden md:block text-sm text-gray-600">Portal de Análisis Jurídico y Político</div>
+              <div className="hidden md:block text-sm text-gray-600">
+                "Pensar es urgente" - Portal de Análisis Jurídico y Político
+              </div>
             </div>
 
             <div className="flex items-center space-x-4">
@@ -249,20 +253,17 @@ export default function ArticlePage({ params }: ArticlePageProps) {
             <Link href="/" className="text-gray-700 hover:text-red-600 font-medium">
               INICIO
             </Link>
-            <Link href="#politica" className="text-gray-700 hover:text-red-600 font-medium">
-              POLÍTICA
+            <Link href="/sobre-mi" className="text-gray-700 hover:text-red-600 font-medium">
+              QUIÉN
             </Link>
-            <Link href="#justicia" className="text-gray-700 hover:text-red-600 font-medium">
-              JUSTICIA
+            <Link href="/newsletter" className="text-gray-700 hover:text-red-600 font-medium">
+              LA JUSTA
             </Link>
-            <Link href="#economia" className="text-gray-700 hover:text-red-600 font-medium">
-              ECONOMÍA
+            <Link href="/suscripcion" className="text-gray-700 hover:text-red-600 font-medium">
+              POR QUÉ
             </Link>
-            <Link href="#analisis" className="text-gray-700 hover:text-red-600 font-medium">
-              ANÁLISIS
-            </Link>
-            <Link href="#opinion" className="text-gray-700 hover:text-red-600 font-medium">
-              OPINIÓN
+            <Link href="/videos" className="text-gray-700 hover:text-red-600 font-medium">
+              VIDEOS
             </Link>
           </nav>
         </div>
@@ -296,7 +297,11 @@ export default function ArticlePage({ params }: ArticlePageProps) {
                   className="w-full h-64 md:h-96 object-cover"
                 />
                 <div className="absolute top-4 left-4">
-                  <Badge className="bg-red-600 hover:bg-red-700">{article.category}</Badge>
+                  {article.tags.map((tag, index) => (
+                    <TagBadge key={tag} index={index} className="text-sm">
+                      {tag}
+                    </TagBadge>
+                  ))}
                 </div>
               </div>
 
@@ -482,12 +487,12 @@ export default function ArticlePage({ params }: ArticlePageProps) {
                   </div>
                 ))}
                 <div className="flex space-x-2">
-                  <Button variant="outline" size="sm" asChild className="flex-1">
+                  <Button variant="outline" size="sm" asChild className="flex-1 bg-transparent">
                     <Link href="https://x.com/nataliavolosin" target="_blank">
                       Ver X
                     </Link>
                   </Button>
-                  <Button variant="outline" size="sm" asChild className="flex-1">
+                  <Button variant="outline" size="sm" asChild className="flex-1 bg-transparent">
                     <Link href="https://www.instagram.com/nataliavolosin" target="_blank">
                       Ver Instagram
                     </Link>
@@ -522,7 +527,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <h4 className="text-lg font-bold mb-4">Natalia Volosin</h4>
-              <p className="text-gray-300 text-sm mb-4">Portal de análisis jurídico y político independiente</p>
+              <p className="text-gray-300 text-sm mb-4">"Pensar es urgente" - Portal de análisis independiente</p>
               <div className="flex space-x-3">
                 <Link href="https://x.com/nataliavolosin" target="_blank" className="text-gray-300 hover:text-white">
                   <Twitter className="w-5 h-5" />
@@ -544,22 +549,27 @@ export default function ArticlePage({ params }: ArticlePageProps) {
               <ul className="space-y-2 text-sm text-gray-300">
                 <li>
                   <Link href="/" className="hover:text-white">
-                    Inicio
+                    La Justa
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white">
-                    Política
+                  <Link href="/newsletter" className="hover:text-white">
+                    Newsletter
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white">
-                    Justicia
+                  <Link href="/sobre-mi" className="hover:text-white">
+                    Sobre mí
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white">
-                    Análisis
+                  <Link href="/suscripcion" className="hover:text-white">
+                    Suscripción
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/videos" className="hover:text-white">
+                    Videos
                   </Link>
                 </li>
               </ul>

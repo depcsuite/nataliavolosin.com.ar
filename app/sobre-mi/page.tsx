@@ -1,0 +1,584 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Separator } from "@/components/ui/separator"
+import {
+  Twitter,
+  Instagram,
+  Star,
+  Menu,
+  Search,
+  TrendingUp,
+  Zap,
+  ShoppingCart,
+  ExternalLink,
+  Music,
+} from "lucide-react"
+
+const breakingNews = [
+  "🔥 Escándalo y suspensión del Juicio por la muerte de Diego Maradona",
+  "⚡ Procuración General anuncia reformas en investigaciones económicas",
+  "🚨 Debate sobre transparencia en contrataciones públicas gana impulso",
+]
+
+export default function AboutPage() {
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  // Scroll listener para ocultar el top bar
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY
+      setIsScrolled(scrollTop > 100)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
+  return (
+    <div className="min-h-screen bg-brand-light-gray font-serif">
+      {/* Header */}
+      <header className="bg-brand-white border-b border-brand-gray/20 commercial-shadow sticky top-0 z-50">
+        {/* Top Bar - Se oculta al hacer scroll */}
+        <div
+          className={`bg-gradient-to-r from-brand-purple to-brand-teal text-brand-white transition-all duration-300 ${
+            isScrolled ? "h-0 overflow-hidden py-0" : "py-2"
+          }`}
+        >
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-between text-sm font-sans sans-modern">
+              <div className="flex items-center space-x-4">
+                <span className="font-bold flex items-center">
+                  <TrendingUp className="w-4 h-4 mr-2" />
+                  ÚLTIMO MOMENTO:
+                </span>
+                <div className="hidden md:block">
+                  <span className="animate-pulse">{breakingNews[0]}</span>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <span className="font-medium">
+                  {new Date().toLocaleDateString("es-AR", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Header - Altura reducida */}
+        <div className={`container mx-auto px-4 transition-all duration-300 ${isScrolled ? "py-3" : "py-6"}`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-4">
+                <Link href="/">
+                  <h1
+                    className={`font-serif serif-elegant font-medium text-brand-black hover:text-brand-purple transition-all duration-300 ${
+                      isScrolled ? "text-2xl" : "text-4xl"
+                    }`}
+                  >
+                    Natalia{" "}
+                    <span
+                      className={`font-script script-enhanced text-brand-purple transition-all duration-300 ${
+                        isScrolled ? "text-3xl" : "text-5xl"
+                      }`}
+                    >
+                      Volosin
+                    </span>
+                  </h1>
+                </Link>
+                <span
+                  className={`font-sans sans-modern font-black text-brand-black transition-all duration-300 ${
+                    isScrolled ? "text-lg" : "text-2xl"
+                  }`}
+                >
+                  →
+                </span>
+                <h2
+                  className={`font-sans sans-modern font-black text-brand-black tracking-wider transition-all duration-300 ${
+                    isScrolled ? "text-xl" : "text-3xl"
+                  }`}
+                >
+                  LA JUSTA
+                </h2>
+              </div>
+              {!isScrolled && (
+                <div className="hidden lg:block text-sm text-brand-gray font-sans sans-modern font-medium">
+                  Pensar es urgente
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center space-x-4">
+              {/* Enhanced Search */}
+              <div className="relative hidden md:block">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-brand-gray w-5 h-5" />
+                  <Input
+                    type="text"
+                    placeholder="Buscar noticias..."
+                    className="pl-12 pr-4 py-3 w-72 bg-brand-light-gray border-2 border-brand-gray/30 focus:bg-brand-white focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 transition-all duration-300 rounded-xl font-sans sans-modern"
+                  />
+                </div>
+              </div>
+              <Button variant="ghost" size="sm" className="md:hidden">
+                <Search className="w-5 h-5" />
+              </Button>
+              <Link href="/suscripcion">
+                <Button
+                  className={`bg-gradient-to-r from-brand-green to-brand-teal hover:from-brand-green/80 hover:to-brand-teal/80 text-brand-black font-sans sans-modern font-bold rounded-xl neon-glow transition-all duration-300 ${
+                    isScrolled ? "px-4 py-2 text-sm" : "px-6 py-3"
+                  }`}
+                  size="lg"
+                >
+                  <Star className="w-5 h-5 mr-2" />
+                  {isScrolled ? "Suscribirse" : "Quiero bancar a La Justa"}
+                </Button>
+              </Link>
+              <Button variant="ghost" size="sm" className="md:hidden">
+                <Menu className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Navigation - Altura reducida */}
+          <nav className="hidden md:flex items-center space-x-8 mt-4 pt-3 border-t border-brand-gray/20">
+            <Link
+              href="/"
+              className="text-brand-black hover:text-brand-purple font-sans sans-modern font-bold text-base transition-colors tracking-wide"
+            >
+              INICIO
+            </Link>
+            <Link
+              href="/sobre-mi"
+              className="text-brand-purple font-sans sans-modern font-bold text-base transition-colors tracking-wide"
+            >
+              QUIÉN
+            </Link>
+            <Link
+              href="/newsletter"
+              className="text-brand-black hover:text-brand-purple font-sans sans-modern font-bold text-base transition-colors tracking-wide"
+            >
+              LA JUSTA
+            </Link>
+            <Link
+              href="/suscripcion"
+              className="text-brand-black hover:text-brand-teal font-sans sans-modern font-bold text-base transition-colors tracking-wide"
+            >
+              POR QUÉ
+            </Link>
+            <Link
+              href="/videos"
+              className="text-brand-black hover:text-brand-purple font-sans sans-modern font-bold text-base transition-colors tracking-wide"
+            >
+              VIDEOS
+            </Link>
+          </nav>
+        </div>
+      </header>
+
+      {/* Breaking News Ticker - Se oculta al hacer scroll */}
+      <div
+        className={`bg-gradient-to-r from-brand-green via-brand-green to-brand-green/80 border-b border-brand-gray/20 transition-all duration-300 ${
+          isScrolled ? "h-0 overflow-hidden py-0" : "py-3"
+        }`}
+      >
+        <div className="container mx-auto px-4">
+          <div className="flex items-center">
+            <span className="bg-brand-black text-brand-white px-4 py-2 text-sm font-sans sans-modern font-bold mr-6 rounded-full flex items-center">
+              <Zap className="w-4 h-4 mr-2" />
+              BREAKING
+            </span>
+            <div className="flex-1 overflow-hidden">
+              <div className="animate-marquee whitespace-nowrap text-lg font-serif serif-elegant font-medium text-brand-black">
+                {breakingNews.join(" • ")}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-12">
+        <div className="grid lg:grid-cols-4 gap-12">
+          {/* Main Content Area */}
+          <div className="lg:col-span-3">
+            {/* Hero Section */}
+            <section className="mb-16 text-center bg-gradient-to-br from-brand-purple/10 via-brand-green/20 to-brand-teal/10 p-12 rounded-3xl commercial-shadow">
+              <div className="mb-8">
+                <Image
+                  src="https://s3.us-east-1.amazonaws.com/nataliavolosin.com.ar/natalia-volosin.jpg"
+                  alt="Natalia Volosin"
+                  width={200}
+                  height={200}
+                  className="rounded-full mx-auto border-4 border-brand-white commercial-shadow mb-6"
+                />
+                <h1 className="text-5xl font-serif serif-elegant font-medium text-brand-black mb-4">
+                  Natalia <span className="font-script script-enhanced text-6xl text-brand-purple">Volosin</span>
+                </h1>
+                <p className="text-xl font-sans sans-modern font-medium text-brand-black mb-6 tracking-wide">
+                  ABOGADA • CONSULTORA • ACADÉMICA • COMUNICADORA
+                </p>
+                <p className="text-lg font-sans sans-modern font-medium text-brand-gray tracking-wide">
+                  LL.M. y J.S.D. por Yale Law School
+                </p>
+              </div>
+            </section>
+
+            {/* Advertising Banner - After Hero */}
+            <section className="mb-16">
+              <div className="bg-gradient-to-r from-brand-gray/10 to-brand-light-gray border-2 border-dashed border-brand-gray/30 rounded-2xl p-8 text-center commercial-shadow">
+                <p className="text-brand-gray text-sm font-sans sans-modern font-bold mb-2">Espacio Publicitario</p>
+                <p className="text-brand-gray text-xs font-serif serif-elegant">728x90 - Banner Superior</p>
+              </div>
+            </section>
+
+            {/* About Content */}
+            <section className="mb-16">
+              <Card className="commercial-shadow border-2 border-brand-gray/20 rounded-2xl">
+                <CardHeader className="p-8">
+                  <CardTitle className="text-3xl font-sans sans-modern font-black text-brand-black tracking-wide mb-4">
+                    SOBRE MÍ
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-8 pt-0">
+                  <div className="prose prose-lg max-w-none">
+                    <p className="text-brand-black font-serif serif-elegant leading-relaxed mb-6 text-lg">
+                      Natalia Volosin es abogada (2004), consultora, académica y comunicadora. Es diploma de honor magna
+                      cum laude y class valedictorian, LL.M. (Master of Laws) por Yale Law School en 2009 y J.S.D.
+                      (Doctor of the Science of Law) por la misma institución en 2018.
+                    </p>
+                    <p className="text-brand-black font-serif serif-elegant leading-relaxed mb-6 text-lg">
+                      Se formó como penalista en el estudio Arslanian, Beraldi, Kaminker & Asociados, fue consultora de
+                      entidades académicas, organismos públicos, ONGs y organizaciones internacionales y durante 10 años
+                      lideró investigaciones complejas de criminalidad económica en la Procuración General de la Nación.
+                    </p>
+                    <p className="text-brand-black font-serif serif-elegant leading-relaxed mb-6 text-lg">
+                      Fue profesora en la Universidad de Buenos Aires, Universidad Di Tella, Universidad de Palermo,
+                      Universidad de San Andrés, Universidad Nacional de La Plata y Universidad Nacional de San Martín.
+                    </p>
+                    <p className="text-brand-black font-serif serif-elegant leading-relaxed mb-6 text-lg">
+                      Es autora de numerosos artículos, capítulos de libros e informes sobre corrupción, criminalidad
+                      económica y recupero de activos en la Argentina y en el extranjero. Natalia comunica temas
+                      jurídicos complejos en formatos accesibles, dirigió un ciclo propio para Infobae bajo el concepto
+                      de "Justicia Abierta" y es consultada por medios de comunicación nacionales e internacionales.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </section>
+
+            {/* Advertising Banner - Mid Content */}
+            <section className="mb-16">
+              <div className="bg-gradient-to-br from-brand-purple/5 to-brand-teal/5 border-2 border-dashed border-brand-purple/20 rounded-2xl p-12 text-center commercial-shadow">
+                <p className="text-brand-purple text-lg font-sans sans-modern font-bold mb-2">Publicidad</p>
+                <p className="text-brand-gray text-sm font-serif serif-elegant">468x60 - Banner Medio</p>
+              </div>
+            </section>
+
+            {/* Books Section - Rediseñada como bloques comerciales independientes */}
+            <section className="mb-16">
+              <div className="text-center mb-12">
+                <h2 className="text-4xl font-sans sans-modern font-black text-brand-black tracking-wide mb-4">
+                  MIS LIBROS
+                </h2>
+                <p className="text-xl text-brand-gray font-serif serif-elegant">
+                  En 2019 publicó dos obras fundamentales sobre corrupción en Argentina
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-8">
+                {/* Libro en inglés - Bloque comercial */}
+                <div className="bg-gradient-to-br from-brand-purple/10 to-brand-purple/20 border-3 border-brand-purple/30 rounded-3xl p-8 commercial-shadow hover:scale-105 transition-all duration-300 group">
+                  <div className="text-center">
+                    {/* Imagen del libro - Clickeable */}
+                    <div className="mb-6">
+                      <Link href="https://www.amazon.com/-/es/Natalia-Volosin-ebook/dp/B07WRMQMKP" target="_blank">
+                        <Image
+                          src="/corruption-in-argentina.jpg"
+                          alt="Corruption in Argentina: Towards an Institutional Approach"
+                          width={200}
+                          height={267}
+                          className="mx-auto rounded-lg commercial-shadow border-4 border-brand-white group-hover:scale-110 transition-transform duration-300 cursor-pointer"
+                        />
+                      </Link>
+                    </div>
+
+                    {/* Título y descripción */}
+                    <h3 className="text-2xl font-serif serif-elegant font-bold text-brand-black mb-3 leading-tight">
+                      "Corruption in Argentina: Towards an Institutional Approach"
+                    </h3>
+
+                    <div className="bg-brand-white/80 rounded-xl p-4 mb-6">
+                      <p className="text-brand-purple font-sans sans-modern font-bold text-lg mb-2">ROUTLEDGE • 2019</p>
+                      <p className="text-brand-gray font-serif serif-elegant text-sm leading-relaxed">
+                        Una investigación histórica, institucional y sectorial sobre la corrupción estructural en la
+                        Argentina. Análisis académico riguroso basado en años de investigación en Yale Law School.
+                      </p>
+                    </div>
+
+                    {/* Call to action */}
+                    <Button
+                      className="w-full bg-brand-purple hover:bg-brand-purple/80 text-brand-white font-sans sans-modern font-bold py-4 text-lg rounded-xl commercial-shadow hover:scale-105 transition-all duration-300"
+                      asChild
+                    >
+                      <Link href="https://www.amazon.com/-/es/Natalia-Volosin-ebook/dp/B07WRMQMKP" target="_blank">
+                        <ShoppingCart className="w-5 h-5 mr-2" />
+                        COMPRAR EN AMAZON
+                        <ExternalLink className="w-5 h-5 ml-2" />
+                      </Link>
+                    </Button>
+
+                    {/* Detalles adicionales */}
+                    <div className="mt-4 text-xs text-brand-gray font-sans sans-modern">
+                      ⭐ Disponible en formato digital
+                    </div>
+                  </div>
+                </div>
+
+                {/* Libro en español - Bloque comercial */}
+                <div className="bg-gradient-to-br from-brand-teal/10 to-brand-teal/20 border-3 border-brand-teal/30 rounded-3xl p-8 commercial-shadow hover:scale-105 transition-all duration-300 group">
+                  <div className="text-center">
+                    {/* Imagen del libro - Clickeable */}
+                    <div className="mb-6">
+                      <Link
+                        href="https://listado.mercadolibre.com.ar/la-maquina-de-la-corrupcion-natalia-volosin"
+                        target="_blank"
+                      >
+                        <Image
+                          src="/libro-maquina-de-corrupcion.webp"
+                          alt="La Máquina de la Corrupción"
+                          width={200}
+                          height={267}
+                          className="mx-auto rounded-lg commercial-shadow border-4 border-brand-white group-hover:scale-110 transition-transform duration-300 cursor-pointer"
+                        />
+                      </Link>
+                    </div>
+
+                    {/* Título y descripción */}
+                    <h3 className="text-2xl font-serif serif-elegant font-bold text-brand-black mb-3 leading-tight">
+                      "La Máquina de la Corrupción"
+                    </h3>
+
+                    <div className="bg-brand-white/80 rounded-xl p-4 mb-6">
+                      <p className="text-brand-teal font-sans sans-modern font-bold text-lg mb-2">
+                        SUDAMERICANA • 2019
+                      </p>
+                      <p className="text-brand-gray font-serif serif-elegant text-sm leading-relaxed">
+                        Una versión de divulgación en español sobre los mecanismos de corrupción y las herramientas para
+                        combatirla. Accesible para el público general argentino.
+                      </p>
+                    </div>
+
+                    {/* Call to action */}
+                    <Button
+                      className="w-full bg-brand-teal hover:bg-brand-teal/80 text-brand-white font-sans sans-modern font-bold py-4 text-lg rounded-xl commercial-shadow hover:scale-105 transition-all duration-300"
+                      asChild
+                    >
+                      <Link
+                        href="https://listado.mercadolibre.com.ar/la-maquina-de-la-corrupcion-natalia-volosin"
+                        target="_blank"
+                      >
+                        <ShoppingCart className="w-5 h-5 mr-2" />
+                        COMPRAR EN MERCADOLIBRE
+                        <ExternalLink className="w-5 h-5 ml-2" />
+                      </Link>
+                    </Button>
+
+                    {/* Detalles adicionales */}
+                    <div className="mt-4 text-xs text-brand-gray font-sans sans-modern">
+                      📚 Formato físico • Envío a todo el país
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Mission Statement */}
+            <section className="mb-16">
+              <Card className="bg-gradient-to-br from-brand-green/20 to-brand-teal/20 border-2 border-brand-green/30 commercial-shadow rounded-2xl">
+                <CardHeader className="p-8">
+                  <CardTitle className="text-3xl font-sans sans-modern font-black text-brand-black tracking-wide mb-4">
+                    MI MISIÓN
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-8 pt-0">
+                  <p className="text-brand-black font-serif serif-elegant leading-relaxed text-lg mb-6">
+                    "La Justa" nace de la necesidad de decir lo que, en un sistema estructuralmente injusto y corrupto,
+                    pocos tienen incentivos para decir. Mi objetivo es generar contenido independiente, riguroso y
+                    accesible sobre los temas que realmente importan.
+                  </p>
+                  <p className="text-brand-black font-serif serif-elegant leading-relaxed text-lg">
+                    No somos neutrales. No nos da lo mismo la democracia que la dictadura, la libertad que el
+                    autoritarismo, la igualdad que la crueldad. Pero nunca te vamos a manipular, porque sí somos
+                    independientes.
+                  </p>
+                </CardContent>
+              </Card>
+            </section>
+
+            {/* Advertising Banner - Bottom Content */}
+            <section className="mb-16">
+              <div className="bg-gradient-to-r from-brand-green/10 to-brand-teal/10 border-2 border-dashed border-brand-green/30 rounded-2xl p-8 text-center commercial-shadow">
+                <p className="text-brand-green text-lg font-sans sans-modern font-bold mb-2">Espacio Comercial</p>
+                <p className="text-brand-gray text-xs font-serif serif-elegant">728x90 - Banner Inferior</p>
+              </div>
+            </section>
+          </div>
+
+          {/* Sidebar */}
+          <div className="lg:col-span-1 space-y-8">
+            {/* Newsletter Signup - Unificado */}
+            <Card className="bg-gradient-to-br from-brand-green/40 to-brand-green/60 border-2 border-brand-green commercial-shadow rounded-2xl neon-glow">
+              <CardHeader className="text-center p-8">
+                <div className="mb-4">
+                  <h3 className="text-2xl font-serif serif-elegant font-medium text-brand-black mb-2">
+                    LA INVITACIÓN A{" "}
+                    <span className="font-script script-enhanced text-3xl text-brand-purple">pensar</span>
+                  </h3>
+                  <h4 className="text-2xl font-sans sans-modern font-black text-brand-black">
+                    ES <span className="bg-brand-gray text-brand-white px-3 py-1 rounded">URGENTE</span>
+                  </h4>
+                </div>
+                <p className="text-sm font-sans sans-modern text-brand-black font-medium">
+                  Recibe análisis semanales los viernes
+                </p>
+              </CardHeader>
+              <CardContent className="text-center p-8 pt-0">
+                <div className="space-y-4 mb-6">
+                  <p className="text-sm text-brand-black font-serif serif-elegant">
+                    Suscríbete al newsletter gratuito de los viernes haciendo clic en el enlace:
+                  </p>
+                </div>
+                <Link href="https://substack.com/@nataliavolosin" target="_blank">
+                  <Button className="w-full bg-brand-black hover:bg-brand-gray text-brand-white font-sans sans-modern font-bold py-4 rounded-xl text-lg mb-4 transition-all duration-300 hover:scale-105">
+                    Suscribirse Gratis
+                  </Button>
+                </Link>
+                <p className="text-sm text-brand-black font-sans sans-modern font-medium">
+                  Newsletter gratuito • Análisis semanales • Sin compromisos
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Social Media */}
+            <Card className="commercial-shadow rounded-2xl">
+              <CardHeader>
+                <CardTitle className="text-lg font-serif serif-elegant">Sígueme en redes</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
+                    <Link href="https://x.com/nataliavolosin" target="_blank">
+                      <Twitter className="w-4 h-4 mr-2" />
+                      @nataliavolosin
+                    </Link>
+                  </Button>
+                  <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
+                    <Link href="https://www.instagram.com/nataliavolosin" target="_blank">
+                      <Instagram className="w-4 h-4 mr-2" />
+                      @nataliavolosin
+                    </Link>
+                  </Button>
+                  <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
+                    <Link href="https://www.tiktok.com/@nataliaavolosin" target="_blank">
+                      <Music className="w-4 h-4 mr-2" />
+                      @nataliaavolosin
+                    </Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Additional Sidebar Ad Space */}
+            <div className="bg-gradient-to-br from-brand-green/10 to-brand-teal/10 border-2 border-dashed border-brand-green/30 rounded-2xl p-8 text-center commercial-shadow">
+              <p className="text-brand-green text-lg font-sans sans-modern font-bold mb-2">Publicidad</p>
+              <p className="text-brand-gray text-xs font-serif serif-elegant">300x600 - Rascacielos</p>
+            </div>
+
+            {/* Sponsor Banner Sidebar */}
+            <div className="bg-gradient-to-br from-brand-purple/10 to-brand-teal/10 border-2 border-dashed border-brand-gray rounded-2xl p-8 text-center commercial-shadow">
+              <p className="text-brand-gray text-lg font-sans sans-modern font-bold mb-2">Publicidad</p>
+              <p className="text-brand-gray text-lg font-sans sans-modern font-bold">Aquí va la publicidad</p>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-brand-black text-brand-white py-16 mt-20">
+        <div className="container mx-auto px-4">
+          {/* Logo y tagline centrados */}
+          <div className="text-center mb-12">
+            <h4 className="text-3xl font-serif serif-elegant font-medium mb-2">
+              Natalia <span className="font-script script-enhanced text-4xl text-brand-purple">Volosin</span>
+            </h4>
+            <h5 className="text-2xl font-sans sans-modern font-black mb-4 tracking-wider">LA JUSTA</h5>
+            <p className="text-brand-gray text-lg font-serif serif-elegant">Portal de análisis independiente</p>
+          </div>
+
+          {/* Información de contacto en dos columnas */}
+          <div className="grid md:grid-cols-2 gap-12 mb-12">
+            <div>
+              <h4 className="text-brand-green font-sans sans-modern font-bold text-lg mb-4">
+                Charlas, eventos, consultoría y capacitaciones:
+              </h4>
+              <p className="text-brand-gray font-serif serif-elegant text-lg">lajusta@nataliavolosin.com</p>
+            </div>
+            <div>
+              <h4 className="text-brand-teal font-sans sans-modern font-bold text-lg mb-4">Consultas comerciales:</h4>
+              <p className="text-brand-gray font-serif serif-elegant text-lg">comercial@nataliavolosin.com</p>
+            </div>
+          </div>
+
+          {/* Separador */}
+          <Separator className="bg-brand-gray/30 mb-12" />
+
+          {/* Redes sociales centradas */}
+          <div className="flex justify-center space-x-8 mb-8">
+            <Link
+              href="https://x.com/nataliavolosin"
+              target="_blank"
+              className="text-brand-gray hover:text-brand-white transition-colors p-3 rounded-full hover:bg-brand-gray/20"
+            >
+              <Twitter className="w-8 h-8" />
+            </Link>
+            <Link
+              href="https://www.instagram.com/nataliavolosin"
+              target="_blank"
+              className="text-brand-gray hover:text-brand-white transition-colors p-3 rounded-full hover:bg-brand-gray/20"
+            >
+              <Instagram className="w-8 h-8" />
+            </Link>
+            <Link
+              href="https://www.tiktok.com/@nataliaavolosin"
+              target="_blank"
+              className="text-brand-gray hover:text-brand-white transition-colors p-3 rounded-full hover:bg-brand-gray/20"
+            >
+              <Music className="w-8 h-8" />
+            </Link>
+          </div>
+
+          {/* Copyright centrado */}
+          <div className="text-center text-sm text-brand-gray font-sans sans-modern font-medium">
+            © 2025 Natalia Volosin. Todos los derechos reservados.
+          </div>
+        </div>
+      </footer>
+    </div>
+  )
+}
