@@ -26,7 +26,6 @@ import {
   Twitter,
   Instagram,
   Music,
-  ExternalLink,
   Play,
 } from "lucide-react"
 
@@ -194,6 +193,11 @@ export default function NewsletterPage() {
   const [selectedYear, setSelectedYear] = useState("all-years")
   const [selectedMonth, setSelectedMonth] = useState("all-months")
   const [isScrolled, setIsScrolled] = useState(false)
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   // Scroll listener para ocultar el top bar
   useEffect(() => {

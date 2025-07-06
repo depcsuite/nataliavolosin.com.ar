@@ -251,7 +251,7 @@ export default function AboutPage() {
             <section className="mb-16">
               <Card className="commercial-shadow border-2 border-brand-gray/20 rounded-2xl">
                 <CardHeader className="p-8">
-                  <CardTitle className="text-3xl font-arimo font-black text-brand-black tracking-wide mb-4">
+                  <CardTitle className="text-3xl font-garamond font-black text-brand-black tracking-wide mb-4">
                     Sobre mí
                   </CardTitle>
                 </CardHeader>
@@ -447,7 +447,7 @@ export default function AboutPage() {
             <section className="mb-16">
               <Card className="bg-gradient-to-br from-brand-green/20 to-brand-teal/20 border-2 border-brand-green/30 commercial-shadow rounded-2xl">
                 <CardHeader className="p-8">
-                  <CardTitle className="text-3xl font-arimo font-black text-brand-black tracking-wide mb-4">
+                  <CardTitle className="text-3xl font-garamond font-black text-brand-black tracking-wide mb-4">
                     Mi misión
                   </CardTitle>
                 </CardHeader>

@@ -404,7 +404,7 @@ export default function SuscripcionPage() {
                       </span>
                     </li>
                   </ul>
-                  <Link href="/newsletter" className="block mt-auto">
+                  <Link href="https://substack.com/@nataliavolosin" target="_blank" className="block mt-auto">
                     <Button className="w-full bg-gradient-to-r from-violet-500 to-violet-600 hover:from-violet-600 hover:to-violet-700 text-white font-arimo font-bold py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-violet-500/25">
                       Suscribirse Gratis
                       <ArrowRight className="w-4 h-4 ml-2" />

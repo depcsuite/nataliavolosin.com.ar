@@ -162,6 +162,11 @@ export default function HomePage() {
   const [playingVideo, setPlayingVideo] = useState<string | null>(null)
   const [showPlayButton, setShowPlayButton] = useState<{ [key: string]: boolean }>({})
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   // Scroll listener para ocultar el top bar
   useEffect(() => {
     const handleScroll = () => {
