@@ -1,29 +1,38 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Card } from "@/components/ui/card"
+import { useState, useEffect } from "react"
+import { X } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 export function StickyAd() {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY
-      setIsVisible(scrollPosition > 500)
-    }
+    // Show sticky ad after 5 seconds
+    const timer = setTimeout(() => {
+      setIsVisible(true)
+    }, 5000)
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
+    return () => clearTimeout(timer)
   }, [])
 
   if (!isVisible) return null
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 hidden lg:block">
-      <Card className="bg-gradient-to-br from-brand-green/20 to-brand-teal/20 border-2 border-brand-green/30 rounded-2xl p-6 text-center commercial-shadow w-48">
-        <p className="text-brand-green text-sm font-sans sans-modern font-bold mb-2">Publicidad</p>
-        <p className="text-brand-gray text-xs font-serif serif-elegant">Sticky Ad 200x150</p>
-      </Card>
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-brand-white border-t-2 border-brand-gray/20 commercial-shadow">
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex items-center justify-between">
+          <div className="flex-1 text-center">
+            <div className="bg-gradient-to-r from-brand-yellow/20 to-brand-orange/20 border-2 border-dashed border-brand-yellow/40 rounded-xl p-4 mx-auto max-w-2xl">
+              <p className="text-brand-yellow font-arimo font-bold text-lg mb-1">Publicidad</p>
+              <p className="text-brand-gray text-sm font-arimo">728x90 - Banner Inferior Sticky</p>
+            </div>
+          </div>
+          <Button variant="ghost" size="sm" className="ml-4 flex-shrink-0" onClick={() => setIsVisible(false)}>
+            <X className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
     </div>
   )
 }

@@ -1,17 +1,27 @@
-import { Card } from "@/components/ui/card"
-
 interface AdBannerProps {
-  size: string
+  size?: "small" | "medium" | "large"
   className?: string
 }
 
-export function AdBanner({ size, className }: AdBannerProps) {
+export function AdBanner({ size = "medium", className = "" }: AdBannerProps) {
+  const sizeClasses = {
+    small: "h-24 text-sm",
+    medium: "h-32 text-base",
+    large: "h-48 text-lg",
+  }
+
+  const dimensions = {
+    small: "320x100",
+    medium: "728x90",
+    large: "970x250",
+  }
+
   return (
-    <Card
-      className={`bg-gradient-to-br from-brand-gray/10 to-brand-light-gray border-2 border-dashed border-brand-gray/30 rounded-2xl p-8 text-center commercial-shadow ${className}`}
+    <div
+      className={`bg-gradient-to-r from-brand-gray/10 to-brand-light-gray border-2 border-dashed border-brand-gray/30 rounded-2xl flex flex-col items-center justify-center text-center commercial-shadow ${sizeClasses[size]} ${className}`}
     >
-      <p className="text-brand-gray text-sm font-sans sans-modern font-bold mb-2">Espacio Publicitario</p>
-      <p className="text-brand-gray text-xs font-serif serif-elegant">{size}</p>
-    </Card>
+      <p className="text-brand-gray font-arimo font-bold mb-1">Publicidad</p>
+      <p className="text-brand-gray text-xs font-arimo">{dimensions[size]}</p>
+    </div>
   )
 }

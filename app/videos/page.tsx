@@ -19,7 +19,6 @@ import {
   Twitter,
   Instagram,
   Music,
-  ExternalLink,
   Heart,
   Mail,
 } from "lucide-react"
@@ -146,11 +145,13 @@ const breakingNews = [
   "🚨 Debate sobre transparencia en contrataciones públicas gana impulso",
 ]
 
-// Function to generate slug from title
+// Function to generate slug from title, handling accents
 function generateSlug(title: string): string {
   return title
     .toLowerCase()
-    .replace(/[^\w\s-]/g, "") // Remove special characters except spaces and hyphens
+    .normalize("NFD") // Normalize to decomposed form
+    .replace(/[\u0300-\u036f]/g, "") // Remove diacritics (accents)
+    .replace(/[^\w\s-]/g, "") // Remove non-word characters (now without accents)
     .replace(/\s+/g, "-") // Replace spaces with hyphens
     .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
     .trim()

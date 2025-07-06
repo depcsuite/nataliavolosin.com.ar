@@ -217,46 +217,63 @@ export default function AboutPage() {
         <div className="grid lg:grid-cols-4 gap-12">
           {/* Main Content Area */}
           <div className="lg:col-span-3">
-            {/* Hero Section */}
-            <section className="mb-16 text-center bg-gradient-to-br from-brand-purple/10 via-brand-green/20 to-brand-teal/10 p-12 rounded-3xl commercial-shadow">
-              <div className="mb-8">
-                <Image
-                  src="https://s3.us-east-1.amazonaws.com/nataliavolosin.com.ar/natalia-volosin.jpg"
-                  alt="Natalia Volosin"
-                  width={200}
-                  height={200}
-                  className="rounded-full mx-auto border-4 border-brand-white commercial-shadow mb-6"
-                />
-                <h1 className="text-5xl font-garamond font-medium text-brand-black mb-4">
-                  Natalia <span className="font-script script-enhanced text-6xl text-brand-purple">Volosin</span>
-                </h1>
-                <p className="text-xl font-arimo font-medium text-brand-black mb-6 tracking-wide">
-                  ABOGADA • CONSULTORA • ACADÉMICA • COMUNICADORA
-                </p>
-                <p className="text-lg font-arimo font-medium text-brand-gray tracking-wide">
-                  LL.M. y J.S.D. por Yale Law School
-                </p>
-              </div>
-            </section>
-
-            {/* Advertising Banner - After Hero */}
+            {/* Unified Hero and About Section */}
             <section className="mb-16">
-              <div className="bg-gradient-to-r from-brand-gray/10 to-brand-light-gray border-2 border-dashed border-brand-gray/30 rounded-2xl p-8 text-center commercial-shadow">
-                <p className="text-brand-gray text-sm font-arimo font-bold mb-2">Espacio Publicitario</p>
-                <p className="text-brand-gray text-xs font-arimo">728x90 - Banner Superior</p>
-              </div>
-            </section>
+              <Card className="commercial-shadow border-2 border-brand-gray/20 rounded-3xl overflow-hidden">
+                {/* Top part with image, name, title, badges */}
+                <div className="bg-gradient-to-br from-brand-purple/10 via-brand-green/20 to-brand-teal/10 p-12">
+                  <div className="flex flex-col lg:flex-row items-center lg:items-start gap-12">
+                    {/* Profile Image */}
+                    <div className="flex-shrink-0">
+                      <Image
+                        src="/natalia-volosin.jpg"
+                        alt="Natalia Volosin"
+                        width={280}
+                        height={280}
+                        className="rounded-full border-6 border-brand-white commercial-shadow"
+                      />
+                    </div>
 
-            {/* About Content */}
-            <section className="mb-16">
-              <Card className="commercial-shadow border-2 border-brand-gray/20 rounded-2xl">
-                <CardHeader className="p-8">
-                  <CardTitle className="text-3xl font-garamond font-black text-brand-black tracking-wide mb-4">
+                    {/* Content (Name, Title, Badges) */}
+                    <div className="flex-1 text-center lg:text-left">
+                      <div className="mb-8">
+                        <h1 className="text-5xl lg:text-6xl font-garamond font-medium text-brand-black mb-4">
+                          Natalia{" "}
+                          <span className="font-script script-enhanced text-6xl lg:text-7xl text-brand-purple">
+                            Volosin
+                          </span>
+                        </h1>
+                        <p className="text-xl font-arimo font-medium text-brand-black mb-4 tracking-wide">
+                          ABOGADA • CONSULTORA • ACADÉMICA • COMUNICADORA
+                        </p>
+                        <p className="text-lg font-arimo font-medium text-brand-gray tracking-wide mb-6">
+                          LL.M. y J.S.D. por Yale Law School
+                        </p>
+
+                        {/* Professional badges */}
+                        <div className="flex flex-wrap justify-center lg:justify-start gap-3 mb-8">
+                          <Badge className="bg-brand-purple/20 text-brand-purple border-brand-purple/30 px-4 py-2 text-sm font-arimo font-bold">
+                            Yale Law School
+                          </Badge>
+                          <Badge className="bg-brand-teal/20 text-brand-teal border-brand-teal/30 px-4 py-2 text-sm font-arimo font-bold">
+                            Procuración General
+                          </Badge>
+                          <Badge className="bg-brand-green/20 text-brand-green border-brand-green/30 px-4 py-2 text-sm font-arimo font-bold">
+                            Autora
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* "Sobre mí" content block, now full width within the Card */}
+                <div className="bg-brand-white/80 backdrop-blur-sm p-8 commercial-shadow -mt-8 rounded-b-3xl">
+                  <h2 className="text-3xl font-garamond font-black text-brand-black tracking-wide mb-6 text-center lg:text-left">
                     Sobre mí
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-8 pt-0">
-                  <div className="prose prose-lg max-w-none">
+                  </h2>
+
+                  <div className="prose prose-lg max-w-none text-left">
                     <p className="text-brand-black font-arimo leading-relaxed mb-6 text-lg">
                       Natalia Volosin es abogada (2004), consultora, académica y comunicadora. Es diploma de honor magna
                       cum laude y class valedictorian, LL.M. (Master of Laws) por Yale Law School en 2009 y J.S.D.
@@ -271,14 +288,14 @@ export default function AboutPage() {
                       Fue profesora en la Universidad de Buenos Aires, Universidad Di Tella, Universidad de Palermo,
                       Universidad de San Andrés, Universidad Nacional de La Plata y Universidad Nacional de San Martín.
                     </p>
-                    <p className="text-brand-black font-arimo leading-relaxed mb-6 text-lg">
+                    <p className="text-brand-black font-arimo leading-relaxed text-lg">
                       Es autora de numerosos artículos, capítulos de libros e informes sobre corrupción, criminalidad
                       económica y recupero de activos en la Argentina y en el extranjero. Natalia comunica temas
                       jurídicos complejos en formatos accesibles, dirigió un ciclo propio para Infobae bajo el concepto
                       de "Justicia Abierta" y es consultada por medios de comunicación nacionales e internacionales.
                     </p>
                   </div>
-                </CardContent>
+                </div>
               </Card>
             </section>
 
@@ -538,8 +555,8 @@ export default function AboutPage() {
             </Card>
 
             {/* Additional Sidebar Ad Space */}
-            <div className="bg-gradient-to-br from-brand-green/10 to-brand-teal/10 border-2 border-dashed border-brand-green/30 rounded-2xl p-8 text-center commercial-shadow">
-              <p className="text-brand-green text-lg font-arimo font-bold mb-2">Publicidad</p>
+            <div className="bg-gradient-to-br from-brand-teal/10 to-brand-green/10 border-2 border-dashed border-brand-teal/30 rounded-2xl p-8 text-center commercial-shadow">
+              <p className="text-brand-teal text-sm font-arimo font-bold mb-2">Publicidad</p>
               <p className="text-brand-gray text-xs font-arimo">300x600 - Rascacielos</p>
             </div>
 
@@ -582,11 +599,11 @@ export default function AboutPage() {
                     strokeLinejoin="round"
                     className="text-brand-green"
                   >
-                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                    <path d="M16 4h2a2 4 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
                     <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-arimo font-black text-brand-white mb-2 tracking-wide">
+                <h3 className="font-garamond font-arimo font-black text-brand-white mb-2 tracking-wide">
                   SERVICIOS PROFESIONALES
                 </h3>
                 <p className="text-brand-green font-arimo font-bold text-lg">
@@ -597,19 +614,21 @@ export default function AboutPage() {
               <div className="space-y-4 mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-brand-green rounded-full"></div>
-                  <span className="text-brand-white font-arimo">Conferencias magistrales</span>
+                  <span className="text-brand-white font-serif serif-elegant">Conferencias magistrales</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-brand-green rounded-full"></div>
-                  <span className="text-brand-white font-arimo">Asesoramiento jurídico especializado</span>
+                  <span className="text-brand-white font-serif serif-elegant">
+                    Asesoramiento jurídico especializado
+                  </span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-brand-green rounded-full"></div>
-                  <span className="text-brand-white font-arimo">Capacitaciones institucionales</span>
+                  <span className="text-brand-white font-serif serif-elegant">Capacitaciones institucionales</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-brand-green rounded-full"></div>
-                  <span className="text-brand-white font-arimo">Análisis de políticas públicas</span>
+                  <span className="text-brand-white font-serif serif-elegant">Análisis de políticas públicas</span>
                 </div>
               </div>
 
@@ -658,7 +677,7 @@ export default function AboutPage() {
                     <path d="m22 21-3-3m0 0a5.5 5.5 0 1 0-7.78-7.78 5.5 5.5 0 0 0 7.78 7.78Z" />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-arimo font-black text-brand-white mb-2 tracking-wide">
+                <h3 className="font-garamond font-arimo font-black text-brand-white mb-2 tracking-wide">
                   CONSULTAS COMERCIALES
                 </h3>
                 <p className="text-brand-purple font-arimo font-bold text-lg">
@@ -666,22 +685,22 @@ export default function AboutPage() {
                 </p>
               </div>
 
-              <div className="space-y-4 mb-6">
+              <div className="space-y-4 mb-6 font-arimo">
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-brand-purple rounded-full"></div>
-                  <span className="text-brand-white font-arimo">Espacios publicitarios premium</span>
+                  <span className="text-brand-white font-serif serif-elegant">Espacios publicitarios premium</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-brand-purple rounded-full"></div>
-                  <span className="text-brand-white font-arimo">Patrocinios de contenido</span>
+                  <span className="text-brand-white font-serif serif-elegant">Patrocinios de contenido</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-brand-purple rounded-full"></div>
-                  <span className="text-brand-white font-arimo">Colaboraciones estratégicas</span>
+                  <span className="text-brand-white font-serif serif-elegant">Colaboraciones estratégicas</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-brand-purple rounded-full"></div>
-                  <span className="text-brand-white font-arimo">Branded content</span>
+                  <span className="text-brand-white font-serif serif-elegant">Branded content</span>
                 </div>
               </div>
 
