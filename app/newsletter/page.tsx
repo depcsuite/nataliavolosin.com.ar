@@ -532,7 +532,6 @@ export default function NewsletterPage() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-4 text-sm text-brand-gray font-arimo">
                             <span>{new Date(featuredNewsletter.date).toLocaleDateString("es-AR")}</span>
-                            <span>{featuredNewsletter.readTime}</span>
                           </div>
                           <div className="flex items-center space-x-3">
                             <Button variant="ghost" size="sm" className="text-brand-gray hover:text-brand-purple">

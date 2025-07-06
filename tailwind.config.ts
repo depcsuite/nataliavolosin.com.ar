@@ -57,9 +57,9 @@ const config: Config = {
         "brand-light-gray": "#f7f7f7",
         "brand-gray": "#8a8a8a",
         "brand-purple": "#8b5cf6",
-        "brand-green": "#e5fd76",
+        "brand-green": "#E5FD76", // Updated to #E5FD76
         "brand-teal": "#14b8a6",
-        "brand-yellow": "#fbbf24",
+        "brand-yellow": "#E5FD76", // Updated to #E5FD76
         "brand-orange": "#f97316",
       },
       fontFamily: {

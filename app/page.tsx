@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
 import {
   Instagram,
   Star,
@@ -14,7 +13,6 @@ import {
   Search,
   TrendingUp,
   Zap,
-  Users,
   ExternalLink,
   Play,
   Twitter,
@@ -23,9 +21,13 @@ import {
   MessageCircle,
   Share,
   Mail,
+  Eye,
+  ArrowRight,
 } from "lucide-react"
 import Image from "next/image"
 import { TagBadge } from "@/components/ui/tag-badge"
+import { Separator } from "@/components/ui/separator"
+import { WelcomeModal } from "@/components/welcome-modal" // Import the new WelcomeModal
 
 // Datos de ejemplo para los artículos
 const featuredArticle = {
@@ -40,6 +42,24 @@ const featuredArticle = {
   category: "Análisis Político",
   image: "/placeholder.svg?height=400&width=600",
   views: "2.3K",
+}
+
+// Newsletter principal más reciente (se mantiene la data, pero el bloque se reemplaza)
+const latestNewsletter = {
+  id: 1,
+  slug: "exclusivo-peligra-decomiso-cristina-kirchner",
+  title: "EXCLUSIVO: Peligra el decomiso de $5.000 millones contra Cristina Kirchner",
+  subtitle: "Error procesal podría anular la medida judicial más importante contra la expresidenta",
+  excerpt:
+    "La Cámara Federal de Casación Penal evalúa un recurso que podría cambiar el rumbo de uno de los casos más emblemáticos. Fuentes judiciales confirman irregularidades en las notificaciones que podrían beneficiar a la expresidenta.",
+  date: "2025-01-16",
+  time: "14:30",
+  readTime: "8 min",
+  tags: ["Justicia", "Política", "Corrupción"],
+  views: "12.3K",
+  comments: 89,
+  image: "/placeholder.svg?height=400&width=700",
+  urgent: true,
 }
 
 const articles = [
@@ -154,6 +174,42 @@ const instagramVideos = [
   },
 ]
 
+// Popular videos data
+const popularVideos = [
+  {
+    id: 4,
+    title: "CRISTINA: HOY FALLA LA CORTE y PUEDE IR PRESA con NOE BARRAL y NATALIA VOLOSIN | ESCUCHO OFERTAS",
+    views: "4.2K",
+    duration: "45:33",
+    thumbnail: "https://img.youtube.com/vi/KWikXTJIoC8/maxresdefault.jpg",
+    publishedAt: "hace 3 días",
+  },
+  {
+    id: 3,
+    title: 'Natalia Volosin - FORO "ARGENTINA: LA CORRUPCIÓN POLÍTICA"',
+    views: "3.1K",
+    duration: "31:28",
+    thumbnail: "https://img.youtube.com/vi/Tnctnmyon-c/maxresdefault.jpg",
+    publishedAt: "hace 1 semana",
+  },
+  {
+    id: 6,
+    title: 'Natalia Volosin, abogada, desde la marcha de jubilados: "Militarizaron la Plaza"',
+    views: "2.7K",
+    duration: "12:18",
+    thumbnail: "https://img.youtube.com/vi/dxNn_9UdN1o/maxresdefault.jpg",
+    publishedAt: "hace 2 semanas",
+  },
+  {
+    id: 1,
+    title: '"Mi calificación moral a Patricia Bullrich es de asesina" Natalia Volosin Abogada',
+    views: "2.3K",
+    duration: "18:45",
+    thumbnail: "https://img.youtube.com/vi/qXjxRHPMZqo/maxresdefault.jpg",
+    publishedAt: "hace 2 semanas",
+  },
+]
+
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [tweets, setTweets] = useState<Tweet[]>([])
@@ -161,6 +217,15 @@ export default function HomePage() {
   const [isScrolled, setIsScrolled] = useState(false) // Changed to false to show top bar initially
   const [playingVideo, setPlayingVideo] = useState<string | null>(null)
   const [showPlayButton, setShowPlayButton] = useState<{ [key: string]: boolean }>({})
+
+  // Sort articles by views for "LO MÁS LEÍDO"
+  const mostReadArticles = [...articles]
+    .sort((a, b) => {
+      const viewsA = Number.parseFloat(a.views.replace("K", "")) * 1000
+      const viewsB = Number.parseFloat(b.views.replace("K", "")) * 1000
+      return viewsB - viewsA
+    })
+    .slice(0, 3) // Get top 3
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -236,6 +301,10 @@ export default function HomePage() {
     window.location.href = `/articulo/${article.slug}`
   }
 
+  const handleNewsletterClick = (slug: string) => {
+    window.location.href = `/newsletter/${slug}`
+  }
+
   const shareOnTwitter = (article: any) => {
     const text = encodeURIComponent(`${article.title} por @nataliavolosin`)
     const url = encodeURIComponent(`${window.location.origin}/articulo/${article.slug}`)
@@ -290,6 +359,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-brand-light-gray font-arimo">
+      <WelcomeModal /> {/* Render the WelcomeModal here */}
       {/* Header */}
       <header className="bg-brand-white border-b border-brand-gray/20 commercial-shadow sticky top-0 z-50">
         {/* Top Bar - Se oculta al hacer scroll */}
@@ -440,7 +510,6 @@ export default function HomePage() {
           </nav>
         </div>
       </header>
-
       {/* Breaking News Ticker - Se oculta al hacer scroll */}
       <div
         className={`bg-gradient-to-r from-brand-green via-brand-green to-brand-green/80 border-b border-brand-gray/20 transition-all duration-300 ${
@@ -461,58 +530,127 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12">
         <div className="grid lg:grid-cols-4 gap-12">
           {/* Main Content Area */}
           <div className="lg:col-span-3">
-            {/* Hero Section with Slogan */}
-            <section className="mb-16 text-center bg-gradient-to-br from-brand-purple/10 via-brand-green/20 to-brand-teal/10 p-12 rounded-3xl commercial-shadow">
-              <div className="mb-6">
-                <Badge className="bg-brand-purple text-brand-white px-4 py-2 font-arimo font-bold text-sm mb-4">
-                  Bienvenid@ a La Justa
-                </Badge>
-              </div>
-              <h1 className="text-4xl md:text-5xl font-garamond font-medium text-brand-black mb-6">
-                La plataforma de contenidos digitales de{" "}
-                <span className="font-script script-enhanced text-brand-purple">Natalia Volosin</span>
-              </h1>
-              <p className="text-xl font-arimo font-medium text-brand-black mb-6 tracking-wide">
-                DATOS • INVESTIGACIÓN • ANÁLISIS INDEPENDIENTE
-              </p>
-              <div className="max-w-4xl mx-auto space-y-4 text-lg font-arimo leading-relaxed text-brand-black mb-8">
-                <p className="font-arimo">
-                  <strong>La Justa</strong> te trae lo que los medios tradicionales no te quieren contar, con la
-                  independencia, la claridad y la irreverencia de siempre.
-                </p>
-                <p className="font-arimo">
-                  <span className="bg-brand-green/30 px-2 py-1 rounded">
-                    No recibimos ni vamos a recibir pauta de ningún gobierno ni de empresas vinculadas al juego,
-                    servicios públicos o sindicatos.
-                  </span>{" "}
-                  Esto nos diferencia de TODOS los medios y periodistas.
-                </p>
-                <p className="font-arimo">
-                  <strong>La Justa te va a incomodar, porque no somos neutrales.</strong> Pero nunca te va a manipular,
-                  porque sí somos independientes.
-                </p>
-                <p className="text-brand-purple font-medium font-arimo">
-                  Y porque no exageramos cuando decimos que{" "}
-                  <span className="font-script script-enhanced text-2xl">la invitación a pensar es urgente.</span>
-                </p>
-              </div>
-              <div className="flex justify-center">
-                <Link href="/suscripcion">
-                  <Button className="bg-gradient-to-r from-brand-purple to-brand-teal text-brand-white font-arimo font-bold px-8 py-4 rounded-2xl text-lg hover:scale-105 transition-transform duration-300">
-                    <Users className="w-5 h-5 mr-2" />
-                    Quiero bancar a La Justa
-                  </Button>
-                </Link>
+            {/* LO MÁS LEÍDO Section */}
+            <section className="mb-16">
+              <div className="grid lg:grid-cols-3 gap-8">
+                {/* Featured Most Read Article (first item) */}
+                {mostReadArticles[0] && (
+                  <Card
+                    key={mostReadArticles[0].id}
+                    onClick={() => handleArticleClick(mostReadArticles[0])}
+                    className="lg:col-span-2 bg-brand-white commercial-shadow border-2 border-brand-purple/30 rounded-2xl cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-brand-purple/5 to-brand-teal/5 group"
+                  >
+                    <div className="md:flex">
+                      <div className="md:w-1/2">
+                        <Image
+                          src={mostReadArticles[0].image || "/placeholder.svg"}
+                          alt={mostReadArticles[0].title}
+                          width={700}
+                          height={400}
+                          className="w-full h-64 md:h-full object-cover rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
+                      <CardContent className="md:w-1/2 p-6 md:p-8 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center justify-between mb-4">
+                            <TagBadge index={mostReadArticles[0].id} className="text-sm font-arimo font-bold">
+                              {mostReadArticles[0].category}
+                            </TagBadge>
+                            <span className="text-sm text-brand-gray font-arimo font-medium">
+                              {mostReadArticles[0].date} • {mostReadArticles[0].readTime}
+                            </span>
+                          </div>
+                          <CardTitle className="text-2xl md:text-3xl font-garamond font-bold text-brand-black mb-4 leading-tight group-hover:text-brand-purple transition-colors">
+                            {mostReadArticles[0].title}
+                          </CardTitle>
+                          <CardDescription className="text-brand-gray text-base font-arimo leading-relaxed mb-6 line-clamp-3">
+                            {mostReadArticles[0].excerpt}
+                          </CardDescription>
+                        </div>
+                        <div className="flex items-center justify-between mt-auto">
+                          <div className="flex items-center space-x-2">
+                            <Eye className="w-5 h-5 text-brand-gray" />
+                            <span className="text-sm text-brand-gray font-arimo font-medium">
+                              {mostReadArticles[0].views}
+                            </span>
+                          </div>
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              shareOnTwitter(mostReadArticles[0])
+                            }}
+                          >
+                            Compartir
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </div>
+                  </Card>
+                )}
+
+                {/* Other Most Read Articles (remaining items) */}
+                <div className="lg:col-span-1 grid gap-8 md:grid-cols-2 lg:grid-cols-1">
+                  {" "}
+                  {/* Nested grid for smaller items */}
+                  {mostReadArticles.slice(1, 3).map((article) => (
+                    <Card
+                      key={article.id}
+                      onClick={() => handleArticleClick(article)}
+                      className="bg-brand-white commercial-shadow border-2 border-brand-gray/20 rounded-2xl cursor-pointer hover:scale-[1.02] transition-transform duration-300"
+                    >
+                      <CardHeader className="p-0">
+                        <img
+                          src={article.image || "/placeholder.svg"}
+                          alt={article.title}
+                          width={300}
+                          height={200}
+                          className="w-full h-36 object-cover rounded-t-2xl"
+                        />
+                      </CardHeader>
+                      <CardContent className="p-4 flex flex-col justify-between flex-grow">
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <TagBadge index={article.id} className="text-xs font-arimo font-bold">
+                              {article.category}
+                            </TagBadge>
+                            <span className="text-xs text-brand-gray font-arimo font-medium">{article.readTime}</span>
+                          </div>
+                          <CardTitle className="text-lg font-garamond font-medium text-brand-black line-clamp-2">
+                            {article.title}
+                          </CardTitle>
+                        </div>
+                        <div className="flex items-center justify-between mt-4">
+                          <div className="flex items-center space-x-1">
+                            <Eye className="w-4 h-4 text-brand-gray" />
+                            <span className="text-xs text-brand-gray font-arimo font-medium">{article.views}</span>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-brand-gray hover:text-brand-purple"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              shareOnTwitter(article)
+                            }}
+                          >
+                            <Share className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </div>
             </section>
 
-            {/* Advertising Banner - After Hero */}
+            {/* Advertising Banner - After LO MÁS LEÍDO */}
             <section className="mb-16">
               <div className="bg-gradient-to-r from-brand-gray/10 to-brand-light-gray border-2 border-dashed border-brand-gray/30 rounded-2xl p-8 text-center commercial-shadow">
                 <p className="text-brand-gray text-sm font-arimo font-bold mb-2">Espacio Publicitario</p>
@@ -591,6 +729,8 @@ export default function HomePage() {
                             <img
                               src={tweet.author?.profile_image_url || "/placeholder.svg"}
                               alt={tweet.author?.name}
+                              width={48}
+                              height={48}
                               className="w-12 h-12 rounded-full border-2 border-brand-gray/20"
                             />
                             <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-brand-purple rounded-full flex items-center justify-center">
@@ -906,88 +1046,6 @@ export default function HomePage() {
                 </div>
               </div>
             </section>
-
-            {/* Featured Articles Section */}
-            <section className="mb-16">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-3xl font-arimo font-black text-brand-black tracking-wide">
-                  Newsletters destacados
-                </h2>
-                <Link href="/articulos">
-                  <Button
-                    variant="outline"
-                    className="border-2 border-brand-purple text-brand-purple hover:bg-brand-purple hover:text-brand-white font-arimo font-bold px-6 py-3 rounded-xl transition-all duration-300 bg-transparent"
-                  >
-                    Ver todos
-                  </Button>
-                </Link>
-              </div>
-
-              {/* Other Articles Grid */}
-              <div className="grid md:grid-cols-2 gap-8 mt-12">
-                {articles.map((article) => (
-                  <Card
-                    key={article.id}
-                    onClick={() => handleArticleClick(article)}
-                    className="bg-brand-white commercial-shadow border-2 border-brand-gray/20 rounded-2xl cursor-pointer hover:scale-[1.02] transition-transform duration-300"
-                  >
-                    <CardHeader className="p-0">
-                      <img
-                        src={article.image || "/placeholder.svg"}
-                        alt={article.title}
-                        className="w-full h-48 object-cover rounded-t-2xl"
-                      />
-                    </CardHeader>
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <TagBadge index={article.id} className="text-sm font-arimo font-bold">
-                          {article.category}
-                        </TagBadge>
-                        <span className="text-sm text-brand-gray font-arimo font-medium">
-                          {article.date} • {article.readTime}
-                        </span>
-                      </div>
-                      <CardTitle className="text-xl font-garamond font-medium text-brand-black">
-                        {article.title}
-                      </CardTitle>
-                      <CardDescription className="text-brand-gray text-base font-arimo leading-relaxed">
-                        {article.excerpt}
-                      </CardDescription>
-                      <div className="flex items-center justify-between mt-6">
-                        <div className="flex items-center space-x-2">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="lucide lucide-eye w-5 h-5 text-brand-gray"
-                          >
-                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-                            <circle cx="12" cy="12" r="3" />
-                          </svg>
-                          <span className="text-sm text-brand-gray font-arimo font-medium">{article.views}</span>
-                        </div>
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation() // Prevent Card onClick
-                            shareOnTwitter(article)
-                          }}
-                        >
-                          Compartir
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </section>
           </div>
 
           {/* Sidebar */}
@@ -1013,6 +1071,37 @@ export default function HomePage() {
                 <Button asChild variant="secondary" className="w-full">
                   <Link href="/sobre-mi">Conoceme</Link>
                 </Button>
+              </CardContent>
+            </Card>
+
+            {/* Newsletter Signup - Unificado */}
+            <Card className="mb-8 bg-gradient-to-br from-brand-green/40 to-brand-green/60 border-2 border-brand-green commercial-shadow rounded-2xl neon-glow">
+              <CardHeader className="text-center p-8">
+                <div className="mb-4">
+                  <h3 className="text-2xl font-garamond font-medium text-brand-black mb-2">
+                    LA INVITACIÓN A{" "}
+                    <span className="font-script script-enhanced text-3xl text-brand-purple">pensar</span>
+                  </h3>
+                  <h4 className="text-2xl font-arimo font-black text-brand-black">
+                    ES <span className="bg-brand-gray text-brand-white px-3 py-1 rounded">URGENTE</span>
+                  </h4>
+                </div>
+                <p className="text-sm font-arimo font-medium">Recibe análisis semanales los viernes</p>
+              </CardHeader>
+              <CardContent className="text-center p-8 pt-0">
+                <div className="space-y-4 mb-6">
+                  <p className="text-sm text-brand-black font-arimo">
+                    Suscríbete al newsletter gratuito de los viernes haciendo clic en el enlace:
+                  </p>
+                </div>
+                <Link href="https://substack.com/@nataliavolosin" target="_blank">
+                  <Button className="w-full bg-brand-black hover:bg-brand-gray text-brand-white font-arimo font-bold py-4 rounded-xl text-lg mb-4 transition-all duration-300 hover:scale-105">
+                    Suscribirse Gratis
+                  </Button>
+                </Link>
+                <p className="text-sm text-brand-black font-arimo font-medium">
+                  Newsletter gratuito • Análisis semanales • Sin compromisos
+                </p>
               </CardContent>
             </Card>
 
@@ -1050,120 +1139,89 @@ export default function HomePage() {
               <CardHeader className="p-6">
                 <CardTitle className="text-xl font-arimo font-black text-brand-black tracking-wide flex items-center">
                   <TrendingUp className="w-5 h-5 mr-2 text-brand-purple" />
-                  VIDEOS MÁS VISTOS
+                  Videos populares
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 pt-0">
-                <div className="grid grid-cols-1 gap-3">
-                  {[
-                    {
-                      id: 4,
-                      title:
-                        "CRISTINA: HOY FALLA LA CORTE y PUEDE IR PRESA con NOE BARRAL y NATALIA VOLOSIN | ESCUCHO OFERTAS",
-                      views: "4.2K",
-                      duration: "45:33",
-                      thumbnail: "https://img.youtube.com/vi/KWikXTJIoC8/maxresdefault.jpg",
-                      publishedAt: "hace 3 días",
-                    },
-                    {
-                      id: 3,
-                      title: 'Natalia Volosin - FORO "ARGENTINA: LA CORRUPCIÓN POLÍTICA"',
-                      views: "3.1K",
-                      duration: "31:28",
-                      thumbnail: "https://img.youtube.com/vi/Tnctnmyon-c/maxresdefault.jpg",
-                      publishedAt: "hace 1 semana",
-                    },
-                    {
-                      id: 6,
-                      title: 'Natalia Volosin, abogada, desde la marcha de jubilados: "Militarizaron la Plaza"',
-                      views: "2.7K",
-                      duration: "12:18",
-                      thumbnail: "https://img.youtube.com/vi/dxNn_9UdN1o/maxresdefault.jpg",
-                      publishedAt: "hace 2 semanas",
-                    },
-                    {
-                      id: 1,
-                      title: '"Mi calificación moral a Patricia Bullrich es de asesina" Natalia Volosin Abogada',
-                      views: "2.3K",
-                      duration: "18:45",
-                      thumbnail: "https://img.youtube.com/vi/qXjxRHPMZqo/maxresdefault.jpg",
-                      publishedAt: "hace 2 semanas",
-                    },
-                  ].map((video, index) => (
-                    <Link key={video.id} href="/videos" className="block">
-                      <div className="cursor-pointer hover:bg-brand-gray/5 p-2 rounded-lg transition-all duration-200 group">
-                        {/* Thumbnail - Arriba */}
-                        <div className="relative mb-2">
-                          <Image
-                            src={video.thumbnail || "/placeholder.svg"}
-                            alt={video.title}
-                            width={160}
-                            height={90}
-                            className="w-full aspect-video rounded-lg object-cover"
-                          />
-                          {/* Play button overlay */}
-                          <div className="absolute inset-0 bg-black/30 flex items-center justify-center rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Play className="w-6 h-6 text-white" />
-                          </div>
+                <div className="space-y-4">
+                  {popularVideos.map((video) => (
+                    <div
+                      key={video.id}
+                      className="flex space-x-3 cursor-pointer group hover:bg-brand-light-gray/50 p-2 rounded-lg transition-all duration-300"
+                      onClick={() => {
+                        const slug = video.title
+                          .toLowerCase()
+                          .replace(/[áàäâ]/g, "a")
+                          .replace(/[éèëê]/g, "e")
+                          .replace(/[íìïî]/g, "i")
+                          .replace(/[óòöô]/g, "o")
+                          .replace(/[úùüû]/g, "u")
+                          .replace(/ñ/g, "n")
+                          .replace(/[^a-z0-9\s-]/g, "")
+                          .replace(/\s+/g, "-")
+                          .replace(/-+/g, "-")
+                          .trim()
+                        window.location.href = `/videos/${slug}`
+                      }}
+                    >
+                      <div className="relative flex-shrink-0">
+                        <img
+                          src={video.thumbnail || "/placeholder.svg"}
+                          alt={video.title}
+                          width={96}
+                          height={64}
+                          className="w-24 h-16 object-cover rounded-lg border border-brand-gray/20 group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1 py-0.5 rounded font-arimo">
+                          {video.duration}
                         </div>
-                        {/* Title and Views - Abajo */}
-                        <div className="space-y-1">
-                          <h4 className="text-sm font-arimo font-bold text-brand-black line-clamp-2 group-hover:text-brand-purple transition-colors">
-                            {video.title}
-                          </h4>
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs text-brand-gray font-arimo">{video.views} views</span>
-                            <span className="text-xs text-brand-gray font-arimo">{video.duration}</span>
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="bg-white/90 rounded-full p-1">
+                            <Play className="w-3 h-3 text-brand-black" fill="currentColor" />
                           </div>
-                          <span className="text-xs text-brand-gray font-arimo">{video.publishedAt}</span>
                         </div>
                       </div>
-                    </Link>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-arimo font-medium text-brand-black line-clamp-2 group-hover:text-brand-purple transition-colors leading-tight mb-1">
+                          {video.title}
+                        </h4>
+                        <div className="flex items-center space-x-2 text-xs text-brand-gray font-arimo">
+                          <span className="flex items-center">
+                            <Eye className="w-3 h-3 mr-1" />
+                            {video.views}
+                          </span>
+                          <span>•</span>
+                          <span>{video.publishedAt}</span>
+                        </div>
+                      </div>
+                    </div>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Newsletter Signup - Unificado */}
-            <Card className="bg-gradient-to-br from-brand-green/40 to-brand-green/60 border-2 border-brand-green commercial-shadow rounded-2xl neon-glow">
-              <CardHeader className="text-center p-8">
-                <div className="mb-4">
-                  <h3 className="text-2xl font-garamond font-medium text-brand-black mb-2">
-                    LA INVITACIÓN A{" "}
-                    <span className="font-script script-enhanced text-3xl text-brand-purple">pensar</span>
-                  </h3>
-                  <h4 className="text-2xl font-arimo font-black text-brand-black">
-                    ES <span className="bg-brand-gray text-brand-white px-3 py-1 rounded">URGENTE</span>
-                  </h4>
-                </div>
-                <p className="text-sm font-arimo text-brand-black font-medium">Recibe análisis semanales los viernes</p>
-              </CardHeader>
-              <CardContent className="text-center p-8 pt-0">
-                <div className="space-y-4 mb-6">
-                  <p className="text-sm text-brand-black font-arimo">
-                    Suscríbete al newsletter gratuito de los viernes haciendo clic en el enlace:
-                  </p>
-                </div>
-                <Link href="https://substack.com/@nataliavolosin" target="_blank">
-                  <Button className="w-full bg-brand-black hover:bg-brand-gray text-brand-white font-arimo font-bold py-4 rounded-xl text-lg mb-4 transition-all duration-300 hover:scale-105">
-                    Suscribirse Gratis
+                <div className="mt-6 pt-4 border-t border-brand-gray/20">
+                  <Button variant="outline" className="w-full bg-transparent" asChild>
+                    <Link href="/videos">
+                      Ver todos los videos
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Link>
                   </Button>
-                </Link>
-                <p className="text-sm text-brand-black font-arimo font-medium">
-                  Newsletter gratuito • Análisis semanales • Sin compromisos
-                </p>
+                </div>
               </CardContent>
             </Card>
 
-            {/* Advertising Banner - Sidebar */}
-            <Card className="mb-8 mt-6 bg-gradient-to-br from-brand-purple/5 to-brand-teal/5 border-2 border-dashed border-brand-purple/20 rounded-2xl p-8 text-center commercial-shadow">
-              <p className="text-brand-purple text-lg font-arimo font-bold mb-2">Publicidad</p>
-              <p className="text-brand-gray text-sm font-arimo">300x250 - Rectángulo Medio</p>
-            </Card>
+            {/* Advertising Sidebar */}
+            <div className="space-y-6">
+              <div className="bg-gradient-to-r from-brand-gray/10 to-brand-light-gray border-2 border-dashed border-brand-gray/30 rounded-2xl p-6 text-center commercial-shadow">
+                <p className="text-brand-gray text-sm font-arimo font-bold mb-2">Espacio Publicitario</p>
+                <p className="text-brand-gray text-xs font-arimo">300x250 - Sidebar Superior</p>
+              </div>
+              <div className="bg-gradient-to-r from-brand-gray/10 to-brand-light-gray border-2 border-dashed border-brand-gray/30 rounded-2xl p-6 text-center commercial-shadow">
+                <p className="text-brand-gray text-sm font-arimo font-bold mb-2">Espacio Publicitario</p>
+                <p className="text-brand-gray text-xs font-arimo">300x250 - Sidebar Inferior</p>
+              </div>
+            </div>
           </aside>
         </div>
       </main>
-
       {/* Footer */}
       <footer className="bg-brand-black text-brand-white py-16 mt-20">
         <div className="container mx-auto px-4">
@@ -1173,9 +1231,7 @@ export default function HomePage() {
               Natalia <span className="font-script script-enhanced text-4xl text-brand-purple">Volosin</span>
             </h4>
             <h5 className="text-2xl font-arimo font-black mb-4 tracking-wider">LA JUSTA</h5>
-            <p className="text-brand-gray text-lg font-serif serif-elegant font-arimo">
-              Portal de análisis independiente
-            </p>
+            <p className="text-brand-gray text-lg font-arimo">Portal de análisis independiente</p>
           </div>
 
           {/* Sección comercial rediseñada */}
@@ -1196,7 +1252,7 @@ export default function HomePage() {
                     strokeLinejoin="round"
                     className="text-brand-green"
                   >
-                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                    <path d="M16 4h2a2 4 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
                     <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
                   </svg>
                 </div>
@@ -1208,7 +1264,7 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <div className="space-y-4 mb-6 font-arimo">
+              <div className="space-y-4 mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-brand-green rounded-full"></div>
                   <span className="text-brand-white font-serif serif-elegant">Conferencias magistrales</span>
@@ -1354,7 +1410,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Copyright */}
+          {/* Copyright centrado */}
           <div className="text-center text-sm text-brand-gray font-arimo font-medium">
             © 2025 Natalia Volosin. Todos los derechos reservados.
           </div>
