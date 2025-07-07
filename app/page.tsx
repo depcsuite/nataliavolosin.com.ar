@@ -561,9 +561,6 @@ export default function HomePage() {
                             <TagBadge index={mostReadArticles[0].id} className="text-sm font-arimo font-bold">
                               {mostReadArticles[0].category}
                             </TagBadge>
-                            <span className="text-sm text-brand-gray font-arimo font-medium">
-                              {mostReadArticles[0].date} • {mostReadArticles[0].readTime}
-                            </span>
                           </div>
                           <CardTitle className="text-2xl md:text-3xl font-garamond font-bold text-brand-black mb-4 leading-tight group-hover:text-brand-purple transition-colors">
                             {mostReadArticles[0].title}
@@ -620,7 +617,6 @@ export default function HomePage() {
                             <TagBadge index={article.id} className="text-xs font-arimo font-bold">
                               {article.category}
                             </TagBadge>
-                            <span className="text-xs text-brand-gray font-arimo font-medium">{article.readTime}</span>
                           </div>
                           <CardTitle className="text-lg font-garamond font-medium text-brand-black line-clamp-2">
                             {article.title}

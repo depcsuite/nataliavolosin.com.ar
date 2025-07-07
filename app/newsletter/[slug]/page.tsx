@@ -20,7 +20,6 @@ import {
   Zap,
   ChevronRight,
   Flame,
-  Heart,
   Twitter,
   Instagram,
   Music,
@@ -34,6 +33,9 @@ import {
   Linkedin,
   Copy,
   CheckCircle,
+  Search,
+  Play,
+  Star,
 } from "lucide-react"
 
 // Datos de ejemplo para newsletters (mismo que en la página principal)
@@ -135,33 +137,42 @@ const breakingNews = [
   "🚨 Debate sobre transparencia en contrataciones públicas gana impulso",
 ]
 
-// Noticias relacionadas para sidebar
-const relatedNews = [
+// Noticias trending para sidebar (adaptado para el nuevo diseño)
+const trendingNews = [
   {
-    id: 201,
-    title: "Cristina Kirchner apela fallo en causa Vialidad",
+    id: 101,
+    title: "Fiscal pide prisión preventiva para ex funcionario",
     tags: ["Justicia"],
-    time: "Hace 1 hora",
-    views: "5.2K",
-    readTime: "4 min",
+    time: "Hace 2 horas",
+    views: "3.2K",
+    readTime: "3 min",
     thumbnail: "/news-article-thumbnail.png",
   },
   {
-    id: 202,
-    title: "Nuevas medidas cautelares en casos de corrupción",
+    id: 102,
+    title: "Diputados aprueban proyecto de transparencia",
     tags: ["Política"],
-    time: "Hace 3 horas",
-    views: "3.8K",
-    readTime: "6 min",
+    time: "Hace 4 horas",
+    views: "2.8K",
+    readTime: "5 min",
     thumbnail: "/news-article-thumbnail.png",
   },
   {
-    id: 203,
-    title: "Reforma del sistema judicial: avances y obstáculos",
-    tags: ["Análisis"],
-    time: "Hace 5 horas",
+    id: 103,
+    title: "Nuevo escándalo en contrataciones públicas",
+    tags: ["Corrupción"],
+    time: "Hace 6 horas",
     views: "4.1K",
     readTime: "7 min",
+    thumbnail: "/news-article-thumbnail.png",
+  },
+  {
+    id: 104,
+    title: "Reforma judicial: qué dice el proyecto",
+    tags: ["Análisis"],
+    time: "Hace 8 horas",
+    views: "1.9K",
+    readTime: "4 min",
     thumbnail: "/news-article-thumbnail.png",
   },
 ]
@@ -174,6 +185,7 @@ interface Props {
 
 export default function NewsletterArticlePage({ params }: Props) {
   const router = useRouter()
+  const [searchQuery, setSearchQuery] = useState("")
   const [isScrolled, setIsScrolled] = useState(false)
   const [liked, setLiked] = useState(false)
   const [disliked, setDisliked] = useState(false)
@@ -254,7 +266,7 @@ export default function NewsletterArticlePage({ params }: Props) {
           }`}
         >
           <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between text-sm font-arimo font-bold">
+            <div className="flex items-center justify-between text-sm font-arimo">
               <div className="flex items-center space-x-4">
                 <span className="font-bold flex items-center">
                   <TrendingUp className="w-4 h-4 mr-2" />
@@ -279,20 +291,20 @@ export default function NewsletterArticlePage({ params }: Props) {
         </div>
 
         {/* Main Header - Altura reducida */}
-        <div className={`container mx-auto px-4 transition-all duration-300 ${isScrolled ? "py-3" : "py-4"}`}>
+        <div className={`container mx-auto px-4 transition-all duration-300 ${isScrolled ? "py-3" : "py-6"}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-4">
                 <Link href="/">
                   <h1
-                    className={`font-garamond font-medium text-brand-black transition-all duration-300 ${
-                      isScrolled ? "text-2xl" : "text-3xl"
+                    className={`font-garamond font-medium text-brand-black hover:text-brand-purple transition-all duration-300 ${
+                      isScrolled ? "text-2xl" : "text-4xl"
                     }`}
                   >
                     Natalia{" "}
                     <span
                       className={`font-script script-enhanced text-brand-purple transition-all duration-300 ${
-                        isScrolled ? "text-3xl" : "text-4xl"
+                        isScrolled ? "text-3xl" : "text-5xl"
                       }`}
                     >
                       Volosin
@@ -301,34 +313,59 @@ export default function NewsletterArticlePage({ params }: Props) {
                 </Link>
                 <span
                   className={`font-arimo font-black text-brand-black transition-all duration-300 ${
-                    isScrolled ? "text-lg" : "text-xl"
+                    isScrolled ? "text-lg" : "text-2xl"
                   }`}
                 >
                   →
                 </span>
                 <h2
                   className={`font-arimo font-black text-brand-black tracking-wider transition-all duration-300 ${
-                    isScrolled ? "text-xl" : "text-2xl"
+                    isScrolled ? "text-xl" : "text-3xl"
                   }`}
                 >
                   LA JUSTA
                 </h2>
               </div>
               {!isScrolled && (
-                <div className="hidden lg:block text-sm text-brand-gray font-arimo font-medium">
-                  Portal de análisis independiente
-                </div>
+                <div className="hidden lg:block text-sm text-brand-gray font-arimo font-medium">Pensar es urgente</div>
               )}
             </div>
 
             <div className="flex items-center space-x-4">
+              {/* Enhanced Search */}
+              <div className="relative hidden md:block">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-brand-gray w-5 h-5" />
+                  <input
+                    type="text"
+                    placeholder="Buscar noticias..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-12 pr-4 py-3 w-72 bg-brand-light-gray border-2 border-brand-gray/30 focus:bg-brand-white focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 transition-all duration-300 rounded-xl font-arimo"
+                  />
+                  {searchQuery && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-brand-green/20"
+                      onClick={() => setSearchQuery("")}
+                    >
+                      ×
+                    </Button>
+                  )}
+                </div>
+              </div>
+              <Button variant="ghost" size="sm" className="md:hidden">
+                <Search className="w-5 h-5" />
+              </Button>
               <Link href="/suscripcion">
                 <Button
                   className={`bg-gradient-to-r from-brand-green to-brand-teal hover:from-brand-green/80 hover:to-brand-teal/80 text-brand-black font-arimo font-bold rounded-xl neon-glow transition-all duration-300 ${
                     isScrolled ? "px-4 py-2 text-sm" : "px-6 py-3"
                   }`}
+                  size="lg"
                 >
-                  <Heart className="w-5 h-5 mr-2" />
+                  <Star className="w-5 h-5 mr-2" />
                   {isScrolled ? "Bancar a La Justa" : "Quiero bancar a La Justa"}
                 </Button>
               </Link>
@@ -653,20 +690,21 @@ export default function NewsletterArticlePage({ params }: Props) {
 
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
-            {/* Related News */}
+            {/* Trending News */}
             <Card className="commercial-shadow rounded-lg">
               <CardHeader className="p-6">
                 <CardTitle className="text-xl font-arimo font-black text-brand-black tracking-wide flex items-center">
                   <Flame className="w-5 h-5 mr-2 text-red-500" />
-                  RELACIONADAS
+                  LO MÁS LEÍDO
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 pt-0">
-                <div className="grid grid-cols-1 gap-4">
-                  {relatedNews.map((news) => (
+                <div className="grid grid-cols-1 gap-3">
+                  {trendingNews.map((news) => (
                     <Link key={news.id} href="/newsletter" className="block">
-                      <div className="cursor-pointer hover:bg-brand-gray/5 p-3 rounded-lg transition-all duration-200 group">
-                        <div className="relative mb-3">
+                      <div className="cursor-pointer hover:bg-brand-gray/5 p-2 rounded-lg transition-all duration-200 group">
+                        {/* Thumbnail - Arriba */}
+                        <div className="relative mb-2">
                           <Image
                             src={news.thumbnail || "/placeholder.svg"}
                             alt={news.title}
@@ -674,14 +712,19 @@ export default function NewsletterArticlePage({ params }: Props) {
                             height={90}
                             className="w-full aspect-video rounded-lg object-cover"
                           />
+                          {/* Play button overlay */}
+                          <div className="absolute inset-0 bg-black/30 flex items-center justify-center rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Play className="w-6 h-6 text-white" />
+                          </div>
                         </div>
-                        <div className="space-y-2">
+                        {/* Title and Views - Abajo */}
+                        <div className="space-y-1">
                           <h4 className="text-sm font-arimo font-bold text-brand-black line-clamp-2 group-hover:text-brand-purple transition-colors">
                             {news.title}
                           </h4>
-                          <div className="flex items-center justify-between text-xs text-brand-gray font-arimo">
-                            <span>{news.views} vistas</span>
-                            <span>{news.readTime}</span>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-brand-gray font-arimo">{news.views} visualizaciones</span>
+                            <span className="text-xs text-brand-gray font-arimo">{news.readTime}</span>
                           </div>
                           <span className="text-xs text-brand-gray font-arimo">{news.time}</span>
                         </div>
@@ -721,7 +764,7 @@ export default function NewsletterArticlePage({ params }: Props) {
               </CardContent>
             </Card>
 
-            {/* Sidebar Ad Space */}
+            {/* Sidebar Ad Space 1 */}
             <div className="bg-gradient-to-br from-brand-teal/10 to-brand-green/10 border-2 border-dashed border-brand-teal/30 rounded-lg p-6 text-center commercial-shadow">
               <p className="text-brand-teal text-sm font-arimo font-bold mb-2">Publicidad</p>
               <p className="text-brand-gray text-xs font-arimo">300x250</p>
@@ -755,6 +798,12 @@ export default function NewsletterArticlePage({ params }: Props) {
                 </p>
               </div>
             </Card>
+
+            {/* Sidebar Ad Space 2 */}
+            <div className="bg-gradient-to-br from-brand-purple/10 to-brand-gray/10 border-2 border-dashed border-brand-purple/30 rounded-lg p-4 text-center commercial-shadow">
+              <p className="text-brand-purple text-sm font-arimo font-bold mb-2">Banner</p>
+              <p className="text-brand-gray text-xs font-arimo">300x100</p>
+            </div>
           </div>
         </div>
       </main>
@@ -768,9 +817,7 @@ export default function NewsletterArticlePage({ params }: Props) {
               Natalia <span className="font-script script-enhanced text-4xl text-brand-purple">Volosin</span>
             </h4>
             <h5 className="text-2xl font-arimo font-black mb-4 tracking-wider">LA JUSTA</h5>
-            <p className="text-brand-gray text-lg font-serif serif-elegant font-arimo">
-              Portal de análisis independiente
-            </p>
+            <p className="text-brand-gray text-lg font-arimo">Portal de análisis independiente</p>
           </div>
 
           {/* Sección comercial rediseñada */}
