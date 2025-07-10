@@ -4,58 +4,65 @@
 
 @layer base {
   :root {
-    --background: 0 0% 97%;
-    --foreground: 0 0% 10%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+    --card-foreground: 0 0% 0%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
-    --primary: 0 0% 10%;
-    --primary-foreground: 0 0% 96%;
-    --secondary: 262 83% 58%;
-    --secondary-foreground: 0 0% 96%;
-    --muted: 220 13% 69%;
-    --muted-foreground: 0 0% 96%;
-    --accent: 76 96% 73%;
-    --accent-foreground: 0 0% 10%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 85%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 0 0% 95%;
+    --accent-foreground: 0 0% 0%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 0 0% 10%;
-    --radius: 0.75rem;
-    --chart-1: 76 96% 73%;
-    --chart-2: 262 83% 58%;
-    --chart-3: 180 84% 40%;
-    --chart-4: 0 0% 10%;
-    --chart-5: 220 13% 69%;
+    --border: 0 0% 85%;
+    --input: 0 0% 85%;
+    --ring: 0 0% 0%;
+    --radius: 0;
+    --chart-1: 0 0% 0%;
+    --chart-2: 0 0% 30%;
+    --chart-3: 0 0% 50%;
+    --chart-4: 0 0% 70%;
+    --chart-5: 0 0% 90%;
+
+    /* Brand colors - now in black and white */
+    --brand-black: #000000;
+    --brand-white: #ffffff;
+    --brand-light-gray: #f5f5f5;
+    --brand-gray: #888888;
+    --brand-dark-gray: #333333;
   }
 
   .dark {
-    --background: 0 0% 10%;
-    --foreground: 0 0% 96%;
-    --card: 0 0% 10%;
-    --card-foreground: 0 0% 96%;
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 96%;
-    --primary: 0 0% 96%;
-    --primary-foreground: 0 0% 10%;
-    --secondary: 262 83% 58%;
-    --secondary-foreground: 0 0% 96%;
-    --muted: 220 13% 69%;
-    --muted-foreground: 0 0% 96%;
-    --accent: 76 96% 73%;
-    --accent-foreground: 0 0% 10%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 5%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 80%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 13% 20%;
-    --input: 220 13% 20%;
-    --ring: 0 0% 96%;
-    --chart-1: 76 96% 73%;
-    --chart-2: 262 83% 58%;
-    --chart-3: 180 84% 40%;
-    --chart-4: 0 0% 96%;
-    --chart-5: 220 13% 69%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 0 0% 100%;
+    --chart-1: 0 0% 100%;
+    --chart-2: 0 0% 70%;
+    --chart-3: 0 0% 50%;
+    --chart-4: 0 0% 30%;
+    --chart-5: 0 0% 10%;
   }
 }
 
@@ -67,10 +74,12 @@
     @apply bg-background text-foreground font-arimo;
   }
   h1 {
-    @apply font-garamond;
+    @apply font-garamond font-bold tracking-tight;
   }
   h2,
-  h3,
+  h3 {
+    @apply font-garamond font-medium tracking-tight;
+  }
   h4,
   h5,
   p,
@@ -79,9 +88,6 @@
   ol,
   button,
   span {
-    @apply font-arimo;
-  }
-  .animate-marquee {
     @apply font-arimo;
   }
 }
@@ -94,12 +100,8 @@
     overflow: hidden;
   }
 
-  .animate-marquee {
-    animation: marquee 30s linear infinite;
-  }
-
   .font-garamond {
-    font-family: var(--font-eb-garamond), Georgia, "Times New Roman", Times, serif;
+    font-family: var(--font-playfair-display), Georgia, "Times New Roman", Times, serif;
   }
 
   .font-arimo {
@@ -108,81 +110,87 @@
   }
 
   .font-script {
-    font-family: "Brush Script MT", "Lucida Handwriting", "Apple Chancery", "Comic Sans MS", cursive;
-    font-style: italic;
+    font-family: var(--font-dancing-script), "Brush Script MT", "Lucida Handwriting", cursive;
+    font-style: normal;
     font-weight: 500;
   }
 
-  .gradient-text {
-    background: linear-gradient(135deg, #e5fd76, #8b5cf6, #14b8a6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  /* Minimalist design utilities */
+  .text-massive {
+    font-size: clamp(3rem, 10vw, 8rem);
+    line-height: 0.9;
   }
 
-  .commercial-shadow {
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  .text-huge {
+    font-size: clamp(2.5rem, 8vw, 6rem);
+    line-height: 0.95;
   }
 
-  .neon-glow {
-    box-shadow: 0 0 20px rgba(229, 253, 118, 0.3);
+  .text-xlarge {
+    font-size: clamp(2rem, 6vw, 4rem);
+    line-height: 1;
   }
 
-  .text-highlight {
-    background: linear-gradient(120deg, transparent 0%, transparent 40%, #e5fd76 40%, #e5fd76 60%, transparent 60%);
-    padding: 0 4px;
+  .text-large {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    line-height: 1.1;
   }
 
-  .handwritten-annotation {
-    position: relative;
+  .text-medium {
+    font-size: clamp(1.25rem, 3vw, 2rem);
+    line-height: 1.2;
   }
 
-  .handwritten-annotation::after {
-    content: attr(data-annotation);
-    position: absolute;
-    top: -20px;
-    right: -40px;
-    font-family: "Brush Script MT", "Lucida Handwriting", cursive;
-    font-size: 1.2rem;
-    color: #8b5cf6;
-    transform: rotate(15deg);
-    pointer-events: none;
-  }
-
-  /* Enhanced script styling for better handwritten effect */
-  .script-enhanced {
-    font-family: "Brush Script MT", "Lucida Handwriting", "Apple Chancery", "Comic Sans MS", cursive;
-    font-style: italic;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    transform: rotate(-1deg);
-    display: inline-block;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Professional serif styling for headings */
-  .serif-elegant {
-    font-family: var(--font-eb-garamond), Georgia, "Times New Roman", Times, serif;
-    font-weight: 400;
-    line-height: 1.4;
-    letter-spacing: 0.01em;
-  }
-
-  /* Clean sans-serif styling for content */
-  .sans-modern {
-    font-family: var(--font-arimo), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-      sans-serif;
-    font-weight: 400;
+  .text-regular {
+    font-size: clamp(1rem, 2vw, 1.25rem);
     line-height: 1.5;
-    letter-spacing: -0.01em;
   }
 
-  @keyframes marquee {
-    0% {
-      transform: translate3d(100%, 0, 0);
-    }
-    100% {
-      transform: translate3d(-100%, 0, 0);
-    }
+  .text-small {
+    font-size: clamp(0.875rem, 1.5vw, 1rem);
+    line-height: 1.5;
+  }
+
+  /* Minimalist block styles */
+  .block-massive {
+    padding: clamp(3rem, 10vh, 10rem) 0;
+  }
+
+  .block-large {
+    padding: clamp(2rem, 8vh, 6rem) 0;
+  }
+
+  .block-medium {
+    padding: clamp(1.5rem, 5vh, 4rem) 0;
+  }
+
+  .block-small {
+    padding: clamp(1rem, 3vh, 2rem) 0;
+  }
+
+  /* Minimalist borders */
+  .border-minimal {
+    border-width: 1px;
+    border-color: #000;
+  }
+
+  .border-minimal-top {
+    border-top-width: 1px;
+    border-top-color: #000;
+  }
+
+  .border-minimal-bottom {
+    border-bottom-width: 1px;
+    border-bottom-color: #000;
+  }
+
+  /* Minimalist hover effects */
+  .hover-minimal {
+    transition: all 0.2s ease;
+  }
+
+  .hover-minimal:hover {
+    background-color: #000;
+    color: #fff;
   }
 }
