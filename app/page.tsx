@@ -4,16 +4,18 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { ArrowRight, MessageCircle, Repeat2, Heart, ExternalLink, Play, Instagram } from "lucide-react"
+import { ArrowRight, MessageCircle, Repeat2, Heart, ExternalLink, Play, Instagram, MapPin, Globe } from "lucide-react"
 import { cn } from "@/lib/utils" // Import cn utility
+import Image from "next/image" // Import Image component
+import { SupportModal } from "@/components/support-modal" // Import the new modal component
 
 // Simplified data structure
 const featuredArticle = {
   id: 1,
-  slug: "crisis-institucional-reformas-estructurales-argentina",
-  title: "Crisis institucional: El momento decisivo para las reformas estructurales en Argentina",
+  slug: "el-telefono-de-vaudagna-es-una-bomba",
+  title: "El teléfono de Vaudagna es una bomba",
   excerpt:
-    "Un análisis exhaustivo sobre la coyuntura política actual y las oportunidades únicas que se presentan para implementar cambios profundos en el sistema institucional argentino.",
+    "El ex jefe regional de AFIP en Rosario protagoniza la segunda entrega de esta novela de narcos, complicidad política y corrupción judicial",
   date: "2025-01-16",
 }
 
@@ -47,7 +49,7 @@ const articles = [
   },
 ]
 
-// Mock Twitter/X posts data
+// Mock Twitter/X posts data - expanded to 4 posts
 const twitterPosts = [
   {
     id: 1,
@@ -76,20 +78,82 @@ const twitterPosts = [
     retweets: 94,
     likes: 256,
   },
+  {
+    id: 4,
+    text: "El sistema de justicia argentino necesita reformas estructurales urgentes. No podemos seguir con parches cuando lo que se requiere es una transformación profunda. #Justicia #Argentina",
+    date: "2025-01-13",
+    time: "09:20",
+    replies: 18,
+    retweets: 52,
+    likes: 143,
+  },
 ]
 
-// Single Instagram video
-const featuredVideo = {
-  id: 1,
-  title: "El fallo de la Corte en la causa #vialidad",
-  videoUrl: "https://s3.us-east-1.amazonaws.com/nataliavolosin.com.ar/videos/el-fallo-de-la-Corte-en-la-causa-vialidad.mp4",
-  hashtags: ["#cfk", "#vialidad"],
-  date: "2025-01-16",
-}
+// Videos for the home page
+const homePageVideos = [
+  {
+    id: 1,
+    title: "El fallo de la Corte en la causa #vialidad",
+    videoUrl: "https://s3.us-east-1.amazonaws.com/nataliavolosin.com.ar/videos/el-fallo-de-la-Corte-en-la-causa-vialidad.mp4",
+    hashtags: ["#cfk", "#vialidad"],
+    description: "Análisis del fallo de la Corte Suprema en la causa vialidad y sus implicancias jurídicas.",
+  },
+  {
+    id: 2,
+    title: "Las mentiras de Juliana Santillán ante el reclamo de las médicas del hospital",
+    videoUrl: "https://s3.us-east-1.amazonaws.com/nataliavolosin.com.ar/videos/las-mentiras-de-juliana-santilla%CC%81n-ante-el-reclamo-de-las-me%CC%81dicas.mp4",
+    hashtags: [
+      "#garrahan",
+      "#hospitalgarrahan",
+      "#julianasantillán",
+      "#indec",
+      "#milei",
+      "#benegaslynch",
+      "#cluacas",
+      "#diputadasantillan",
+      "#residentesmédicos",
+    ],
+    description:
+      "Un reel de Instagram sobre las declaraciones de Juliana Santillán y el reclamo de las médicas del Hospital Garrahan.",
+  },
+  {
+    id: 3,
+    title:
+      "El llanto de la mujer de Jorge Macri, Belén Ludueña, ante una simple pregunta de su panelista al Jefe de Gobierno.",
+    videoUrl: "https://s3.us-east-1.amazonaws.com/nataliavolosin.com.ar/videos/El-llanto-de-la-mujer-de-Jorge-Macri.mp4",
+    hashtags: ["#jorgemacri", "#belenludueña", "#amaliaguiñazú", "#bicisenda"],
+    description: "Un reel de Instagram sobre la reacción de Belén Ludueña ante una pregunta sobre Jorge Macri.",
+  },
+]
+
+const supportOptions = [
+  {
+    amount: "$5.000",
+    period: "mes",
+    url: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849763dae001976bb14ba2031d",
+  },
+  {
+    amount: "$8.000",
+    period: "mes",
+    url: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849764e81a01976bb1a6e402c6",
+  },
+  {
+    amount: "$12.000",
+    period: "mes",
+    url: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849763dae001976ec4495d0412",
+  },
+  {
+    amount: "Anual",
+    period: "descuento",
+    url: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849764e81a01976bb4934202c7",
+  },
+]
 
 export default function HomePage() {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
+  const [showSupportModal, setShowSupportModal] = useState(false) // State for the modal
 
   // Scroll listener
   useEffect(() => {
@@ -102,6 +166,16 @@ export default function HomePage() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  // Effect to show the modal on page load
+  useEffect(() => {
+    setShowSupportModal(true)
+  }, [])
+
+  // Add this useEffect hook to scroll to top on page load
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   const handleVideoPlay = () => {
     setIsVideoPlaying(true)
   }
@@ -110,8 +184,20 @@ export default function HomePage() {
     setIsVideoPlaying(false)
   }
 
+  const handleHeaderButtonClick = () => {
+    const targetElement = document.getElementById("sumate-a-la-comunidad")
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+  }
+
+  const currentVideo = homePageVideos[currentVideoIndex]
+
   return (
     <div className="min-h-screen bg-white text-black">
+      {/* Support Modal */}
+      <SupportModal open={showSupportModal} onOpenChange={setShowSupportModal} targetId="sumate-a-la-comunidad" />
+
       {/* Minimalist Header */}
       <header className="sticky top-0 z-50 bg-white border-b border-black">
         <div className="container mx-auto px-4 py-6 flex justify-between items-center">
@@ -131,13 +217,13 @@ export default function HomePage() {
             <Link href="/por-que" className="text-black hover:text-gray-700 font-medium uppercase">
               Por qué
             </Link>
-            <Link href="/videos" className="text-black hover:text-gray-700 font-medium uppercase">
-              Videos
-            </Link>
           </nav>
-          <Link href="https://substack.com/@nataliavolosin" target="_blank">
-            <Button className="bg-black text-white hover:bg-gray-800 rounded-none px-6 py-3">Suscribirse</Button>
-          </Link>
+          <Button
+            className="bg-black text-white hover:bg-gray-800 rounded-none px-6 py-3"
+            onClick={handleHeaderButtonClick} // Added onClick handler
+          >
+            SUMATE a La Justa
+          </Button>
         </div>
       </header>
 
@@ -147,12 +233,13 @@ export default function HomePage() {
           <div className="max-w-5xl">
             <h1 className="text-massive mb-12">LA JUSTA</h1>
             <p className="text-medium max-w-2xl mb-12">
-              Portal de análisis independiente. Datos, investigación y análisis sin compromisos. La invitación a pensar
-              es urgente.
+              La Justa es la plataforma de contenidos digitales de Natalia Volosin. Datos, investigación y análisis de
+              lo que los medios tradicionales no te quieren contar, con la independencia, la claridad y la irreverencia
+              de siempre.
             </p>
-            <Link href="/newsletter">
+            <Link href="/suscripcion">
               <Button className="bg-black text-white hover:bg-gray-800 rounded-none px-8 py-6 text-lg">
-                Leer La Justa
+                Suscribite al Newsletter La Justa
                 <ArrowRight className="ml-2 h-6 w-6" />
               </Button>
             </Link>
@@ -165,23 +252,29 @@ export default function HomePage() {
       {/* Featured Newsletter - WHITE */}
       <section className="block-large bg-white">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-12">
+          <h2 className="text-xlarge mb-8">Newsletter</h2>
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Text block on the left */}
             <div>
-              <h2 className="text-xlarge mb-8">Newsletter</h2>
               <h3 className="text-large mb-6">{featuredArticle.title}</h3>
               <p className="text-regular mb-8">{featuredArticle.excerpt}</p>
-              <Link href={`/articulo/${featuredArticle.slug}`}>
+              <Link href={`/newsletter/${featuredArticle.slug}`}>
                 <Button className="bg-white text-black hover:bg-black hover:text-white border border-black rounded-none px-6 py-3">
-                  Leer artículo
+                  Leer Newsletter
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
             </div>
-            <div className="bg-black text-white p-12 flex items-center justify-center">
-              <p className="text-medium font-garamond italic">
-                "La Justa no solo informa, sino que educa y empodera a los ciudadanos para que puedan participar
-                activamente en la vida democrática del país."
-              </p>
+            {/* Image on the right */}
+            <div className="relative w-full h-auto">
+              <Image
+                src="/images/imagen-newsletter.webp"
+                alt="Imagen del Newsletter principal"
+                width={800}
+                height={450}
+                className="w-full h-auto object-cover"
+                priority
+              />
             </div>
           </div>
         </div>
@@ -189,32 +282,66 @@ export default function HomePage() {
 
       <Separator className="border-t border-black" />
 
-      {/* Video Section - BLACK */}
+      {/* Instagram Section - BLACK */}
       <section className="block-large bg-black text-white">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Bio and content on the left */}
             <div>
-              <h2 className="text-xlarge mb-8">Video reciente</h2>
-              <h3 className="text-large mb-6">{featuredVideo.title}</h3>
-              <div className="flex gap-2 mb-6">
-                {featuredVideo.hashtags.map((hashtag, index) => (
-                  <span key={index} className="text-regular text-gray-300">
-                    {hashtag}
-                  </span>
+              <h2 className="text-xlarge mb-6">Seguime en Instagram</h2>
+              <div className="mb-8">
+                <h3 className="text-large mb-4">Natalia Volosin</h3>
+                <p className="text-regular text-gray-300 leading-relaxed">
+                  Mamá de 2/Bostera 💙💛🎾⚽️
+                  <br />
+                  Abogada, consultora, académica y comunicadora
+                  <br />
+                  Máster y Doctora en Derecho (Yale)
+                </p>
+              </div>
+
+              {/* Current video info */}
+              <div className="mb-8">
+                <h4 className="text-medium mb-4">{currentVideo.title}</h4>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {currentVideo.hashtags.map((hashtag, index) => (
+                    <span key={index} className="text-small text-gray-300">
+                      {hashtag}
+                    </span>
+                  ))}
+                </div>
+                <p className="text-regular text-gray-300 mb-6">{currentVideo.description}</p>
+              </div>
+
+              {/* Carousel controls - Only circles remain */}
+              <div className="flex items-center justify-center space-x-2 mb-8">
+                {homePageVideos.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      setCurrentVideoIndex(index)
+                      setIsVideoPlaying(false)
+                    }}
+                    className={cn(
+                      "w-3 h-3 rounded-full transition-colors",
+                      index === currentVideoIndex ? "bg-white" : "bg-gray-500",
+                    )}
+                  />
                 ))}
               </div>
-              <p className="text-regular mb-8 text-gray-300">
-                Análisis del fallo de la Corte Suprema en la causa vialidad y sus implicancias jurídicas.
-              </p>
+
               <Link href="https://www.instagram.com/nataliavolosin" target="_blank">
                 <Button className="bg-white text-black hover:bg-gray-200 rounded-none px-6 py-3">
-                  Ver más videos
+                  Seguir en Instagram
                   <Instagram className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
             </div>
+
+            {/* Video on the right */}
             <div className="relative group">
               <video
+                key={currentVideo.id} // Force re-render when video changes
                 className={cn(
                   "w-full aspect-[9/16] object-cover bg-gray-900 max-w-sm mx-auto",
                   !isVideoPlaying && "grayscale hover:grayscale-0 transition-all duration-500 ease-in-out",
@@ -224,7 +351,7 @@ export default function HomePage() {
                 onPause={handleVideoPause}
                 preload="metadata"
               >
-                <source src={featuredVideo.videoUrl} type="video/mp4" />
+                <source src={currentVideo.videoUrl} type="video/mp4" />
                 Tu navegador no soporta el elemento de video.
               </video>
               {!isVideoPlaying && (
@@ -247,82 +374,59 @@ export default function HomePage() {
       {/* Twitter/X Feed Section - WHITE */}
       <section className="block-large bg-white">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-12">
-            <div>
-              <h2 className="text-xlarge mb-8">Últimos mensajes</h2>
-              <div className="space-y-8">
-                {twitterPosts.map((post) => (
-                  <article key={post.id} className="border-t border-black pt-6">
-                    <p className="text-regular mb-4 leading-relaxed">{post.text}</p>
-                    <div className="flex items-center justify-between text-small text-gray-600 mb-4">
-                      <span>
-                        {post.date} • {post.time}
-                      </span>
-                      <Link
-                        href="https://x.com/nataliavolosin"
-                        target="_blank"
-                        className="flex items-center hover:text-black"
-                      >
-                        Ver en X
-                        <ExternalLink className="ml-1 h-3 w-3" />
-                      </Link>
-                    </div>
-                    <div className="flex items-center space-x-6 text-small text-gray-600">
-                      <div className="flex items-center">
-                        <MessageCircle className="w-4 h-4 mr-1" />
-                        {post.replies}
-                      </div>
-                      <div className="flex items-center">
-                        <Repeat2 className="w-4 h-4 mr-1" />
-                        {post.retweets}
-                      </div>
-                      <div className="flex items-center">
-                        <Heart className="w-4 h-4 mr-1" />
-                        {post.likes}
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-            <div className="bg-black text-white p-12">
-              <h3 className="text-large mb-6">Sígueme en X</h3>
-              <p className="text-regular mb-8">
-                Análisis en tiempo real, reflexiones sobre la actualidad política y jurídica, y debates sobre los temas
-                que importan.
-              </p>
+          <div className="mb-12">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-xlarge">Seguime en X</h2>
               <Link href="https://x.com/nataliavolosin" target="_blank">
-                <Button className="bg-white text-black hover:bg-gray-200 rounded-none px-6 py-3 w-full">
+                <Button className="bg-black text-white hover:bg-gray-800 rounded-none px-6 py-3">
                   Seguir @nataliavolosin
                   <ExternalLink className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
             </div>
-          </div>
-        </div>
-      </section>
 
-      <Separator className="border-t border-black" />
-
-      {/* Recent Newsletters - WHITE */}
-      <section className="block-large bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-xlarge mb-12">Newsletter recientes</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {articles.map((article) => (
-              <article key={article.id} className="border-t-2 border-black pt-6">
-                <span className="text-small uppercase mb-2 block">{article.category}</span>
-                <h3 className="text-medium mb-4">{article.title}</h3>
-                <p className="text-regular mb-6">{article.excerpt}</p>
-                <Link
-                  href={`/articulo/${article.slug}`}
-                  className="text-black hover:underline font-medium flex items-center"
+            <div className="grid md:grid-cols-2 gap-8">
+              {twitterPosts.map((post) => (
+                <article
+                  key={post.id}
+                  className="border border-black p-6 transition-colors hover:bg-black hover:text-white"
                 >
-                  Leer más
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </article>
-            ))}
+                  <p className="text-regular mb-4 leading-relaxed">{post.text}</p>
+                  <div className="flex items-center justify-between text-small text-gray-600 mb-4">
+                    <span>
+                      {new Date(post.date).toLocaleDateString("es-AR", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                      })}{" "}
+                      • {post.time}
+                    </span>
+                    <Link
+                      href="https://x.com/nataliavolosin"
+                      target="_blank"
+                      className="flex items-center hover:text-black"
+                    >
+                      Ver en X
+                      <ExternalLink className="ml-1 h-3 w-3" />
+                    </Link>
+                  </div>
+                  <div className="flex items-center space-x-6 text-small text-gray-600">
+                    <div className="flex items-center">
+                      <MessageCircle className="w-4 h-4 mr-1" />
+                      {post.replies}
+                    </div>
+                    <div className="flex items-center">
+                      <Repeat2 className="w-4 h-4 mr-1" />
+                      {post.retweets}
+                    </div>
+                    <div className="flex items-center">
+                      <Heart className="w-4 h-4 mr-1" />
+                      {post.likes}
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -333,13 +437,101 @@ export default function HomePage() {
       <section className="block-large bg-black text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-xlarge mb-6">Suscríbete a La Justa</h2>
-            <p className="text-medium mb-8">Recibe análisis semanales directamente en tu correo. Sin compromisos.</p>
-            <Link href="https://substack.com/@nataliavolosin" target="_blank">
+            <h2 className="text-xlarge mb-6">Suscribite a La Justa</h2>
+            <p className="text-medium mb-8">
+              La Justa es el newsletter semanal de Natalia Volosin sobre política, (in)justicia y actualidad. Sale los
+              viernes.
+            </p>
+            <Link href="/suscripcion">
               <Button className="bg-white text-black hover:bg-gray-200 rounded-none px-8 py-6 text-lg">
-                Suscribirse Gratis
+                Suscribite ahora Gratis
               </Button>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      <Separator className="border-t border-black" />
+
+      {/* Support Options - WHITE */}
+      <section id="sumate-a-la-comunidad" className="block-large bg-white pt-24 scroll-mt-24">
+        {" "}
+        {/* Added pt-24 and scroll-mt-24 */}
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-xlarge mb-6">Sumate a la comunidad</h2>
+              <p className="text-regular max-w-2xl mx-auto">
+                Tu contribución hace posible que podamos seguir investigando y contando la verdad sin compromisos.
+              </p>
+            </div>
+
+            {/* Argentina Support */}
+            <div className="mb-16">
+              <div className="flex items-center justify-center mb-8">
+                <MapPin className="w-5 h-5 mr-2" />
+                <h3 className="text-large">Desde Argentina</h3>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                {supportOptions.map((option, index) => (
+                  <Link key={index} href={option.url} target="_blank">
+                    <div className="border border-black p-6 hover:bg-black hover:text-white transition-colors group">
+                      <div className="text-center">
+                        <div className="text-medium mb-2">{option.amount}</div>
+                        <div className="text-regular mb-4">por {option.period}</div>
+                        <div className="flex items-center justify-center text-regular group-hover:text-white">
+                          Apoyar
+                          <ExternalLink className="ml-2 h-4 w-4" />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              <div className="text-center">
+                <p className="text-regular mb-4">¿Preferís otro monto?</p>
+                <Link
+                  href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c938084976a0ea101976bb1fdc400be"
+                  target="_blank"
+                >
+                  <Button className="bg-white text-black hover:bg-black hover:text-white border border-black rounded-none px-6 py-3">
+                    Monto personalizado
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            <Separator className="border-t border-black my-16" />
+
+            {/* International Support */}
+            <div>
+              <div className="flex items-center justify-center mb-8">
+                <Globe className="w-5 h-5 mr-2" />
+                <h3 className="text-large">Desde el exterior</h3>
+              </div>
+
+              <div className="text-center">
+                <p className="text-regular mb-8 max-w-2xl mx-auto">
+                  Para apoyar La Justa desde cualquier parte del mundo con el monto que consideres justo.
+                </p>
+
+                <Link href="https://www.paypal.com/" target="_blank">
+                  <div className="border border-black p-8 hover:bg-black hover:text-white transition-colors group max-w-md mx-auto">
+                    <div className="text-center">
+                      <div className="text-medium mb-2">PayPal</div>
+                      <div className="text-regular mb-4">Monto personalizado</div>
+                      <div className="flex items-center justify-center text-regular group-hover:text-white">
+                        Apoyar internacionalmente
+                        <ExternalLink className="ml-2 h-4 w-4" />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>

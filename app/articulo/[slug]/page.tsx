@@ -85,7 +85,7 @@ export default function ArticlePage({ params }: PageProps) {
             </Link>
           </nav>
           <Link href="https://substack.com/@nataliavolosin" target="_blank">
-            <Button className="bg-black text-white hover:bg-gray-800 rounded-none px-6 py-3">Suscribirse</Button>
+            <Button className="bg-black text-white hover:bg-gray-800 rounded-none px-6 py-3">SUMATE a La Justa</Button>
           </Link>
         </div>
       </header>
@@ -120,7 +120,11 @@ export default function ArticlePage({ params }: PageProps) {
                         <Link href={`/articulo/${article.slug}`} className="block hover:underline">
                           <h4 className="text-regular font-medium mb-2">{article.title}</h4>
                           <span className="text-small text-gray-600">
-                            {new Date(article.date).toLocaleDateString("es-AR")}
+                            {new Date(article.date).toLocaleDateString("es-AR", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                            })}
                           </span>
                         </Link>
                       </div>
@@ -129,7 +133,7 @@ export default function ArticlePage({ params }: PageProps) {
                 </div>
 
                 <div className="mb-8">
-                  <Link href="https://substack.com/@nataliavolosin" target="_blank">
+                  <Link href="/suscripcion">
                     <Button className="w-full bg-black text-white hover:bg-gray-800 rounded-none py-6">
                       Suscribirse al Newsletter
                     </Button>
@@ -149,7 +153,11 @@ export default function ArticlePage({ params }: PageProps) {
               <div className="flex items-center space-x-6 text-small text-gray-600 mb-8">
                 <div className="flex items-center">
                   <Calendar className="w-4 h-4 mr-2" />
-                  {new Date(article.date).toLocaleDateString("es-AR")}
+                  {new Date(article.date).toLocaleDateString("es-AR", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })}
                 </div>
                 <div className="flex items-center">
                   <Clock className="w-4 h-4 mr-2" />
@@ -215,11 +223,14 @@ export default function ArticlePage({ params }: PageProps) {
       <section className="block-large bg-black text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-xlarge mb-6">Suscríbete a La Justa</h2>
-            <p className="text-medium mb-8">Recibe análisis semanales directamente en tu correo. Sin compromisos.</p>
-            <Link href="https://substack.com/@nataliavolosin" target="_blank">
+            <h2 className="text-xlarge mb-6">Suscribite a La Justa</h2>
+            <p className="text-medium mb-8">
+              La Justa es el newsletter semanal de Natalia Volosin sobre política, (in)justicia y actualidad. Sale los
+              viernes.
+            </p>
+            <Link href="/suscripcion">
               <Button className="bg-white text-black hover:bg-gray-200 rounded-none px-8 py-6 text-lg">
-                Suscribirse Gratis
+                Suscribite ahora Gratis
               </Button>
             </Link>
           </div>

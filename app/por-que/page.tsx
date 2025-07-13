@@ -4,7 +4,9 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { ArrowRight, ExternalLink, Globe, MapPin } from "lucide-react"
+import { ExternalLink, Globe, MapPin } from "lucide-react" // Removed Mail icon import
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { SupportModal } from "@/components/support-modal" // Import the new modal component
 
 const supportOptions = [
   {
@@ -31,6 +33,7 @@ const supportOptions = [
 
 export default function PorQuePage() {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [showSupportModal, setShowSupportModal] = useState(false) // State for the modal
 
   // Scroll listener
   useEffect(() => {
@@ -43,8 +46,28 @@ export default function PorQuePage() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  // Effect to show the modal on page load
+  useEffect(() => {
+    setShowSupportModal(true)
+  }, [])
+
+  // Add this useEffect hook to scroll to top on page load
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
+  const handleHeaderButtonClick = () => {
+    const targetElement = document.getElementById("sumate-a-la-comunidad")
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white text-black">
+      {/* Support Modal */}
+      <SupportModal open={showSupportModal} onOpenChange={setShowSupportModal} targetId="sumate-a-la-comunidad" />
+
       {/* Minimalist Header */}
       <header className="sticky top-0 z-50 bg-white border-b border-black">
         <div className="container mx-auto px-4 py-6 flex justify-between items-center">
@@ -64,13 +87,13 @@ export default function PorQuePage() {
             <Link href="/por-que" className="text-black hover:text-gray-700 font-medium uppercase font-bold">
               Por qué
             </Link>
-            <Link href="/videos" className="text-black hover:text-gray-700 font-medium uppercase">
-              Videos
-            </Link>
           </nav>
-          <Link href="https://substack.com/@nataliavolosin" target="_blank">
-            <Button className="bg-black text-white hover:bg-gray-800 rounded-none px-6 py-3">Suscribirse</Button>
-          </Link>
+          <Button
+            className="bg-black text-white hover:bg-gray-800 rounded-none px-6 py-3"
+            onClick={handleHeaderButtonClick} // Added onClick handler
+          >
+            SUMATE a La Justa
+          </Button>
         </div>
       </header>
 
@@ -124,10 +147,6 @@ export default function PorQuePage() {
                 necesitamos de tu apoyo. Sumate a la comunidad de Justicieros. Sumate a la urgencia de pensar con
                 profundidad, independencia y claridad.
               </p>
-
-              <div className="text-center py-8">
-                <h2 className="text-xlarge mb-4">Sumate a La Justa</h2>
-              </div>
             </div>
           </div>
         </div>
@@ -135,33 +154,64 @@ export default function PorQuePage() {
 
       <Separator className="border-t border-black" />
 
-      {/* About La Justa - BLACK */}
+      {/* New Contact Block - Redesigned */}
+      <section className="block-large bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-xlarge mb-12">Contacto</h2>
+            <div className="grid md:grid-cols-2 gap-8">
+              <Card className="border-black rounded-none p-6 flex flex-col items-center text-center hover:bg-black hover:text-white transition-colors group">
+                <CardHeader className="p-0 mb-4">
+                  {/* Removed Mail icon */}
+                  <CardTitle className="text-medium mb-2">Charlas, Eventos y Consultoría</CardTitle>
+                </CardHeader>
+                <CardDescription className="text-regular text-gray-700 group-hover:text-gray-300">
+                  Para charlas, eventos, consultoría y capacitaciones, escribinos a:
+                </CardDescription>
+                <Link
+                  href="mailto:lajusta@nataliavolosin.com"
+                  className="text-regular font-medium underline hover:no-underline text-black group-hover:text-white mt-4"
+                >
+                  lajusta@nataliavolosin.com
+                </Link>
+              </Card>
+
+              <Card className="border-black rounded-none p-6 flex flex-col items-center text-center hover:bg-black hover:text-white transition-colors group">
+                <CardHeader className="p-0 mb-4">
+                  {/* Removed Mail icon */}
+                  <CardTitle className="text-medium mb-2">Consultas Comerciales</CardTitle>
+                </CardHeader>
+                <CardDescription className="text-regular text-gray-700 group-hover:text-gray-300">
+                  Para consultas comerciales:
+                </CardDescription>
+                <Link
+                  href="mailto:comercial@nataliavolosin.com"
+                  className="text-regular font-medium underline hover:no-underline text-black group-hover:text-white mt-4"
+                >
+                  comercial@nataliavolosin.com
+                </Link>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Separator className="border-t border-black" />
+
+      {/* Newsletter Signup - BLACK */}
       <section className="block-large bg-black text-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-xlarge mb-8">La Justa</h2>
-            <div className="space-y-6 text-regular leading-relaxed">
-              <p>
-                La Justa es la plataforma de contenidos digitales de Natalia Volosin. Datos, investigación y análisis de
-                lo que los medios tradicionales no te quieren contar, con la independencia, la claridad y la
-                irreverencia de siempre.
-              </p>
-
-              <p>
-                No recibimos ni vamos a recibir pauta de ningún gobierno ni de empresas vinculadas al juego, servicios
-                públicos o sindicatos. Esto nos diferencia de TODOS los medios y periodistas.
-              </p>
-
-              <p>
-                La Justa te va a incomodar, porque no somos neutrales. Pero nunca te va a manipular, porque sí somos
-                independientes. Y porque no exageramos cuando decimos que la invitación a pensar es urgente.
-              </p>
-
-              <p className="text-medium font-medium text-gray-300">
-                Tu apoyo hace posible el periodismo independiente que Argentina necesita. Convertite en Justicier@ y
-                bancá el análisis independiente.
-              </p>
-            </div>
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-xlarge mb-6">Suscribite a La Justa</h2>
+            <p className="text-medium mb-8">
+              La Justa es el newsletter semanal de Natalia Volosin sobre política, (in)justicia y actualidad. Sale los
+              viernes.
+            </p>
+            <Link href="/suscripcion">
+              <Button className="bg-white text-black hover:bg-gray-200 rounded-none px-8 py-6 text-lg">
+                Suscribite ahora Gratis
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -169,11 +219,11 @@ export default function PorQuePage() {
       <Separator className="border-t border-black" />
 
       {/* Support Options - WHITE */}
-      <section className="block-large bg-white">
+      <section id="sumate-a-la-comunidad" className="block-large bg-white pt-24 scroll-mt-24">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-xlarge mb-6">Apoyá el proyecto</h2>
+              <h2 className="text-xlarge mb-6">Sumate a la comunidad</h2>
               <p className="text-regular max-w-2xl mx-auto">
                 Tu contribución hace posible que podamos seguir investigando y contando la verdad sin compromisos.
               </p>
@@ -245,26 +295,6 @@ export default function PorQuePage() {
                 </Link>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <Separator className="border-t border-black" />
-
-      {/* Call to Action - BLACK */}
-      <section className="block-large bg-black text-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-xlarge mb-6">Convertite en Justicier@</h2>
-            <p className="text-medium mb-8">
-              Bancá el periodismo independiente que Argentina necesita. Tu apoyo hace la diferencia.
-            </p>
-            <Link href="https://substack.com/@nataliavolosin" target="_blank">
-              <Button className="bg-white text-black hover:bg-gray-200 rounded-none px-8 py-6 text-lg">
-                Suscribirse ahora
-                <ArrowRight className="ml-2 h-6 w-6" />
-              </Button>
-            </Link>
           </div>
         </div>
       </section>
