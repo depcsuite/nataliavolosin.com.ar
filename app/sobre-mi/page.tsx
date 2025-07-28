@@ -1,12 +1,14 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import type React from "react"
+import { useState, useEffect, useRef } from "react"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from "next/image"
-import { ExternalLink, Globe, MapPin } from "lucide-react" // Import necessary icons
-import { SupportModal } from "@/components/support-modal" // Import the new modal component
+import { ExternalLink, Globe, MapPin, Twitter, Instagram, Music, CheckCircle, X } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { ArrowRight } from "lucide-react"
 
 const supportOptions = [
   {
@@ -25,31 +27,34 @@ const supportOptions = [
     url: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849763dae001976ec4495d0412",
   },
   {
-    amount: "Anual",
-    period: "descuento",
-    url: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849764e81a01976bb4934202c7",
-  },
+    amount: "Otro monto",
+    period: "única vez",
+    url: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c938084976a0ea101976bb1fdc400be",
+  }, // Added "Otro monto" option
 ]
 
 export default function Page() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [showSupportModal, setShowSupportModal] = useState(false) // State for the modal
+  const [email, setEmail] = useState("")
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const emailInputRef = useRef<HTMLInputElement>(null)
+  const [showStickyFooter, setShowStickyFooter] = useState(true) // Added state for sticky footer
 
-  // Scroll listener
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY
-      setIsScrolled(scrollTop > 100)
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email) {
+      emailInputRef.current?.focus()
+      return
     }
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    setIsLoading(true)
 
-  // Effect to show the modal on page load
-  useEffect(() => {
-    setShowSupportModal(true)
-  }, [])
+    // Simulate form submission
+    setTimeout(() => {
+      setIsSubmitted(true)
+      setIsLoading(false)
+    }, 1000)
+  }
 
   // Add this useEffect hook to scroll to top on page load
   useEffect(() => {
@@ -65,43 +70,76 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      {/* Support Modal */}
-      <SupportModal open={showSupportModal} onOpenChange={setShowSupportModal} targetId="sumate-a-la-comunidad" />
-
       {/* Minimalist Header */}
-      <header className={`sticky top-0 z-50 bg-white border-b border-black ${isScrolled ? "shadow-lg" : ""}`}>
-        <div className="container mx-auto px-4 py-6 flex justify-between items-center">
+      <header className="bg-white border-b border-black">
+        <div className="px-4 py-6 flex justify-between items-center">
           <Link href="/" className="text-black hover:text-gray-700">
             <h1 className="text-2xl font-bold tracking-tight">NATALIA VOLOSIN</h1>
           </Link>
-          <nav className="hidden md:flex space-x-12">
-            <Link href="/" className="text-black hover:text-gray-700 font-medium uppercase">
-              Inicio
-            </Link>
-            <Link href="/sobre-mi" className="text-black hover:text-gray-700 font-medium uppercase font-bold">
-              Quién
-            </Link>
-            <Link href="/newsletter" className="text-black hover:text-gray-700 font-medium uppercase">
-              La Justa
-            </Link>
-            <Link href="/por-que" className="text-black hover:text-gray-700 font-medium uppercase">
-              Por qué
-            </Link>
-          </nav>
-          <Button
-            className="bg-black text-white hover:bg-gray-800 rounded-none px-6 py-3"
-            onClick={handleHeaderButtonClick} // Added onClick handler
-          >
-            SUMATE a La Justa
-          </Button>
+
+          <div className="flex items-center space-x-8">
+            <nav className="hidden md:flex space-x-12">
+              <Link href="/" className="text-black hover:text-gray-700 font-medium uppercase">
+                Inicio
+              </Link>
+              <Link href="/sobre-mi" className="text-black hover:text-gray-700 font-medium uppercase font-bold">
+                Quién
+              </Link>
+              <Link href="/newsletter" className="text-black hover:text-gray-700 font-medium uppercase">
+                Newsletter
+              </Link>
+              <Link href="/por-que" className="text-black hover:text-gray-700 font-medium uppercase">
+                Por qué
+              </Link>
+            </nav>
+
+            {/* Social Media Icons */}
+            <div className="hidden md:flex items-center space-x-4">
+              <Link href="https://x.com/nataliavolosin" target="_blank" className="text-black hover:text-gray-700">
+                <Twitter className="w-5 h-5" />
+              </Link>
+              <Link
+                href="https://www.instagram.com/nataliavolosin"
+                target="_blank"
+                className="text-black hover:text-gray-700"
+              >
+                <Instagram className="w-5 h-5" />
+              </Link>
+              <Link
+                href="https://www.tiktok.com/@nataliaavolosin"
+                target="_blank"
+                className="text-black hover:text-gray-700"
+              >
+                <Music className="w-5 h-5" />
+              </Link>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center space-x-3">
+              <Link href="/suscripcion">
+                <Button
+                  variant="outline"
+                  className="border-black text-black hover:bg-black hover:text-white rounded-none px-4 py-2 text-sm bg-transparent"
+                >
+                  Suscribirse
+                </Button>
+              </Link>
+              <Button
+                className="bg-black text-white hover:bg-gray-800 rounded-none px-4 py-2 text-sm"
+                onClick={handleHeaderButtonClick}
+              >
+                SUMATE
+              </Button>
+            </div>
+          </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="block-large bg-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-5xl">
-            <h1 className="text-huge mb-8">Sobre mí</h1>
+      <section className="block-massive bg-white">
+        <div className="px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-massive mb-12 text-center">Sobre mí</h1>
           </div>
         </div>
       </section>
@@ -110,15 +148,15 @@ export default function Page() {
 
       {/* Bio Section */}
       <section className="block-large bg-white">
-        <div className="container mx-auto px-4">
+        <div className="px-4">
           <div className="grid md:grid-cols-2 gap-16">
             <div>
               <h2 className="text-xlarge mb-8">Natalia Volosin</h2>
               <div className="space-y-6 text-regular">
                 <p>
-                  Natalia Volosin es abogada (2004), consultora, académica y comunicadora. Es diploma de honor magna cum
-                  laude y class valedictorian, LL.M. (Master of Laws) por Yale Law School en 2009 y J.S.D. (Doctor of
-                  the Science of Law) por la misma institución en 2018.
+                  Abogada (2004), consultora, académica y comunicadora. Es diploma de honor magna cum laude y class
+                  valedictorian, LL.M. (Master of Laws) por Yale Law School en 2009 y J.S.D. (Doctor of the Science of
+                  Law) por la misma institución en 2018.
                 </p>
                 <p className="text-medium leading-relaxed font-medium">
                   Se formó como penalista en el estudio Arslanian, Beraldi, Kaminker & Asociados, fue consultora de
@@ -145,7 +183,7 @@ export default function Page() {
               <div className="md:hidden mt-8">
                 <div className="relative w-full max-w-sm mx-auto">
                   <Image
-                    src="/images/natalia-volosin.jpg"
+                    src="/images/natalia-volosin.png"
                     alt="Natalia Volosin"
                     width={400}
                     height={500}
@@ -161,7 +199,7 @@ export default function Page() {
               <div className="hidden md:block">
                 <div className="relative w-full">
                   <Image
-                    src="/images/natalia-volosin.jpg"
+                    src="/images/natalia-volosin.png"
                     alt="Natalia Volosin"
                     width={500}
                     height={600}
@@ -178,19 +216,62 @@ export default function Page() {
       <Separator className="border-t border-black" />
 
       {/* Newsletter Signup */}
-      <section className="block-large bg-black text-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-xlarge mb-6">Suscribite a La Justa</h2>
-            <p className="text-medium mb-8">
-              La Justa es el newsletter semanal de Natalia Volosin sobre política, (in)justicia y actualidad. Sale los
-              viernes.
-            </p>
-            <Link href="/suscripcion">
-              <Button className="bg-white text-black hover:bg-gray-200 rounded-none px-8 py-6 text-lg">
-                Suscribite ahora Gratis
-              </Button>
-            </Link>
+      <section className="block-medium bg-black text-white">
+        <div className="px-4">
+          <div className="max-w-2xl mx-auto text-center">
+            {!isSubmitted ? (
+              <>
+                <h2 className="text-xlarge mb-4">Suscribite a La Justa</h2>
+                <p className="text-regular mb-8 text-gray-300">
+                  Newsletter semanal sobre política, (in)justicia y actualidad. Sale los viernes.
+                </p>
+
+                <form onSubmit={handleNewsletterSubmit} className="space-y-6">
+                  <div className="relative max-w-md mx-auto">
+                    <Input
+                      type="email"
+                      placeholder="Tu correo electrónico"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="py-4 border-white bg-black text-white placeholder:text-gray-400 rounded-none w-full text-lg focus:border-gray-300"
+                      ref={emailInputRef}
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={isLoading || !email}
+                    className="bg-white text-black hover:bg-black hover:text-white border border-black rounded-none px-8 py-4 text-lg"
+                  >
+                    {isLoading ? "Suscribiendo..." : "Suscribirme gratis"}
+                    {!isLoading && <ArrowRight className="ml-2 h-5 w-5" />}
+                  </Button>
+                </form>
+
+                <p className="text-small text-gray-400 mt-6">Podés cancelar tu suscripción en cualquier momento.</p>
+              </>
+            ) : (
+              <div className="text-center">
+                <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-6" />
+                <h2 className="text-xlarge mb-6">¡Gracias por suscribirte!</h2>
+                <p className="text-medium mb-8 text-gray-300">
+                  Te has suscrito exitosamente a La Justa. Recibirás nuestro newsletter semanal todos los viernes.
+                </p>
+                <p className="text-regular mb-8 text-gray-400">
+                  Revisa tu correo electrónico para confirmar tu suscripción.
+                </p>
+                <Button
+                  onClick={() => {
+                    setIsSubmitted(false)
+                    setEmail("")
+                  }}
+                  className="bg-white text-black hover:bg-gray-200 rounded-none px-8 py-4 text-lg"
+                >
+                  Suscribir otro correo
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -198,12 +279,10 @@ export default function Page() {
       <Separator className="border-t border-black" />
 
       {/* Support Options - WHITE */}
-      <section id="sumate-a-la-comunidad" className="block-large bg-white pt-24 scroll-mt-24">
-        {" "}
-        {/* Added id, pt-24, and scroll-mt-24 */}
-        <div className="container mx-auto px-4">
+      <section id="sumate-a-la-comunidad" className="block-medium bg-white pt-24 scroll-mt-24">
+        <div className="px-4">
           <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-16">
+            <div className="text-center mb-12">
               <h2 className="text-xlarge mb-6">Sumate a la comunidad</h2>
               <p className="text-regular max-w-2xl mx-auto">
                 Tu contribución hace posible que podamos seguir investigando y contando la verdad sin compromisos.
@@ -211,13 +290,13 @@ export default function Page() {
             </div>
 
             {/* Argentina Support */}
-            <div className="mb-16">
-              <div className="flex items-center justify-center mb-8">
+            <div className="mb-12">
+              <div className="flex items-center justify-center mb-6">
                 <MapPin className="w-5 h-5 mr-2" />
                 <h3 className="text-large">Desde Argentina</h3>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6 mb-8">
+              <div className="grid md:grid-cols-2 gap-4 mb-8">
                 {supportOptions.map((option, index) => (
                   <Link key={index} href={option.url} target="_blank">
                     <div className="border border-black p-6 hover:bg-black hover:text-white transition-colors group">
@@ -233,26 +312,13 @@ export default function Page() {
                   </Link>
                 ))}
               </div>
-
-              <div className="text-center">
-                <p className="text-regular mb-4">¿Preferís otro monto?</p>
-                <Link
-                  href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c938084976a0ea101976bb1fdc400be"
-                  target="_blank"
-                >
-                  <Button className="bg-white text-black hover:bg-black hover:text-white border border-black rounded-none px-6 py-3">
-                    Monto personalizado
-                    <ExternalLink className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
             </div>
 
             <Separator className="border-t border-black my-16" />
 
             {/* International Support */}
             <div>
-              <div className="flex items-center justify-center mb-8">
+              <div className="flex items-center justify-center mb-6">
                 <Globe className="w-5 h-5 mr-2" />
                 <h3 className="text-large">Desde el exterior</h3>
               </div>
@@ -281,8 +347,8 @@ export default function Page() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white text-black py-16">
-        <div className="container mx-auto px-4">
+      <footer className="bg-black text-white py-16">
+        <div className="px-4">
           <div className="grid md:grid-cols-3 gap-12">
             <div>
               <h3 className="text-medium mb-6">Natalia Volosin</h3>
@@ -298,32 +364,135 @@ export default function Page() {
             <div>
               <h3 className="text-medium mb-6">Redes sociales</h3>
               <div className="flex space-x-4">
-                <Link href="https://x.com/nataliavolosin" target="_blank" className="text-black hover:text-gray-700">
+                <Link href="https://x.com/nataliavolosin" target="_blank" className="text-white hover:text-gray-300">
                   Twitter
                 </Link>
                 <Link
                   href="https://www.instagram.com/nataliavolosin"
                   target="_blank"
-                  className="text-black hover:text-gray-700"
+                  className="text-white hover:text-gray-300"
                 >
                   Instagram
                 </Link>
                 <Link
                   href="https://www.tiktok.com/@nataliaavolosin"
                   target="_blank"
-                  className="text-black hover:text-gray-700"
+                  className="text-white hover:text-gray-300"
                 >
-                  TikTok
+                  Music
                 </Link>
               </div>
             </div>
           </div>
-          <Separator className="border-t border-black my-12" />
+          <Separator className="border-t border-white my-12" />
           <div className="text-center">
-            <p className="text-small">© 2025 Natalia Volosin. Todos los derechos reservados.</p>
+            <p className="text-small">© {new Date().getFullYear()} Natalia Volosin. Todos los derechos reservados.</p>
           </div>
         </div>
       </footer>
+
+      {/* Sticky Footer Banner */}
+      {showStickyFooter && (
+        <div className="fixed bottom-0 left-0 right-0 bg-black border-t-2 border-white shadow-lg z-50 transition-transform duration-300">
+          <div className="px-4 py-6">
+            <div className="flex items-center justify-between gap-6">
+              {/* Left side - Title and description */}
+              <div className="flex-1 min-w-0">
+                <h3 className="text-medium mb-1 text-white">Sumate a la comunidad</h3>
+                <p className="text-small text-gray-300 leading-tight">
+                  Tu contribución hace posible seguir investigando sin compromisos.
+                </p>
+              </div>
+
+              {/* Center - Support options grid */}
+              <div className="flex-shrink-0">
+                {/* Payment buttons grid - 3 on top, 3 on bottom */}
+                <div className="space-y-2">
+                  {/* Top row - 3 buttons */}
+                  <div className="flex gap-2">
+                    <Link
+                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849763dae001976bb14ba2031d"
+                      target="_blank"
+                    >
+                      <Button
+                        variant="outline"
+                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
+                      >
+                        $5.000
+                      </Button>
+                    </Link>
+                    <Link
+                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849764e81a01976bb1a6e402c6"
+                      target="_blank"
+                    >
+                      <Button
+                        variant="outline"
+                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
+                      >
+                        $8.000
+                      </Button>
+                    </Link>
+                    <Link
+                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849763dae001976ec4495d0412"
+                      target="_blank"
+                    >
+                      <Button className="bg-white text-black hover:bg-gray-200 rounded-lg px-4 py-2 text-sm w-[90px] h-12 font-medium">
+                        $12.000
+                      </Button>
+                    </Link>
+                  </div>
+
+                  {/* Bottom row - 3 buttons */}
+                  <div className="flex gap-2">
+                    <Link
+                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849764e81a01976bb4934202c7"
+                      target="_blank"
+                    >
+                      <Button
+                        variant="outline"
+                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
+                      >
+                        Anual
+                      </Button>
+                    </Link>
+                    <Link
+                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c938084976a0ea101976bb1fdc400be"
+                      target="_blank"
+                    >
+                      <Button
+                        variant="outline"
+                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
+                      >
+                        Otro monto
+                      </Button>
+                    </Link>
+                    <Link href="https://www.paypal.com/" target="_blank">
+                      <Button
+                        variant="outline"
+                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
+                      >
+                        PayPal
+                        <ExternalLink className="ml-1 h-3 w-3" />
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right side - Close button */}
+              <div className="flex items-center">
+                <button
+                  onClick={() => setShowStickyFooter(false)}
+                  className="p-2 text-white hover:text-gray-300 transition-colors"
+                  aria-label="Cerrar banner"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -7,24 +7,12 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
-import { ArrowRight, Mail, CheckCircle } from "lucide-react"
+import { ArrowRight, Mail, CheckCircle, Twitter, Instagram, Music } from "lucide-react"
 
 export default function SuscripcionPage() {
-  const [isScrolled, setIsScrolled] = useState(false)
   const [email, setEmail] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-
-  // Scroll listener
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY
-      setIsScrolled(scrollTop > 100)
-    }
-
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
 
   // Add this useEffect hook to scroll to top on page load
   useEffect(() => {
@@ -47,34 +35,70 @@ export default function SuscripcionPage() {
   return (
     <div className="min-h-screen bg-white text-black">
       {/* Minimalist Header */}
-      <header className="sticky top-0 z-50 bg-white border-b border-black">
-        <div className="container mx-auto px-4 py-6 flex justify-between items-center">
+      <header className="bg-white border-b border-black">
+        <div className="px-4 py-6 flex justify-between items-center">
           <Link href="/" className="text-black hover:text-gray-700">
             <h1 className="text-2xl font-bold tracking-tight">NATALIA VOLOSIN</h1>
           </Link>
-          <nav className="hidden md:flex space-x-12">
-            <Link href="/" className="text-black hover:text-gray-700 font-medium uppercase">
-              Inicio
-            </Link>
-            <Link href="/sobre-mi" className="text-black hover:text-gray-700 font-medium uppercase">
-              Quién
-            </Link>
-            <Link href="/newsletter" className="text-black hover:text-gray-700 font-medium uppercase">
-              La Justa
-            </Link>
-            <Link href="/por-que" className="text-black hover:text-gray-700 font-medium uppercase">
-              Por qué
-            </Link>
-          </nav>
-          <Link href="/#sumate-a-la-comunidad" scroll={false}>
-            <Button className="bg-black text-white hover:bg-gray-800 rounded-none px-6 py-3">SUMATE a La Justa</Button>
-          </Link>
+
+          <div className="flex items-center space-x-8">
+            <nav className="hidden md:flex space-x-12">
+              <Link href="/" className="text-black hover:text-gray-700 font-medium uppercase">
+                Inicio
+              </Link>
+              <Link href="/sobre-mi" className="text-black hover:text-gray-700 font-medium uppercase">
+                Quién
+              </Link>
+              <Link href="/newsletter" className="text-black hover:text-gray-700 font-medium uppercase">
+                Newsletter
+              </Link>
+              <Link href="/por-que" className="text-black hover:text-gray-700 font-medium uppercase">
+                Por qué
+              </Link>
+            </nav>
+
+            {/* Social Media Icons */}
+            <div className="hidden md:flex items-center space-x-4">
+              <Link href="https://x.com/nataliavolosin" target="_blank" className="text-black hover:text-gray-700">
+                <Twitter className="w-5 h-5" />
+              </Link>
+              <Link
+                href="https://www.instagram.com/nataliavolosin"
+                target="_blank"
+                className="text-black hover:text-gray-700"
+              >
+                <Instagram className="w-5 h-5" />
+              </Link>
+              <Link
+                href="https://www.tiktok.com/@nataliaavolosin"
+                target="_blank"
+                className="text-black hover:text-gray-700"
+              >
+                <Music className="w-5 h-5" />
+              </Link>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center space-x-3">
+              <Link href="/suscripcion">
+                <Button
+                  variant="outline"
+                  className="border-black text-black hover:bg-black hover:text-white rounded-none px-4 py-2 text-sm bg-transparent"
+                >
+                  Suscribirse
+                </Button>
+              </Link>
+              <Link href="/#sumate-a-la-comunidad" scroll={false}>
+                <Button className="bg-black text-white hover:bg-gray-800 rounded-none px-4 py-2 text-sm">SUMATE</Button>
+              </Link>
+            </div>
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
       <section className="block-massive bg-white">
-        <div className="container mx-auto px-4">
+        <div className="px-4">
           <div className="max-w-2xl mx-auto text-center">
             {!isSubmitted ? (
               <>
@@ -134,8 +158,8 @@ export default function SuscripcionPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white text-black py-16">
-        <div className="container mx-auto px-4">
+      <footer className="bg-black text-white py-16">
+        <div className="px-4">
           <div className="grid md:grid-cols-3 gap-12">
             <div>
               <h3 className="text-medium mb-6">Natalia Volosin</h3>
@@ -151,29 +175,29 @@ export default function SuscripcionPage() {
             <div>
               <h3 className="text-medium mb-6">Redes sociales</h3>
               <div className="flex space-x-4">
-                <Link href="https://x.com/nataliavolosin" target="_blank" className="text-black hover:text-gray-700">
+                <Link href="https://x.com/nataliavolosin" target="_blank" className="text-white hover:text-gray-300">
                   Twitter
                 </Link>
                 <Link
                   href="https://www.instagram.com/nataliavolosin"
                   target="_blank"
-                  className="text-black hover:text-gray-700"
+                  className="text-white hover:text-gray-300"
                 >
                   Instagram
                 </Link>
                 <Link
                   href="https://www.tiktok.com/@nataliaavolosin"
                   target="_blank"
-                  className="text-black hover:text-gray-700"
+                  className="text-white hover:text-gray-300"
                 >
                   TikTok
                 </Link>
               </div>
             </div>
           </div>
-          <Separator className="border-t border-black my-12" />
+          <Separator className="border-t border-white my-12" />
           <div className="text-center">
-            <p className="text-small">© 2025 Natalia Volosin. Todos los derechos reservados.</p>
+            <p className="text-small">© {new Date().getFullYear()} Natalia Volosin. Todos los derechos reservados.</p>
           </div>
         </div>
       </footer>

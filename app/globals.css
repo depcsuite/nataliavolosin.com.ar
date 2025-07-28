@@ -71,7 +71,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-arimo;
+    @apply bg-background text-foreground font-arimo; /* Removed max-w-7xl mx-auto */
   }
   h1 {
     @apply font-garamond font-bold tracking-tight;
