@@ -348,7 +348,7 @@ export default function HomePage() {
       {/* Descriptive Block - WHITE */}
       <section className="block-large bg-white">
         <div className="px-4 md:px-20 2xl:px-40 ">
-          <div className="">
+          <div className="max-w-4xl mx-auto">
             <div className="space-y-8 text-regular leading-relaxed">
               <p>
                 La Justa es la plataforma de contenidos digitales de Natalia Volosin. Datos, investigación y análisis de
