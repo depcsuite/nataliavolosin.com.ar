@@ -171,7 +171,7 @@ export default function NewsletterPage() {
       {/* <SupportModal open={showSupportModal} onOpenChange={setShowSupportModal} targetId="sumate-a-la-comunidad" /> */}
       {/* Minimalist Header */}
       <header className="bg-white border-b border-black">
-        <div className="px-4 py-6 md:px-20 2xl:px-40 flex justify-between items-center">
+        <div className="px-4 py-6 md:px-20 2xl:px-60 flex justify-between items-center">
           <Link href="/" className="text-black hover:text-gray-700">
             <h1 className="text-2xl font-bold tracking-tight">NATALIA VOLOSIN</h1>
           </Link>
@@ -267,7 +267,7 @@ export default function NewsletterPage() {
       <Separator className="border-t border-black" />
       {/* Featured Newsletter */}
       <section className="py-12 bg-white">
-        <div className="px-4 md:px-20 2xl:px-40">
+        <div className="px-4 md:px-20 2xl:px-60">
           <Link href={`/newsletter/${featuredNewsletter.slug}`}>
             <article className="grid md:grid-cols-2 gap-12 items-center border-2 border-black hover:bg-black hover:text-white transition-colors group cursor-pointer p-8 md:p-0">
               {/* Text block on the left */}
@@ -304,7 +304,7 @@ export default function NewsletterPage() {
       </section>
       {/* Search Section - Between featured and recent newsletters */}
       <section className="py-8 bg-black text-white">
-        <div className="px-4 md:px-20 2xl:px-40">
+        <div className="px-4 md:px-20 2xl:px-60">
           <div className="max-w-4xl mx-auto">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex-1 max-w-2xl">
@@ -347,7 +347,7 @@ export default function NewsletterPage() {
       </section>
       {/* Newsletter Archive */}
       <section className="py-12 bg-white">
-        <div className="px-4 md:px-20 2xl:px-40">
+        <div className="px-4 md:px-20 2xl:px-60">
           {filteredOtherNewsletters.length > 0 ? (
             <div>
               <h3 className="text-xlarge mb-8">{searchQuery ? "Resultados de búsqueda" : "Newsletter recientes"}</h3>
@@ -586,7 +586,7 @@ export default function NewsletterPage() {
       </section>
       {/* Footer */}
       <footer className="bg-black text-white py-16">
-        <div className="px-4 md:px-20 2xl:px-40">
+        <div className="px-4 md:px-20 2xl:px-60">
           <div className="grid md:grid-cols-3 gap-12">
             <div>
               <h3 className="text-medium mb-6">Natalia Volosin</h3>
@@ -631,7 +631,7 @@ export default function NewsletterPage() {
       {/* Sticky Footer Banner */}
       {showStickyFooter && (
         <div className="fixed bottom-0 left-0 right-0 bg-black border-t-2 border-white shadow-lg z-50 transition-transform duration-300">
-          <div className="px-4 py-6">
+          <div className="px-4 py-6 md:px-20 2xl:px-60">
             <div className="flex items-center justify-between gap-6">
               {/* Left side - Title and description */}
               <div className="flex-1 min-w-0">

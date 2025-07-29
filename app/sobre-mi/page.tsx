@@ -72,7 +72,7 @@ export default function Page() {
     <div className="min-h-screen bg-white text-black">
       {/* Minimalist Header */}
       <header className="bg-white border-b border-black">
-        <div className="px-4 py-6 md:px-20 2xl:px-40 flex justify-between items-center">
+        <div className="px-4 py-6 md:px-20 2xl:px-60 flex justify-between items-center">
           <Link href="/" className="text-black hover:text-gray-700">
             <h1 className="text-2xl font-bold tracking-tight">NATALIA VOLOSIN</h1>
           </Link>
@@ -137,7 +137,7 @@ export default function Page() {
 
       {/* Hero Section */}
       <section className="block-massive bg-white">
-        <div className="px-4 md:px-20 2xl:px-40">
+        <div className="px-4 md:px-20 2xl:px-60">
           <div className="text-center">
             <h1 className="text-massive mb-12 text-center">Sobre mí</h1>
           </div>
@@ -148,7 +148,7 @@ export default function Page() {
 
       {/* Bio Section */}
       <section className="block-large bg-white">
-        <div className="px-4 md:px-20 2xl:px-40">
+        <div className="px-4 md:px-20 2xl:px-60">
           <div className="grid md:grid-cols-2 gap-16">
             <div>
               <h2 className="text-xlarge mb-8">Natalia Volosin</h2>
@@ -348,7 +348,7 @@ export default function Page() {
 
       {/* Footer */}
       <footer className="bg-black text-white py-16">
-        <div className="px-4 md:px-20 2xl:px-40">
+        <div className="px-4 md:px-20 2xl:px-60">
           <div className="grid md:grid-cols-3 gap-12">
             <div>
               <h3 className="text-medium mb-6">Natalia Volosin</h3>
@@ -394,7 +394,7 @@ export default function Page() {
       {/* Sticky Footer Banner */}
       {showStickyFooter && (
         <div className="fixed bottom-0 left-0 right-0 bg-black border-t-2 border-white shadow-lg z-50 transition-transform duration-300">
-          <div className="px-4 py-6">
+          <div className="px-4 py-6 md:px-20 2xl:px-60">
             <div className="flex items-center justify-between gap-6">
               {/* Left side - Title and description */}
               <div className="flex-1 min-w-0">
