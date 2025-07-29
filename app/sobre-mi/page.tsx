@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from "next/image"
-import { ExternalLink, Globe, MapPin, Twitter, Instagram, Music, CheckCircle, X } from "lucide-react"
+import { ExternalLink, Globe, MapPin, Twitter, Instagram, Music, CheckCircle, X, Menu } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { ArrowRight } from "lucide-react"
 
@@ -39,6 +39,7 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false)
   const emailInputRef = useRef<HTMLInputElement>(null)
   const [showStickyFooter, setShowStickyFooter] = useState(true) // Added state for sticky footer
+ const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -113,9 +114,15 @@ export default function Page() {
                 <Music className="w-5 h-5" />
               </Link>
             </div>
-
+            <button
+              className="md:hidden p-2"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
             {/* Action Buttons */}
-            <div className="flex items-center space-x-3">
+            <div className="md:flex hidden items-center space-x-3">
               <Link href="/suscripcion">
                 <Button
                   variant="outline"
@@ -133,6 +140,38 @@ export default function Page() {
             </div>
           </div>
         </div>
+
+        {isMenuOpen && (
+          <div className="md:hidden bg-white border-t border-black">
+            <nav className="flex flex-col px-4 py-4 space-y-4">
+              <Link href="/" className="uppercase font-medium hover:text-gray-700">Inicio</Link>
+              <Link href="/sobre-mi" className="uppercase font-medium hover:text-gray-700">Quién</Link>
+              <Link href="/newsletter" className="uppercase font-medium hover:text-gray-700">Newsletter</Link>
+              <Link href="/por-que" className="uppercase font-medium hover:text-gray-700">Por qué</Link>
+              <div className="flex space-x-4 pt-4">
+                <Link href="https://x.com/nataliavolosin" target="_blank">
+                  <Twitter className="w-5 h-5 hover:text-gray-700" />
+                </Link>
+                <Link href="https://www.instagram.com/nataliavolosin" target="_blank">
+                  <Instagram className="w-5 h-5 hover:text-gray-700" />
+                </Link>
+                <Link href="https://www.tiktok.com/@nataliaavolosin" target="_blank">
+                  <Music className="w-5 h-5 hover:text-gray-700" />
+                </Link>
+              </div>
+              <div className="pt-4 space-y-2">
+                <Link href="/suscripcion">
+                  <Button variant="outline" className="w-full rounded-none py-2 text-sm border-black text-black">
+                    Suscribirse
+                  </Button>
+                </Link>
+                <Button className="w-full rounded-none py-2 text-sm bg-black text-white" onClick={handleHeaderButtonClick}>
+                  SUMATE
+                </Button>
+              </div>
+            </nav>
+          </div>
+        )}
       </header>
 
       {/* Hero Section */}

@@ -17,6 +17,7 @@ import {
   Music,
   CheckCircle,
   X,
+  Menu,
 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
@@ -105,7 +106,7 @@ export default function NewsletterPage() {
   const [isLoading, setIsLoading] = useState(false) // State for loading during submission
   const [showStickyFooter, setShowStickyFooter] = useState(true)
   const emailInputRef = useRef<HTMLInputElement>(null)
-
+ const [isMenuOpen, setIsMenuOpen] = useState(false)
   // Scroll listener
   useEffect(() => {
     const handleScroll = () => {
@@ -212,9 +213,15 @@ export default function NewsletterPage() {
                 <Music className="w-5 h-5" />
               </Link>
             </div>
-
+            <button
+              className="md:hidden p-2"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
             {/* Action Buttons */}
-            <div className="flex items-center space-x-3">
+            <div className="md:flex hidden items-center space-x-3">
               <Link href="/suscripcion">
                 <Button
                   variant="outline"
@@ -232,6 +239,38 @@ export default function NewsletterPage() {
             </div>
           </div>
         </div>
+
+        {isMenuOpen && (
+          <div className="md:hidden bg-white border-t border-black">
+            <nav className="flex flex-col px-4 py-4 space-y-4">
+              <Link href="/" className="uppercase font-medium hover:text-gray-700">Inicio</Link>
+              <Link href="/sobre-mi" className="uppercase font-medium hover:text-gray-700">Quién</Link>
+              <Link href="/newsletter" className="uppercase font-medium hover:text-gray-700">Newsletter</Link>
+              <Link href="/por-que" className="uppercase font-medium hover:text-gray-700">Por qué</Link>
+              <div className="flex space-x-4 pt-4">
+                <Link href="https://x.com/nataliavolosin" target="_blank">
+                  <Twitter className="w-5 h-5 hover:text-gray-700" />
+                </Link>
+                <Link href="https://www.instagram.com/nataliavolosin" target="_blank">
+                  <Instagram className="w-5 h-5 hover:text-gray-700" />
+                </Link>
+                <Link href="https://www.tiktok.com/@nataliaavolosin" target="_blank">
+                  <Music className="w-5 h-5 hover:text-gray-700" />
+                </Link>
+              </div>
+              <div className="pt-4 space-y-2">
+                <Link href="/suscripcion">
+                  <Button variant="outline" className="w-full rounded-none py-2 text-sm border-black text-black">
+                    Suscribirse
+                  </Button>
+                </Link>
+                <Button className="w-full rounded-none py-2 text-sm bg-black text-white" onClick={handleHeaderButtonClick}>
+                  SUMATE
+                </Button>
+              </div>
+            </nav>
+          </div>
+        )}
       </header>
       {/* Hero Section - Title */}
       <section className="block-massive bg-white">
@@ -629,9 +668,9 @@ export default function NewsletterPage() {
         </div>
       </footer>
       {/* Sticky Footer Banner */}
-      {showStickyFooter && (
-        <div className="fixed bottom-0 left-0 right-0 bg-black border-t-2 border-white shadow-lg z-50 transition-transform duration-300">
-          <div className="px-4 py-6 md:px-20 2xl:px-60">
+     {showStickyFooter && (
+        <div className="fixed md:block hidden bottom-0 left-0 right-0 bg-black border-t-2 border-white shadow-lg z-50 transition-transform duration-300">
+          <div className="sm:px-4 md:px-20 2xl:px-60 py-6">
             <div className="flex items-center justify-between gap-6">
               {/* Left side - Title and description */}
               <div className="flex-1 min-w-0">
@@ -726,6 +765,70 @@ export default function NewsletterPage() {
                   <X className="w-5 h-5" />
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {showStickyFooter && (
+        <div className="fixed md:hidden bottom-0 left-0 right-0 bg-black border-t-2 border-white shadow-lg z-50 transition-transform duration-300">
+          <div className="px-4 sm:px-6 md:px-20 2xl:px-60 py-4">
+            <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-4">
+              <div className="flex-1 text-center sm:text-left">
+                <h3 className="text-base text-white mb-1">Sumate a la comunidad</h3>
+                <p className="text-xs text-gray-300 leading-tight">
+                  Tu contribución hace posible seguir investigando sin compromisos.
+                </p>
+              </div>
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 w-full sm:w-auto">
+                <Link
+                  href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849763dae001976bb14ba2031d"
+                  target="_blank"
+                >
+                  <Button variant="outline" className="w-full rounded-lg py-2 text-xs bg-white text-black hover:bg-gray-200">
+                    $5.000
+                  </Button>
+                </Link>
+                <Link
+                  href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849764e81a01976bb1a6e402c6"
+                  target="_blank"
+                >
+                  <Button variant="outline" className="w-full rounded-lg py-2 text-xs bg-white text-black hover:bg-gray-200">
+                    $8.000
+                  </Button>
+                </Link>
+                <Link
+                  href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849763dae001976ec4495d0412"
+                  target="_blank"
+                >
+                  <Button className="w-full rounded-lg py-2 text-xs bg-white text-black hover:bg-gray-200">
+                    $12.000
+                  </Button>
+                </Link>
+                <Link
+                  href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849764e81a01976bb4934202c7"
+                  target="_blank"
+                >
+                  <Button variant="outline" className="w-full rounded-lg py-2 text-xs bg-white text-black hover:bg-gray-200">
+                    Anual
+                  </Button>
+                </Link>
+                <Link
+                  href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c938084976a0ea101976bb1fdc400be"
+                  target="_blank"
+                >
+                  <Button variant="outline" className="w-full rounded-lg py-2 text-xs bg-white text-black hover:bg-gray-200">
+                    Otro monto
+                  </Button>
+                </Link>
+                <Link href="https://www.paypal.com/" target="_blank">
+                  <Button variant="outline" className="w-full rounded-lg py-2 text-xs bg-white text-black hover:bg-gray-200">
+                    PayPal<ExternalLink className="ml-1 w-3 h-3" />
+                  </Button>
+                </Link>
+              </div>
+              <button onClick={() => setShowStickyFooter(false)} className="p-2 text-white hover:text-gray-300">
+                <X className="w-5 h-5" />
+              </button>
             </div>
           </div>
         </div>

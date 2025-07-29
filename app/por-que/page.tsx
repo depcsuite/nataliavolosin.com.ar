@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowRight, CheckCircle, Twitter, Instagram, Music } from "lucide-react"
+import { ArrowRight, CheckCircle, Twitter, Instagram, Music, Menu, X } from "lucide-react"
 import { MapPin, Globe, ExternalLink } from "lucide-react" // Import missing icons
 
 const supportOptions = [
@@ -39,7 +39,7 @@ export default function PorQuePage() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const emailInputRef = useRef<HTMLInputElement>(null)
-
+ const [isMenuOpen, setIsMenuOpen] = useState(false)
   // Add this useEffect hook to scroll to top on page load
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -59,6 +59,13 @@ export default function PorQuePage() {
       setIsSubmitted(true)
       setIsLoading(false)
     }, 1000)
+  }
+
+  const handleHeaderButtonClick = () => {
+    const targetElement = document.getElementById("sumate-a-la-comunidad")
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
   }
 
   return (
@@ -106,9 +113,15 @@ export default function PorQuePage() {
                 <Music className="w-5 h-5" />
               </Link>
             </div>
-
+            <button
+              className="md:hidden p-2"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
             {/* Action Buttons */}
-            <div className="flex items-center space-x-3">
+            <div className="md:flex hidden items-center space-x-3">
               <Link href="/suscripcion">
                 <Button
                   variant="outline"
@@ -117,12 +130,47 @@ export default function PorQuePage() {
                   Suscribirse
                 </Button>
               </Link>
-              <Link href="#sumate-a-la-comunidad">
-                <Button className="bg-black text-white hover:bg-gray-800 rounded-none px-4 py-2 text-sm">SUMATE</Button>
-              </Link>
+              <Button
+                className="bg-black text-white hover:bg-gray-800 rounded-none px-4 py-2 text-sm"
+                onClick={handleHeaderButtonClick}
+              >
+                SUMATE
+              </Button>
             </div>
           </div>
         </div>
+
+        {isMenuOpen && (
+          <div className="md:hidden bg-white border-t border-black">
+            <nav className="flex flex-col px-4 py-4 space-y-4">
+              <Link href="/" className="uppercase font-medium hover:text-gray-700">Inicio</Link>
+              <Link href="/sobre-mi" className="uppercase font-medium hover:text-gray-700">Quién</Link>
+              <Link href="/newsletter" className="uppercase font-medium hover:text-gray-700">Newsletter</Link>
+              <Link href="/por-que" className="uppercase font-medium hover:text-gray-700">Por qué</Link>
+              <div className="flex space-x-4 pt-4">
+                <Link href="https://x.com/nataliavolosin" target="_blank">
+                  <Twitter className="w-5 h-5 hover:text-gray-700" />
+                </Link>
+                <Link href="https://www.instagram.com/nataliavolosin" target="_blank">
+                  <Instagram className="w-5 h-5 hover:text-gray-700" />
+                </Link>
+                <Link href="https://www.tiktok.com/@nataliaavolosin" target="_blank">
+                  <Music className="w-5 h-5 hover:text-gray-700" />
+                </Link>
+              </div>
+              <div className="pt-4 space-y-2">
+                <Link href="/suscripcion">
+                  <Button variant="outline" className="w-full rounded-none py-2 text-sm border-black text-black">
+                    Suscribirse
+                  </Button>
+                </Link>
+                <Button className="w-full rounded-none py-2 text-sm bg-black text-white" onClick={handleHeaderButtonClick}>
+                  SUMATE
+                </Button>
+              </div>
+            </nav>
+          </div>
+        )}
       </header>
 
       {/* Hero Section */}
