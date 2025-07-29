@@ -65,7 +65,7 @@ export default function PorQuePage() {
     <div className="min-h-screen bg-white text-black">
       {/* Minimalist Header */}
       <header className="bg-white border-b border-black">
-        <div className="px-4 py-6 flex justify-between items-center">
+        <div className="px-4 py-6 md:px-20 2xl:px-40 flex justify-between items-center">
           <Link href="/" className="text-black hover:text-gray-700">
             <h1 className="text-2xl font-bold tracking-tight">NATALIA VOLOSIN</h1>
           </Link>
@@ -358,7 +358,7 @@ export default function PorQuePage() {
 
       {/* Footer */}
       <footer className="bg-black text-white py-16">
-        <div className="px-4">
+        <div className="px-4 md:px-20 2xl:px-40">
           <div className="grid md:grid-cols-3 gap-12">
             <div>
               <h3 className="text-medium mb-6">Natalia Volosin</h3>

@@ -145,14 +145,14 @@ const homePageVideos = [
   {
     id: 1,
     title: "El fallo de la Corte en la causa #vialidad",
-    videoUrl: "/videos/el-fallo-de-la-Corte-en-la-causa-vialidad.mp4",
+    videoUrl: "https://s3.us-east-1.amazonaws.com/nataliavolosin.com.ar/videos/el-fallo-de-la-Corte-en-la-causa-vialidad.mp4",
     hashtags: ["#cfk", "#vialidad"],
     description: "Análisis del fallo de la Corte Suprema en la causa vialidad y sus implicancias jurídicas.",
   },
   {
     id: 2,
     title: "Las mentiras de Juliana Santillán ante el reclamo de las médicas del hospital",
-    videoUrl: "/videos/las-mentiras-de-juliana-santillan-ante-el-reclamo-de-las-medicas.mp4",
+    videoUrl: "https://s3.us-east-1.amazonaws.com/nataliavolosin.com.ar/videos/las-mentiras-de-juliana-santilla%CC%81n-ante-el-reclamo-de-las-me%CC%81dicas.mp4",
     hashtags: [
       "#garrahan",
       "#hospitalgarrahan",
@@ -171,7 +171,7 @@ const homePageVideos = [
     id: 3,
     title:
       "El llanto de la mujer de Jorge Macri, Belén Ludueña, ante una simple pregunta de su panelista al Jefe de Gobierno.",
-    videoUrl: "/videos/el-llanto-de-la-mujer-de-jorge-macri.mp4",
+    videoUrl: "https://s3.us-east-1.amazonaws.com/nataliavolosin.com.ar/videos/El-llanto-de-la-mujer-de-Jorge-Macri.mp4",
     hashtags: ["#jorgemacri", "#belenludueña", "#amaliaguiñazú", "#bicisenda"],
     description: "Un reel de Instagram sobre la reacción de Belén Ludueña ante una pregunta sobre Jorge Macri.",
   },
@@ -271,7 +271,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-white text-black">
       {/* Minimalist Header */}
       <header className="bg-white border-b border-black">
-        <div className="px-4 py-6 flex justify-between items-center">
+        <div className="px-4 py-6 md:px-20 2xl:px-40 flex justify-between items-center">
           <Link href="/" className="text-black hover:text-gray-700">
             <h1 className="text-2xl font-bold tracking-tight">NATALIA VOLOSIN</h1>
           </Link>
@@ -347,8 +347,8 @@ export default function HomePage() {
 
       {/* Descriptive Block - WHITE */}
       <section className="block-large bg-white">
-        <div className="px-4">
-          <div className="max-w-4xl mx-auto">
+        <div className="px-4 md:px-20 2xl:px-40 ">
+          <div className="">
             <div className="space-y-8 text-regular leading-relaxed">
               <p>
                 La Justa es la plataforma de contenidos digitales de Natalia Volosin. Datos, investigación y análisis de
@@ -374,7 +374,7 @@ export default function HomePage() {
 
       {/* Featured Newsletter - WHITE */}
       <section className="block-large bg-white">
-        <div className="px-4">
+        <div className="px-4 md:px-20 2xl:px-40 ">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             {/* Text block on the left */}
             <div>
@@ -406,7 +406,7 @@ export default function HomePage() {
 
       {/* Social Media Section - BLACK */}
       <section className="block-large text-white bg-transparent">
-        <div className="px-4">
+        <div className="px-4 md:px-20 2xl:px-40 ">
           <div className="grid md:grid-cols-2 gap-0">
             {/* Instagram Column - Left */}
             <div className="bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 p-8 flex flex-col items-center justify-center min-h-[600px]">
@@ -673,7 +673,7 @@ export default function HomePage() {
 
       {/* Footer - WHITE */}
       <footer className="bg-black text-white py-16">
-        <div className="px-4">
+        <div className="px-4 md:px-20 2xl:px-40">
           <div className="grid md:grid-cols-3 gap-12">
             <div>
               <h3 className="text-medium mb-6">Natalia Volosin</h3>
