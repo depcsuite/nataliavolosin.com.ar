@@ -184,7 +184,7 @@ export default function NewsletterPage() {
               <Link href="/sobre-mi" className="text-black hover:text-gray-700 font-medium uppercase">
                 Quién
               </Link>
-              <Link href="/newsletter" className="text-black hover:text-gray-700 font-medium uppercase font-bold">
+              <Link href="/newsletter" className="text-black hover:text-gray-700 font-medium uppercase">
                 Newsletter
               </Link>
               <Link href="/por-que" className="text-black hover:text-gray-700 font-medium uppercase">
@@ -237,7 +237,7 @@ export default function NewsletterPage() {
       <section className="block-massive bg-white">
         <div className="px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-massive mb-12 text-center">LA JUSTA</h1>
+            <h1 className="text-massive my-6 text-center">LA JUSTA</h1>
           </div>
         </div>
       </section>

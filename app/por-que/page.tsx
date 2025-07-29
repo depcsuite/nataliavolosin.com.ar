@@ -81,7 +81,7 @@ export default function PorQuePage() {
               <Link href="/newsletter" className="text-black hover:text-gray-700 font-medium uppercase">
                 Newsletter
               </Link>
-              <Link href="/por-que" className="text-black hover:text-gray-700 font-medium uppercase font-bold">
+              <Link href="/por-que" className="text-black hover:text-gray-700 font-medium uppercase">
                 Por qué
               </Link>
             </nav>
@@ -129,7 +129,7 @@ export default function PorQuePage() {
       <section className="block-massive bg-white">
         <div className="px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-massive mb-12 text-center">Por qué</h1>
+            <h1 className="text-massive my-6 text-center">Por qué</h1>
           </div>
         </div>
       </section>

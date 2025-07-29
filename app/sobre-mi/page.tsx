@@ -139,7 +139,7 @@ export default function Page() {
       <section className="block-massive bg-white">
         <div className="px-4 md:px-20 2xl:px-60">
           <div className="text-center">
-            <h1 className="text-massive mb-12 text-center">Sobre mí</h1>
+            <h1 className="text-massive my-6 text-center">Sobre mí</h1>
           </div>
         </div>
       </section>
@@ -390,109 +390,6 @@ export default function Page() {
           </div>
         </div>
       </footer>
-
-      {/* Sticky Footer Banner */}
-      {showStickyFooter && (
-        <div className="fixed bottom-0 left-0 right-0 bg-black border-t-2 border-white shadow-lg z-50 transition-transform duration-300">
-          <div className="px-4 py-6 md:px-20 2xl:px-60">
-            <div className="flex items-center justify-between gap-6">
-              {/* Left side - Title and description */}
-              <div className="flex-1 min-w-0">
-                <h3 className="text-medium mb-1 text-white">Sumate a la comunidad</h3>
-                <p className="text-small text-gray-300 leading-tight">
-                  Tu contribución hace posible seguir investigando sin compromisos.
-                </p>
-              </div>
-
-              {/* Center - Support options grid */}
-              <div className="flex-shrink-0">
-                {/* Payment buttons grid - 3 on top, 3 on bottom */}
-                <div className="space-y-2">
-                  {/* Top row - 3 buttons */}
-                  <div className="flex gap-2">
-                    <Link
-                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849763dae001976bb14ba2031d"
-                      target="_blank"
-                    >
-                      <Button
-                        variant="outline"
-                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
-                      >
-                        $5.000
-                      </Button>
-                    </Link>
-                    <Link
-                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849764e81a01976bb1a6e402c6"
-                      target="_blank"
-                    >
-                      <Button
-                        variant="outline"
-                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
-                      >
-                        $8.000
-                      </Button>
-                    </Link>
-                    <Link
-                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849763dae001976ec4495d0412"
-                      target="_blank"
-                    >
-                      <Button className="bg-white text-black hover:bg-gray-200 rounded-lg px-4 py-2 text-sm w-[90px] h-12 font-medium">
-                        $12.000
-                      </Button>
-                    </Link>
-                  </div>
-
-                  {/* Bottom row - 3 buttons */}
-                  <div className="flex gap-2">
-                    <Link
-                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849764e81a01976bb4934202c7"
-                      target="_blank"
-                    >
-                      <Button
-                        variant="outline"
-                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
-                      >
-                        Anual
-                      </Button>
-                    </Link>
-                    <Link
-                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c938084976a0ea101976bb1fdc400be"
-                      target="_blank"
-                    >
-                      <Button
-                        variant="outline"
-                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
-                      >
-                        Otro monto
-                      </Button>
-                    </Link>
-                    <Link href="https://www.paypal.com/" target="_blank">
-                      <Button
-                        variant="outline"
-                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
-                      >
-                        PayPal
-                        <ExternalLink className="ml-1 h-3 w-3" />
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right side - Close button */}
-              <div className="flex items-center">
-                <button
-                  onClick={() => setShowStickyFooter(false)}
-                  className="p-2 text-white hover:text-gray-300 transition-colors"
-                  aria-label="Cerrar banner"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

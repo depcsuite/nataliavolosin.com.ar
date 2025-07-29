@@ -338,7 +338,7 @@ export default function HomePage() {
       <section className="block-massive bg-white">
         <div className="px-4">
           <div className="max-w-5xl mx-auto text-center">
-            <h1 className="text-massive mb-12 text-center">LA JUSTA</h1>
+            <h1 className="text-massive my-6 text-center">LA JUSTA</h1>
           </div>
         </div>
       </section>
