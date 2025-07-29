@@ -199,7 +199,7 @@ export default function Page() {
               <div className="hidden md:block">
                 <div className="relative w-full">
                   <Image
-                    src="/images/natalia-volosin.png"
+                    src="/images/natalia-volosin.jpg"
                     alt="Natalia Volosin"
                     width={500}
                     height={600}
