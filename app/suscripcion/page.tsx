@@ -1,206 +1,85 @@
-"use client"
-
-import type React from "react"
-
-import { useState, useEffect } from "react"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { CheckIcon } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
-import { Input } from "@/components/ui/input"
-import { ArrowRight, Mail, CheckCircle, Twitter, Instagram, Music } from "lucide-react"
 
-export default function SuscripcionPage() {
-  const [email, setEmail] = useState("")
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-
-  // Add this useEffect hook to scroll to top on page load
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email) return
-
-    setIsLoading(true)
-
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitted(true)
-      setIsLoading(false)
-    }, 1000)
-  }
-
+export default function SubscriptionPage() {
   return (
-    <div className="min-h-screen bg-white text-black">
-      {/* Minimalist Header */}
-      <header className="bg-white border-b border-black">
-        <div className="px-4 py-6 md:px-20 2xl:px-60 flex justify-between items-center">
-          <Link href="/" className="text-black hover:text-gray-700">
-            <h1 className="text-2xl font-bold tracking-tight">NATALIA VOLOSIN</h1>
-          </Link>
-
-          <div className="flex items-center space-x-8">
-            <nav className="hidden md:flex space-x-12">
-              <Link href="/" className="text-black hover:text-gray-700 font-medium uppercase">
-                Inicio
-              </Link>
-              <Link href="/sobre-mi" className="text-black hover:text-gray-700 font-medium uppercase">
-                Quién
-              </Link>
-              <Link href="/newsletter" className="text-black hover:text-gray-700 font-medium uppercase">
-                Newsletter
-              </Link>
-              <Link href="/por-que" className="text-black hover:text-gray-700 font-medium uppercase">
-                Por qué
-              </Link>
-            </nav>
-
-            {/* Social Media Icons */}
-            <div className="hidden md:flex items-center space-x-4">
-              <Link href="https://x.com/nataliavolosin" target="_blank" className="text-black hover:text-gray-700">
-                <Twitter className="w-5 h-5" />
-              </Link>
-              <Link
-                href="https://www.instagram.com/nataliavolosin"
-                target="_blank"
-                className="text-black hover:text-gray-700"
-              >
-                <Instagram className="w-5 h-5" />
-              </Link>
-              <Link
-                href="https://www.tiktok.com/@nataliaavolosin"
-                target="_blank"
-                className="text-black hover:text-gray-700"
-              >
-                <Music className="w-5 h-5" />
-              </Link>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex items-center space-x-3">
-              <Link href="/suscripcion">
-                <Button
-                  variant="outline"
-                  className="border-black text-black hover:bg-black hover:text-white rounded-none px-4 py-2 text-sm bg-transparent"
-                >
-                  Suscribirse
-                </Button>
-              </Link>
-              <Link href="/#sumate-a-la-comunidad" scroll={false}>
-                <Button className="bg-black text-white hover:bg-gray-800 rounded-none px-4 py-2 text-sm">SUMATE</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <section className="block-massive bg-white">
-        <div className="px-4">
-          <div className="max-w-2xl mx-auto text-center">
-            {!isSubmitted ? (
-              <>
-                <h1 className="text-xlarge mb-8">Newsletter semanal de Natalia Volosin</h1>
-                <p className="text-medium mb-12 text-gray-700">
-                  Sobre política, (in)justicia y actualidad. Sale los viernes y es gratuito.
-                </p>
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" />
-                    <Input
-                      type="email"
-                      placeholder="Tu correo electrónico"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="pl-10 py-4 border-black rounded-none w-full text-lg"
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    disabled={isLoading || !email}
-                    className="bg-black text-white hover:bg-gray-800 rounded-none px-8 py-4 text-lg w-full md:w-auto"
-                  >
-                    {isLoading ? "Suscribiendo..." : "Suscribirme"}
-                    {!isLoading && <ArrowRight className="ml-2 h-5 w-5" />}
-                  </Button>
-                </form>
-
-                <p className="text-small text-gray-600 mt-8">
-                  Al suscribirte, aceptas recibir nuestro newsletter semanal. Podés cancelar tu suscripción en cualquier
-                  momento.
-                </p>
-              </>
-            ) : (
-              <div className="text-center">
-                <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-6" />
-                <h1 className="text-xlarge mb-6">¡Gracias por suscribirte!</h1>
-                <p className="text-medium mb-8 text-gray-700">
-                  Te has suscrito exitosamente a La Justa. Recibirás nuestro newsletter semanal todos los viernes.
-                </p>
-                <p className="text-regular mb-8 text-gray-600">
-                  Revisa tu correo electrónico para confirmar tu suscripción.
-                </p>
-                <Link href="/">
-                  <Button className="bg-black text-white hover:bg-gray-800 rounded-none px-8 py-4 text-lg">
-                    Volver al inicio
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
+    <div className="container mx-auto px-4 py-8 md:px-6 lg:px-8">
+      <section className="mb-12 text-center">
+        <h1 className="text-massive font-garamond font-bold">Elige tu Plan</h1>
+        <p className="text-regular text-muted-foreground mt-4 max-w-2xl mx-auto">
+          Accede a contenido exclusivo y análisis profundos con el plan que mejor se adapte a ti.
+        </p>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-black text-white py-16">
-        <div className="px-4 md:px-20 2xl:px-60">
-          <div className="grid md:grid-cols-3 gap-12">
-            <div>
-              <h3 className="text-medium mb-6">Natalia Volosin</h3>
-              <p className="text-regular mb-4">
-                Abogada, consultora, académica y comunicadora. Doctora en Derecho por Yale Law School.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-medium mb-6">Contacto</h3>
-              <p className="text-regular mb-2">lajusta@nataliavolosin.com</p>
-              <p className="text-regular mb-2">comercial@nataliavolosin.com</p>
-            </div>
-            <div>
-              <h3 className="text-medium mb-6">Redes sociales</h3>
-              <div className="flex space-x-4">
-                <Link href="https://x.com/nataliavolosin" target="_blank" className="text-white hover:text-gray-300">
-                  Twitter
-                </Link>
-                <Link
-                  href="https://www.instagram.com/nataliavolosin"
-                  target="_blank"
-                  className="text-white hover:text-gray-300"
-                >
-                  Instagram
-                </Link>
-                <Link
-                  href="https://www.tiktok.com/@nataliaavolosin"
-                  target="_blank"
-                  className="text-white hover:text-gray-300"
-                >
-                  TikTok
-                </Link>
-              </div>
-            </div>
-          </div>
-          <Separator className="border-t border-white my-12" />
-          <div className="text-center">
-            <p className="text-small">© {new Date().getFullYear()} Natalia Volosin. Todos los derechos reservados.</p>
-          </div>
-        </div>
-      </footer>
+      <section className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 justify-center">
+        <Card className="flex flex-col justify-between shadow-lg">
+          <CardHeader className="text-center">
+            <CardTitle className="text-large font-garamond font-bold">Gratuito</CardTitle>
+            <p className="text-huge font-bold mt-2">
+              $0<span className="text-regular text-muted-foreground">/mes</span>
+            </p>
+          </CardHeader>
+          <CardContent className="flex-1">
+            <ul className="space-y-2 text-regular">
+              <li className="flex items-center">
+                <CheckIcon className="mr-2 h-5 w-5 text-primary" />
+                Acceso a newsletters básicos
+              </li>
+              <li className="flex items-center">
+                <CheckIcon className="mr-2 h-5 w-5 text-primary" />
+                Videos públicos
+              </li>
+            </ul>
+          </CardContent>
+          <CardFooter>
+            <Button className="w-full bg-transparent" variant="outline">
+              Registrarse Gratis
+            </Button>
+          </CardFooter>
+        </Card>
+
+        <Card className="flex flex-col justify-between border-2 border-primary shadow-lg">
+          <CardHeader className="text-center">
+            <CardTitle className="text-large font-garamond font-bold">Mensual</CardTitle>
+            <p className="text-huge font-bold mt-2">
+              $5<span className="text-regular text-muted-foreground">/mes</span>
+            </p>
+          </CardHeader>
+          <CardContent className="flex-1">
+            <ul className="space-y-2 text-regular">
+              <li className="flex items-center">
+                <CheckIcon className="mr-2 h-5 w-5 text-primary" />
+                Todos los newsletters
+              </li>
+              <li className="flex items-center">
+                <CheckIcon className="mr-2 h-5 w-5 text-primary" />
+                Videos exclusivos
+              </li>
+              <li className="flex items-center">
+                <CheckIcon className="mr-2 h-5 w-5 text-primary" />
+                Acceso anticipado a contenido
+              </li>
+            </ul>
+          </CardContent>
+          <CardFooter>
+            <Button className="w-full">Suscribirse Mensual</Button>
+          </CardFooter>
+        </Card>
+      </section>
+
+      <Separator className="my-12" />
+
+      <section className="py-12 md:py-20 bg-brand-light-gray dark:bg-brand-dark-gray rounded-lg text-center">
+        <h2 className="text-xlarge font-garamond font-bold mb-6">¿Tienes preguntas?</h2>
+        <p className="text-regular max-w-2xl mx-auto mb-8">
+          Si tienes alguna duda sobre los planes o el contenido, no dudes en contactarme.
+        </p>
+        <Button size="lg" variant="outline">
+          Contactar
+        </Button>
+      </section>
     </div>
   )
 }

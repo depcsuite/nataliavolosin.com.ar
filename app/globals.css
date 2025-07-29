@@ -179,6 +179,11 @@
     border-top-color: #000;
   }
 
+  .border-top-minimal {
+    border-top-width: 1px;
+    border-top-color: #000;
+  }
+
   .border-minimal-bottom {
     border-bottom-width: 1px;
     border-bottom-color: #000;

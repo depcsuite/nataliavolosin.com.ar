@@ -1,49 +1,64 @@
 "use client"
+
+import type React from "react"
+
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 
-interface SupportModalProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  targetId: string // New prop to specify the ID to scroll to
-}
+export function SupportModal() {
+  const [isOpen, setIsOpen] = useState(false)
 
-export function SupportModal({ open, onOpenChange, targetId }: SupportModalProps) {
-  const handleButtonClick = () => {
-    onOpenChange(false) // Close the modal first
-    // Scroll to the target section
-    const targetElement = document.getElementById(targetId)
-    if (targetElement) {
-      // Use scrollIntoView with a smooth behavior and block: 'start' to ensure it's at the top
-      // The scroll-mt-24 class on the section itself will handle the offset for the fixed header.
-      targetElement.scrollIntoView({ behavior: "smooth", block: "start" })
-    }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Handle form submission logic here
+    console.log("Form submitted!")
+    setIsOpen(false) // Close modal on submit
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] p-6 rounded-none border-black bg-white text-black">
-        <DialogHeader className="text-center">
-          <DialogTitle className="text-xlarge mb-4">Sumate a la comunidad</DialogTitle>
-          <DialogDescription className="text-regular text-gray-700">
-            Tu contribución hace posible que podamos seguir investigando y contando la verdad sin compromisos.
-          </DialogDescription>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline">Soporte</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Contactar Soporte</DialogTitle>
+          <DialogDescription>Envíanos un mensaje y te responderemos a la brevedad.</DialogDescription>
         </DialogHeader>
-        <DialogFooter className="flex justify-center mt-6">
-          <Button
-            onClick={handleButtonClick} // Use onClick instead of Link href
-            className="bg-black text-white hover:bg-gray-800 rounded-none px-8 py-4 text-lg"
-          >
-            SUMATE a La Justa
+        <form onSubmit={handleSubmit} className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Nombre
+            </Label>
+            <Input id="name" defaultValue="Tu Nombre" className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="email" className="text-right">
+              Email
+            </Label>
+            <Input id="email" defaultValue="tu@email.com" className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="message" className="text-right">
+              Mensaje
+            </Label>
+            <Textarea id="message" placeholder="Escribe tu mensaje aquí..." className="col-span-3" />
+          </div>
+          <Button type="submit" className="w-full">
+            Enviar Mensaje
           </Button>
-        </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   )

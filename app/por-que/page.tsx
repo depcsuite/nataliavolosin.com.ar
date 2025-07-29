@@ -1,15 +1,19 @@
 "use client"
 
-import type React from "react"
+import { useEffect } from "react"
 
-import { useState, useEffect, useRef } from "react"
+import { useRef } from "react"
+
+import { useState } from "react"
+
+import type React from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
-import { Card, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowRight, CheckCircle, Twitter, Instagram, Music } from "lucide-react"
-import { MapPin, Globe, ExternalLink } from "lucide-react" // Import missing icons
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { ArrowRight, CheckCircle, Twitter, Instagram, Music, CheckCircleIcon } from "lucide-react"
+import { MapPin, Globe, ExternalLink } from "lucide-react"
 
 const supportOptions = [
   {
@@ -31,7 +35,7 @@ const supportOptions = [
     amount: "Otro monto",
     period: "única vez",
     url: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c938084976a0ea101976bb1fdc400be",
-  }, // Added "Otro monto" option
+  },
 ]
 
 export default function PorQuePage() {
@@ -40,7 +44,6 @@ export default function PorQuePage() {
   const [isLoading, setIsLoading] = useState(false)
   const emailInputRef = useRef<HTMLInputElement>(null)
 
-  // Add this useEffect hook to scroll to top on page load
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -54,7 +57,6 @@ export default function PorQuePage() {
 
     setIsLoading(true)
 
-    // Simulate form submission
     setTimeout(() => {
       setIsSubmitted(true)
       setIsLoading(false)
@@ -63,7 +65,6 @@ export default function PorQuePage() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      {/* Minimalist Header */}
       <header className="bg-white border-b border-black">
         <div className="px-4 py-6 md:px-20 2xl:px-60 flex justify-between items-center">
           <Link href="/" className="text-black hover:text-gray-700">
@@ -86,7 +87,6 @@ export default function PorQuePage() {
               </Link>
             </nav>
 
-            {/* Social Media Icons */}
             <div className="hidden md:flex items-center space-x-4">
               <Link href="https://x.com/nataliavolosin" target="_blank" className="text-black hover:text-gray-700">
                 <Twitter className="w-5 h-5" />
@@ -107,7 +107,6 @@ export default function PorQuePage() {
               </Link>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex items-center space-x-3">
               <Link href="/suscripcion">
                 <Button
@@ -125,7 +124,6 @@ export default function PorQuePage() {
         </div>
       </header>
 
-      {/* Hero Section */}
       <section className="block-massive bg-white">
         <div className="px-4">
           <div className="max-w-4xl mx-auto text-center">
@@ -136,7 +134,6 @@ export default function PorQuePage() {
 
       <Separator className="border-t border-black" />
 
-      {/* Main Content */}
       <section className="block-large bg-white">
         <div className="px-4">
           <div className="max-w-4xl mx-auto">
@@ -179,7 +176,45 @@ export default function PorQuePage() {
 
       <Separator className="border-t border-black" />
 
-      {/* Newsletter Signup - BLACK */}
+      <section className="mb-12 text-center">
+        <h1 className="text-massive font-garamond font-bold">¿Por Qué Suscribirse?</h1>
+        <p className="text-regular text-muted-foreground mt-4 max-w-2xl mx-auto">
+          Accede a contenido exclusivo y análisis profundos.
+        </p>
+      </section>
+
+      <section className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-12">
+        <Card className="shadow-lg">
+          <CardContent className="p-6 flex flex-col items-center text-center">
+            <CheckCircleIcon className="h-12 w-12 text-primary mb-4" />
+            <h3 className="text-large font-garamond font-bold mb-2">Análisis Exclusivos</h3>
+            <p className="text-regular text-muted-foreground">
+              Recibe informes detallados y perspectivas únicas sobre la actualidad.
+            </p>
+          </CardContent>
+        </Card>
+        <Card className="shadow-lg">
+          <CardContent className="p-6 flex flex-col items-center text-center">
+            <CheckCircleIcon className="h-12 w-12 text-primary mb-4" />
+            <h3 className="text-large font-garamond font-bold mb-2">Contenido de Calidad</h3>
+            <p className="text-regular text-muted-foreground">
+              Artículos y videos cuidadosamente investigados y producidos.
+            </p>
+          </CardContent>
+        </Card>
+        <Card className="shadow-lg">
+          <CardContent className="p-6 flex flex-col items-center text-center">
+            <CheckCircleIcon className="h-12 w-12 text-primary mb-4" />
+            <h3 className="text-large font-garamond font-bold mb-2">Acceso Prioritario</h3>
+            <p className="text-regular text-muted-foreground">
+              Sé el primero en acceder a nuevos lanzamientos y eventos.
+            </p>
+          </CardContent>
+        </Card>
+      </section>
+
+      <Separator className="my-12" />
+
       <section className="block-medium bg-black text-white">
         <div className="px-4">
           <div className="max-w-2xl mx-auto text-center">
@@ -242,14 +277,29 @@ export default function PorQuePage() {
 
       <Separator className="border-t border-black" />
 
-      {/* Contact Section */}
+      <section className="py-12 md:py-20 bg-brand-light-gray dark:bg-brand-dark-gray rounded-lg text-center">
+        <h2 className="text-xlarge font-garamond font-bold mb-6">Sumate a la comunidad</h2>
+        <p className="text-regular max-w-2xl mx-auto mb-8">Recibí mis análisis directamente en tu casilla de correo.</p>
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <Link href="/suscripcion" passHref>
+            <Button size="lg">Suscribirse</Button>
+          </Link>
+          <Link href="/newsletter" passHref>
+            <Button size="lg" variant="outline">
+              Ver Newsletters
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      <Separator className="border-t border-black" />
+
       <section className="block-large bg-white">
         <div className="px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-xlarge mb-12 text-center">Contacto</h2>
 
             <div className="grid md:grid-cols-2 gap-8">
-              {/* Charlas, Eventos y Consultoría */}
               <Card className="border-2 border-black rounded-none hover:bg-black hover:text-white transition-colors group h-48 flex flex-col justify-center">
                 <CardHeader className="p-6 text-center">
                   <CardTitle className="text-medium mb-4">
@@ -265,7 +315,6 @@ export default function PorQuePage() {
                 </CardHeader>
               </Card>
 
-              {/* Consultas Comerciales */}
               <Card className="border-2 border-black rounded-none hover:bg-black hover:text-white transition-colors group h-48 flex flex-col justify-center">
                 <CardHeader className="p-6 text-center">
                   <CardTitle className="text-medium mb-4">
@@ -288,7 +337,6 @@ export default function PorQuePage() {
 
       <Separator className="border-t border-black" />
 
-      {/* Support Options - WHITE */}
       <section id="sumate-a-la-comunidad" className="block-medium bg-white pt-24 scroll-mt-24">
         <div className="px-4">
           <div className="max-w-5xl mx-auto">
@@ -299,7 +347,6 @@ export default function PorQuePage() {
               </p>
             </div>
 
-            {/* Argentina Support */}
             <div className="mb-12">
               <div className="flex items-center justify-center mb-6">
                 <MapPin className="w-5 h-5 mr-2" />
@@ -326,7 +373,6 @@ export default function PorQuePage() {
 
             <Separator className="border-t border-black my-16" />
 
-            {/* International Support */}
             <div>
               <div className="flex items-center justify-center mb-6">
                 <Globe className="w-5 h-5 mr-2" />
@@ -356,7 +402,6 @@ export default function PorQuePage() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-black text-white py-16">
         <div className="px-4 md:px-20 2xl:px-60">
           <div className="grid md:grid-cols-3 gap-12">

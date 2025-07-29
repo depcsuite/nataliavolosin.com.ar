@@ -4,10 +4,11 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { ArrowRight, Calendar, Clock, Eye, Search, Twitter, Instagram, Music } from "lucide-react"
+import { ArrowRight, Calendar, Clock, Eye, Search, Twitter, Instagram, Music, ArrowLeftIcon } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { notFound } from "next/navigation"
-import { findArticleBySlug } from "@/lib/article-data"
+import { getArticleBySlug } from "@/lib/article-data"
+import Image from "next/image"
 
 interface PageProps {
   params: {
@@ -37,12 +38,10 @@ const mostReadArticles = [
   },
 ]
 
-export default function ArticlePage({ params }: PageProps) {
+export default async function ArticlePage({ params }: { params: { slug: string } }) {
+  const article = await getArticleBySlug(params.slug)
   const [isScrolled, setIsScrolled] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
-
-  // Find the article by slug
-  const article = findArticleBySlug(params.slug)
 
   // Scroll listener
   useEffect(() => {
@@ -180,11 +179,36 @@ export default function ArticlePage({ params }: PageProps) {
 
             {/* Main Content */}
             <div className="md:col-span-3">
+              <Link href="/newsletter" passHref>
+                <Button variant="ghost" className="mb-4">
+                  <ArrowLeftIcon className="mr-2 h-4 w-4" />
+                  Volver a Newsletters
+                </Button>
+              </Link>
+              {article.imageUrl && (
+                <Image
+                  src={article.imageUrl || "/placeholder.svg"}
+                  alt={article.title}
+                  width={1200}
+                  height={675}
+                  className="mb-4 h-auto w-full rounded-lg object-cover"
+                  priority
+                />
+              )}
               <span className="text-small uppercase border border-black px-3 py-1 inline-block mb-6">
                 {article.category}
               </span>
 
-              <h1 className="text-xlarge mb-6">{article.title}</h1>
+              <h1 className="text-xlarge mb-6 font-garamond font-bold leading-tight">{article.title}</h1>
+
+              <p className="text-muted-foreground text-sm mb-6">
+                Publicado el{" "}
+                {new Date(article.date).toLocaleDateString("es-ES", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
 
               <div className="flex items-center space-x-6 text-small text-gray-600 mb-8">
                 <div className="flex items-center">
@@ -210,7 +234,11 @@ export default function ArticlePage({ params }: PageProps) {
                 <p className="text-medium font-medium mb-8">{article.excerpt}</p>
                 <div className="prose prose-lg max-w-none">
                   <div className="text-regular font-arimo leading-relaxed text-black whitespace-pre-line">
-                    {article.content}
+                    {article.content.split("\n").map((paragraph, index) => (
+                      <p key={index} className="mb-4 text-regular">
+                        {paragraph}
+                      </p>
+                    ))}
                   </div>
                 </div>
               </div>

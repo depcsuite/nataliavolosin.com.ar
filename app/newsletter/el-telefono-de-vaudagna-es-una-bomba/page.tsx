@@ -1,27 +1,20 @@
 "use client"
 
-import type React from "react"
+import { useEffect } from "react"
 
-import { useState, useEffect, useRef } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import {
-  Calendar,
-  Eye,
-  Share2,
-  ExternalLink,
-  MapPin,
-  Globe,
-  Copy,
-  Twitter,
-  Instagram,
-  Music,
-  CheckCircle,
-  ArrowRight,
-} from "lucide-react"
+import { useRef } from "react"
+
+import { useState } from "react"
+
+import type React from "react"
 import Image from "next/image"
-import { Input } from "@/components/ui/input" // Added Input component
+import { getArticleBySlug } from "@/lib/article-data"
+import { notFound } from "next/navigation"
+import { Separator } from "@/components/ui/separator"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { ArrowLeftIcon } from "lucide-react"
+import { ExternalLink, MapPin, Globe, Twitter, Instagram, Music, CheckCircle, ArrowRight } from "lucide-react"
 
 // Featured Newsletter data (copied from app/newsletter/page.tsx)
 const featuredNewsletterData = {
@@ -80,7 +73,13 @@ const supportOptions = [
   }, // Added "Otro monto" option
 ]
 
-export default function NewsletterArticlePage() {
+export default async function ArticlePage() {
+  const article = await getArticleBySlug("el-telefono-de-vaudagna-es-una-bomba")
+
+  if (!article) {
+    notFound()
+  }
+
   const [isScrolled, setIsScrolled] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [copied, setCopied] = useState(false) // State for copy button feedback
@@ -231,132 +230,45 @@ export default function NewsletterArticlePage() {
 
             {/* Main Content */}
             <div className="md:col-span-3">
-              <h1 className="text-xlarge mb-6">El teléfono de Vaudagna es una bomba</h1>
-
-              <div className="flex items-center space-x-6 text-small text-gray-600 mb-8">
-                <div className="flex items-center">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  12/07/2025
-                </div>
-                <div className="flex items-center">
-                  <Eye className="w-4 h-4 mr-2" />
-                  2,450 lecturas
-                </div>
-              </div>
-
-              {/* Featured Image */}
-              <div className="mb-12">
-                <Image
-                  src="/images/vaudagna-bomba.webp"
-                  alt="El teléfono de Vaudagna es una bomba"
-                  width={800}
-                  height={450}
-                  className="w-full h-auto object-cover"
-                  priority
-                />
-              </div>
-
-              <div className="mb-12">
-                <div className="w-full h-[2px] bg-black mb-12"></div>
-                <p className="text-medium font-medium mb-8">
-                  El ex jefe regional de AFIP en Rosario protagoniza la segunda entrega de esta novela de narcos,
-                  complicidad política y corrupción judicial
+              <div className="mb-6">
+                <Link href="/newsletter" passHref>
+                  <Button variant="ghost" className="mb-4">
+                    <ArrowLeftIcon className="mr-2 h-4 w-4" />
+                    Volver a Newsletters
+                  </Button>
+                </Link>
+                {article.imageUrl && (
+                  <Image
+                    src={article.imageUrl || "/placeholder.svg"}
+                    alt={article.title}
+                    width={1200}
+                    height={675}
+                    className="mb-4 h-auto w-full rounded-lg object-cover"
+                    priority
+                  />
+                )}
+                <h1 className="text-xlarge mb-2 font-garamond font-bold leading-tight">{article.title}</h1>
+                <p className="text-muted-foreground text-sm">
+                  Publicado el{" "}
+                  {new Date(article.date).toLocaleDateString("es-ES", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
                 </p>
-
-                <div className="prose prose-lg max-w-none">
-                  <div className="text-regular font-arimo leading-relaxed text-black space-y-6">
-                    <h2 className="text-large font-bold mb-4">Capítulo 2: el arrepentido</h2>
-
-                    <p>
-                      La semana pasada empezamos a hablar de las acusaciones contra el ex juez Marcelo Bailaque. Como
-                      dije, para mí es el caso de corrupción judicial más importante desde que Galeano coimeó a un
-                      imputado para desviar la investigación del atentado a la AMIA. Es una historia que toca
-                      estructuras del poder real y Bailaque es apenas la punta del iceberg. Por eso, los que conocen la
-                      causa dicen que si el juez habla "se va todo a la mierda".
-                    </p>
-
-                    <p>
-                      Como vimos en el Capítulo 1, hay sospechas de que Bailaque encubría a los narcos del Clan
-                      Alvarado. Compartían contador y, además, el juez tenía al hijo del mago de los números trabajando
-                      en su juzgado. Si el muchacho llevaba o no las causas contra los jefes narcos de su padre es algo
-                      que, de momento, sólo podemos imaginar. Pero que las causas no avanzaban, no avanzaban. Que los
-                      teléfonos no se pinchaban, no se pinchaban. Y que los allanamientos no se hacían, no se hacían.
-                    </p>
-
-                    <p>
-                      También sabemos que todo esto lo denunció el valiente fiscal rosarino Luis Schiappa Pietra en el
-                      alegato del juicio por el que Esteban Lindor Alvarado fue condenado a perpetua. Y sabemos, por
-                      fin, que al día siguiente de ese alegato el juez federal denunciado, Bailaque, participó de un
-                      súper evento en el que la Corte Suprema en pleno, el Procurador General y 140 jueces y fiscales
-                      federales se dieron cita en Rosario para vendernos una supuesta lucha contra el narcotráfico que
-                      jamás ocurrió. Mientras tanto, el Consejo de la Magistratura protegió a Bailaque durante tres
-                      años. El resto es historia. Renuncia aceptada por el presidente Milei, jubileta de privilegio y a
-                      casa. Bueno, con prisión domiciliaria. Detalles.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Article Tags */}
-                <div className="border-t border-gray-200 pt-6 mt-8">
-                  <div className="flex flex-wrap gap-2">
-                    <span className="bg-gray-100 text-black px-3 py-1 text-small border border-gray-300">
-                      #bailaque
-                    </span>
-                    <span className="bg-gray-100 text-black px-3 py-1 text-small border border-gray-300">
-                      #vaudagna
-                    </span>
-                    <span className="bg-gray-100 text-black px-3 py-1 text-small border border-gray-300">#narcos</span>
-                    <span className="bg-gray-100 text-black px-3 py-1 text-small border border-gray-300">#rosario</span>
-                    <span className="bg-gray-100 text-black px-3 py-1 text-small border border-gray-300">
-                      #corrupción
-                    </span>
-                    <span className="bg-gray-100 text-black px-3 py-1 text-small border border-gray-300">#afip</span>
-                    <span className="bg-gray-100 text-black px-3 py-1 text-small border border-gray-300">
-                      #justicia
-                    </span>
-                  </div>
-                </div>
-
-                {/* Moved Share Newsletter block */}
-                <div className="border-t border-black pt-8 mt-12 mb-12">
-                  <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6">
-                    <div>
-                      <h3 className="text-medium mb-2">Compartir newsletter</h3>
-                      <div className="flex space-x-4">
-                        <Button
-                          variant="outline"
-                          className="border-black rounded-none hover:bg-black hover:text-white bg-transparent"
-                        >
-                          <Share2 className="mr-2 h-4 w-4" />
-                          Twitter
-                        </Button>
-                        <Button
-                          variant="outline"
-                          className="border-black rounded-none hover:bg-black hover:text-white bg-transparent"
-                        >
-                          <Share2 className="mr-2 h-4 w-4" />
-                          Facebook
-                        </Button>
-                        <Button
-                          variant="outline"
-                          className="border-black rounded-none hover:bg-black hover:text-white bg-transparent"
-                        >
-                          <Share2 className="mr-2 h-4 w-4" />
-                          LinkedIn
-                        </Button>
-                        <Button
-                          variant="outline"
-                          className="border-black rounded-none hover:bg-black hover:text-white bg-transparent"
-                          onClick={handleCopyLink}
-                        >
-                          <Copy className="mr-2 h-4 w-4" />
-                          {copied ? "¡Copiado!" : "Copiar enlace"}
-                        </Button>
-                      </div>
-                    </div>
-                    {/* Removed "Más newsletters" button */}
-                  </div>
-                </div>
+              </div>
+              <div className="prose prose-gray dark:prose-invert max-w-none">
+                {article.content.split("\n").map((paragraph, index) => (
+                  <p key={index} className="mb-4 text-regular">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+              <Separator className="my-8" />
+              <div className="flex justify-center">
+                <Link href="/newsletter" passHref>
+                  <Button>Ver todos los Newsletters</Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -376,7 +288,7 @@ export default function NewsletterArticlePage() {
 
                 <form onSubmit={handleNewsletterSubmit} className="space-y-6">
                   <div className="relative max-w-md mx-auto">
-                    <Input
+                    <input
                       type="email"
                       placeholder="Tu correo electrónico"
                       value={email}

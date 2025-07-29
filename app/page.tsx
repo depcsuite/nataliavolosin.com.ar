@@ -1,28 +1,12 @@
 "use client"
 
 import type React from "react"
-
-import { useState, useEffect, useRef } from "react" // Import useRef
+import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { Input } from "@/components/ui/input"
-import {
-  ArrowRight,
-  MessageCircle,
-  Repeat2,
-  Heart,
-  ExternalLink,
-  Instagram,
-  MapPin,
-  Globe,
-  Twitter,
-  Music,
-  CheckCircle,
-  X,
-} from "lucide-react"
-import { cn } from "@/lib/utils" // Import cn utility
-import Image from "next/image" // Import Image component
+import { Card, CardContent } from "@/components/ui/card"
+import { PlayIcon } from "lucide-react"
+import { useState, useEffect, useRef } from "react" // Import useRef
 
 // Simplified data structure
 const featuredArticle = {
@@ -140,43 +124,6 @@ const twitterPosts = [
   },
 ]
 
-// Videos for the home page
-const homePageVideos = [
-  {
-    id: 1,
-    title: "El fallo de la Corte en la causa #vialidad",
-    videoUrl: "https://s3.us-east-1.amazonaws.com/nataliavolosin.com.ar/videos/el-fallo-de-la-Corte-en-la-causa-vialidad.mp4",
-    hashtags: ["#cfk", "#vialidad"],
-    description: "Análisis del fallo de la Corte Suprema en la causa vialidad y sus implicancias jurídicas.",
-  },
-  {
-    id: 2,
-    title: "Las mentiras de Juliana Santillán ante el reclamo de las médicas del hospital",
-    videoUrl: "https://s3.us-east-1.amazonaws.com/nataliavolosin.com.ar/videos/las-mentiras-de-juliana-santilla%CC%81n-ante-el-reclamo-de-las-me%CC%81dicas.mp4",
-    hashtags: [
-      "#garrahan",
-      "#hospitalgarrahan",
-      "#julianasantillán",
-      "#indec",
-      "#milei",
-      "#benegaslynch",
-      "#cluacas",
-      "#diputadasantillan",
-      "#residentesmédicos",
-    ],
-    description:
-      "Un reel de Instagram sobre las declaraciones de Juliana Santillán y el reclamo de las médicas del Hospital Garrahan.",
-  },
-  {
-    id: 3,
-    title:
-      "El llanto de la mujer de Jorge Macri, Belén Ludueña, ante una simple pregunta de su panelista al Jefe de Gobierno.",
-    videoUrl: "https://s3.us-east-1.amazonaws.com/nataliavolosin.com.ar/videos/El-llanto-de-la-mujer-de-Jorge-Macri.mp4",
-    hashtags: ["#jorgemacri", "#belenludueña", "#amaliaguiñazú", "#bicisenda"],
-    description: "Un reel de Instagram sobre la reacción de Belén Ludueña ante una pregunta sobre Jorge Macri.",
-  },
-]
-
 const supportOptions = [
   {
     amount: "$5.000",
@@ -202,9 +149,6 @@ const supportOptions = [
 
 export default function HomePage() {
   const [isScrolled, setIsScrolled] = useState(false)
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false)
-  const [currentTwitterPage, setCurrentTwitterPage] = useState(0)
   const [email, setEmail] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -228,21 +172,6 @@ export default function HomePage() {
     window.scrollTo(0, 0)
   }, [])
 
-  const handleVideoPlay = () => {
-    setIsVideoPlaying(true)
-  }
-
-  const handleVideoPause = () => {
-    setIsVideoPlaying(false)
-  }
-
-  const handleHeaderButtonClick = () => {
-    const targetElement = document.getElementById("sumate-a-la-comunidad")
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: "smooth", block: "start" })
-    }
-  }
-
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email) {
@@ -260,564 +189,156 @@ export default function HomePage() {
     }, 1000)
   }
 
-  const currentVideo = homePageVideos[currentVideoIndex]
-
-  // Twitter pagination logic
-  const tweetsPerPage = 3
-  const totalTwitterPages = Math.ceil(twitterPosts.length / tweetsPerPage)
-  const currentTweets = twitterPosts.slice(currentTwitterPage * tweetsPerPage, (currentTwitterPage + 1) * tweetsPerPage)
-
   return (
-    <div className="min-h-screen bg-white text-black">
-      {/* Minimalist Header */}
-      <header className="bg-white border-b border-black">
-        <div className="px-4 py-6 md:px-20 2xl:px-60 flex justify-between items-center">
-          <Link href="/" className="text-black hover:text-gray-700">
-            <h1 className="text-2xl font-bold tracking-tight">NATALIA VOLOSIN</h1>
-          </Link>
-
-          <div className="flex items-center space-x-8">
-            <nav className="hidden md:flex space-x-12">
-              <Link href="/" className="text-black hover:text-gray-700 font-medium uppercase">
-                Inicio
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="relative h-[calc(100vh-4rem)] flex items-center justify-center text-center bg-black text-white overflow-hidden">
+          <Image
+            src="/images/natalia-volosin.jpg"
+            alt="Natalia Volosin"
+            layout="fill"
+            objectFit="cover"
+            quality={100}
+            className="absolute inset-0 z-0 opacity-50"
+            priority
+          />
+          <div className="relative z-10 p-4 max-w-4xl mx-auto">
+            <h1 className="text-massive font-garamond font-bold leading-tight mb-4">Natalia Volosin</h1>
+            <p className="text-xlarge font-arimo mb-8">Análisis político, económico y social.</p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Link href="/newsletter" passHref>
+                <Button size="lg" className="bg-white text-black hover:bg-gray-200">
+                  Newsletters
+                </Button>
               </Link>
-              <Link href="/sobre-mi" className="text-black hover:text-gray-700 font-medium uppercase">
-                Quién
-              </Link>
-              <Link href="/newsletter" className="text-black hover:text-gray-700 font-medium uppercase">
-                Newsletter
-              </Link>
-              <Link href="/por-que" className="text-black hover:text-gray-700 font-medium uppercase">
-                Por qué
-              </Link>
-            </nav>
-
-            {/* Social Media Icons */}
-            <div className="hidden md:flex items-center space-x-4">
-              <Link href="https://x.com/nataliavolosin" target="_blank" className="text-black hover:text-gray-700">
-                <Twitter className="w-5 h-5" />
-              </Link>
-              <Link
-                href="https://www.instagram.com/nataliavolosin"
-                target="_blank"
-                className="text-black hover:text-gray-700"
-              >
-                <Instagram className="w-5 h-5" />
-              </Link>
-              <Link
-                href="https://www.tiktok.com/@nataliaavolosin"
-                target="_blank"
-                className="text-black hover:text-gray-700"
-              >
-                <Music className="w-5 h-5" />
-              </Link>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex items-center space-x-3">
-              <Link href="/suscripcion">
+              <Link href="/suscripcion" passHref>
                 <Button
+                  size="lg"
                   variant="outline"
-                  className="border-black text-black hover:bg-black hover:text-white rounded-none px-4 py-2 text-sm bg-transparent"
+                  className="border-white text-white hover:bg-white hover:text-black bg-transparent"
                 >
                   Suscribirse
                 </Button>
               </Link>
-              <Button
-                className="bg-black text-white hover:bg-gray-800 rounded-none px-4 py-2 text-sm"
-                onClick={handleHeaderButtonClick}
-              >
-                SUMATE
-              </Button>
             </div>
           </div>
-        </div>
-      </header>
+        </section>
 
-      {/* Hero Section - WHITE */}
-      <section className="block-massive bg-white">
-        <div className="px-4">
-          <div className="max-w-5xl mx-auto text-center">
-            <h1 className="text-massive my-6 text-center">LA JUSTA</h1>
-          </div>
-        </div>
-      </section>
-
-      <Separator className="border-t border-black" />
-
-      {/* Descriptive Block - WHITE */}
-      <section className="block-large bg-white">
-        <div className="px-4 md:px-20 2xl:px-60 ">
-          <div className="max-w-4xl mx-auto">
-            <div className="space-y-8 text-regular leading-relaxed">
-              <p>
-                La Justa es la plataforma de contenidos digitales de Natalia Volosin. Datos, investigación y análisis de
-                lo que los medios tradicionales no te quieren contar, con la independencia, la claridad y la
-                irreverencia de siempre.
-              </p>
-              {/* Mini-bio added here */}
-
-              <p className="text-medium leading-relaxed font-medium">
-                No recibimos ni vamos a recibir pauta de ningún gobierno ni de empresas vinculadas al juego, servicios
-                públicos o sindicatos. Esto nos diferencia de TODOS los medios y periodistas.
-              </p>
-              <p className="text-regular leading-relaxed">
-                La Justa te va a incomodar, porque no somos neutrales. Pero nunca te va a manipular, porque sí somos
-                independientes. Y porque no exageramos cuando decimos que la invitación a pensar es urgente.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <Separator className="border-t border-black" />
-
-      {/* Featured Newsletter - WHITE */}
-      <section className="block-large bg-white">
-        <div className="px-4 md:px-20 2xl:px-60 ">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* Text block on the left */}
-            <div>
-              <h3 className="text-large mb-6">{featuredArticle.title}</h3>
-              <p className="text-regular mb-8">{featuredArticle.excerpt}</p>
-              <Link href={`/newsletter/${featuredArticle.slug}`}>
-                <Button className="bg-white text-black hover:bg-black hover:text-white border border-black rounded-none px-6 py-3">
-                  Leer Newsletter
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-            </div>
-            {/* Image on the right */}
-            <div className="relative w-full h-auto">
-              <Image
-                src="/images/vaudagna-bomba.webp"
-                alt="Imagen del Newsletter principal"
-                width={800}
-                height={450}
-                className="w-full h-auto object-cover"
-                priority
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <Separator className="border-t border-black" />
-
-      {/* Social Media Section - BLACK */}
-      <section className="block-large text-white bg-transparent">
-        <div className="px-4 md:px-20 2xl:px-60 ">
-          <div className="grid md:grid-cols-2 gap-0">
-            {/* Instagram Column - Left */}
-            <div className="bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 p-8 flex flex-col items-center justify-center min-h-[600px]">
-              <div className="text-center mb-8">
-                <div className="flex items-center justify-center mb-4">
-                  <Instagram className="w-8 h-8 text-white mr-3" />
-                  <h2 className="text-xlarge text-white">Instagram</h2>
-                </div>
-                <p className="text-white/90 text-regular leading-5">
-                  Mamá de 2/Bostera 💙💛🎾⚽️
-                  <br />
-                  Abogada, consultora, académica y comunicadora
-                  <br />
-                  Máster y Doctora en Derecho (Yale)
-                </p>
-              </div>
-
-              {/* Video */}
-              <div className="relative group mb-6">
-                <video
-                  key={currentVideo.id}
-                  className="w-full aspect-[9/16] object-cover bg-gray-900 max-w-xs mx-auto rounded-lg shadow-2xl"
-                  controls
-                  onPlay={handleVideoPlay}
-                  onPause={handleVideoPause}
-                  preload="metadata"
-                >
-                  <source src={currentVideo.videoUrl} type="video/mp4" />
-                  Tu navegador no soporta el elemento de video.
-                </video>
-              </div>
-
-              {/* Video Navigation Dots */}
-              <div className="flex items-center justify-center space-x-3 mb-8">
-                {homePageVideos.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      setCurrentVideoIndex(index)
-                      setIsVideoPlaying(false)
-                    }}
-                    className={cn(
-                      "w-3 h-3 rounded-full transition-all duration-300",
-                      index === currentVideoIndex ? "bg-white scale-125" : "bg-white/50 hover:bg-white/75",
-                    )}
+        {/* Videos Section */}
+        <section className="py-12 md:py-20 bg-brand-light-gray dark:bg-brand-dark-gray">
+          <div className="container mx-auto px-4">
+            <h2 className="text-xlarge font-garamond font-bold text-center mb-10">Últimos Videos</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <Card className="overflow-hidden rounded-lg shadow-lg">
+                <div className="relative w-full h-48 bg-black flex items-center justify-center">
+                  <video
+                    src="/videos/el-fallo-de-la-Corte-en-la-causa-vialidad.mp4"
+                    poster="/placeholder.svg?height=270&width=480"
+                    controls={false}
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
-                ))}
-              </div>
-
-              <Link href="https://www.instagram.com/nataliavolosin" target="_blank">
-                <Button className="bg-white text-black hover:bg-gray-100 rounded-full px-8 py-3 font-semibold shadow-lg transform hover:scale-105 transition-all duration-200">
-                  <Instagram className="mr-2 h-5 w-5" />
-                  Seguir en Instagram
-                </Button>
-              </Link>
-            </div>
-
-            {/* Twitter Column - Right */}
-            <div className="bg-black p-8 flex flex-col min-h-[600px]">
-              <div className="text-center mb-8">
-                <div className="flex items-center justify-center mb-4">
-                  <Twitter className="w-8 h-8 text-white mr-3" />
-                  <h2 className="text-xlarge text-white">Twitter/X</h2>
-                </div>
-                <p className="text-white/90 text-regular">Mis reflexiones diarias sobre política y justicia</p>
-              </div>
-
-              {/* Twitter Posts */}
-              <div className="flex-1 space-y-4 mb-8">
-                {currentTweets.map((post) => (
-                  <article
-                    key={post.id}
-                    className="bg-gray-900 p-4 rounded-xl border border-gray-700 hover:border-gray-600 transition-colors"
-                  >
-                    <div className="flex items-start space-x-3">
-                      <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0">
-                        <Twitter className="w-5 h-5" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <span className="font-bold text-white text-sm">Natalia Volosin</span>
-                          <span className="text-gray-400 text-xs">@nataliavolosin</span>
-                          <span className="text-gray-400 text-xs">•</span>
-                          <span className="text-gray-400 text-xs">{post.time}</span>
-                        </div>
-                        <p className="text-white text-sm leading-relaxed mb-3">{post.text}</p>
-                        <div className="flex items-center space-x-6 text-gray-400 text-xs">
-                          <div className="flex items-center space-x-1 hover:text-blue-400 cursor-pointer transition-colors">
-                            <MessageCircle className="w-3 h-3" />
-                            <span>{post.replies}</span>
-                          </div>
-                          <div className="flex items-center space-x-1 hover:text-green-400 cursor-pointer transition-colors">
-                            <Repeat2 className="w-3 h-3" />
-                            <span>{post.retweets}</span>
-                          </div>
-                          <div className="flex items-center space-x-1 hover:text-red-400 cursor-pointer transition-colors">
-                            <Heart className="w-3 h-3" />
-                            <span>{post.likes}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-
-              {/* Twitter Navigation Dots */}
-              <div className="flex items-center justify-center space-x-3 mb-6">
-                {Array.from({ length: totalTwitterPages }).map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentTwitterPage(index)}
-                    className={cn(
-                      "w-3 h-3 rounded-full transition-all duration-300",
-                      index === currentTwitterPage ? "bg-white scale-125" : "bg-gray-600 hover:bg-gray-400",
-                    )}
-                  />
-                ))}
-              </div>
-
-              <Link href="https://x.com/nataliavolosin" target="_blank" className="mx-auto block">
-                <Button className="bg-white text-black hover:bg-gray-100 rounded-full px-8 py-3 font-semibold shadow-lg transform hover:scale-105 transition-all duration-200">
-                  <Twitter className="mr-2 h-5 w-5" />
-                  Seguir en X
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <Separator className="border-t border-black" />
-
-      {/* Newsletter Signup - BLACK (redesigned to be more minimalist and compact) */}
-      <section className="block-medium bg-black text-white">
-        <div className="px-4">
-          <div className="max-w-2xl mx-auto text-center">
-            {!isSubmitted ? (
-              <>
-                <h2 className="text-xlarge mb-4">Suscribite a La Justa</h2>
-                <p className="text-regular mb-8 text-gray-300">
-                  Newsletter semanal sobre política, (in)justicia y actualidad. Sale los viernes.
-                </p>
-
-                <form onSubmit={handleNewsletterSubmit} className="space-y-6">
-                  <div className="relative max-w-md mx-auto">
-                    <Input
-                      type="email"
-                      placeholder="Tu correo electrónico"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="py-4 border-white bg-black text-white placeholder:text-gray-400 rounded-none w-full text-lg focus:border-gray-300"
-                      ref={emailInputRef} // Attach the ref to the input
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    disabled={isLoading || !email}
-                    className="bg-white text-black hover:bg-black hover:text-white border border-black rounded-none px-8 py-4 text-lg"
-                  >
-                    {isLoading ? "Suscribiendo..." : "Suscribirme gratis"}
-                    {!isLoading && <ArrowRight className="ml-2 h-5 w-5" />}
+                  <Button variant="ghost" size="icon" className="absolute z-10 text-white/80 hover:text-white">
+                    <PlayIcon className="h-12 w-12 fill-current" />
+                    <span className="sr-only">Play video</span>
                   </Button>
-                </form>
+                </div>
+                <CardContent className="p-4">
+                  <h3 className="text-medium font-garamond font-bold line-clamp-2">
+                    El fallo de la Corte en la causa Vialidad
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-2">2023-12-01</p>
+                </CardContent>
+              </Card>
+              <Card className="overflow-hidden rounded-lg shadow-lg">
+                <div className="relative w-full h-48 bg-black flex items-center justify-center">
+                  <video
+                    src="/videos/las-mentiras-de-juliana-santillan-ante-el-reclamo-de-las-medicas.mp4"
+                    poster="/placeholder.svg?height=270&width=480"
+                    controls={false}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <Button variant="ghost" size="icon" className="absolute z-10 text-white/80 hover:text-white">
+                    <PlayIcon className="h-12 w-12 fill-current" />
+                    <span className="sr-only">Play video</span>
+                  </Button>
+                </div>
+                <CardContent className="p-4">
+                  <h3 className="text-medium font-garamond font-bold line-clamp-2">
+                    Las mentiras de Juliana Santillán ante el reclamo de las médicas
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-2">2023-11-25</p>
+                </CardContent>
+              </Card>
+              <Card className="overflow-hidden rounded-lg shadow-lg">
+                <div className="relative w-full h-48 bg-black flex items-center justify-center">
+                  <video
+                    src="/videos/el-llanto-de-la-mujer-de-jorge-macri.mp4"
+                    poster="/placeholder.svg?height=270&width=480"
+                    controls={false}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <Button variant="ghost" size="icon" className="absolute z-10 text-white/80 hover:text-white">
+                    <PlayIcon className="h-12 w-12 fill-current" />
+                    <span className="sr-only">Play video</span>
+                  </Button>
+                </div>
+                <CardContent className="p-4">
+                  <h3 className="text-medium font-garamond font-bold line-clamp-2">
+                    El llanto de la mujer de Jorge Macri
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-2">2023-11-18</p>
+                </CardContent>
+              </Card>
+            </div>
+            <div className="text-center mt-10">
+              <Button size="lg">Ver todos los videos</Button>
+            </div>
+          </div>
+        </section>
 
-                <p className="text-small text-gray-400 mt-6">Podés cancelar tu suscripción en cualquier momento.</p>
-              </>
-            ) : (
-              <div className="text-center">
-                <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-6" />
-                <h2 className="text-xlarge mb-6">¡Gracias por suscribirte!</h2>
-                <p className="text-medium mb-8 text-gray-300">
-                  Te has suscrito exitosamente a La Justa. Recibirás nuestro newsletter semanal todos los viernes.
-                </p>
-                <p className="text-regular mb-8 text-gray-400">
-                  Revisa tu correo electrónico para confirmar tu suscripción.
-                </p>
-                <Button
-                  onClick={() => {
-                    setIsSubmitted(false)
-                    setEmail("")
-                  }}
-                  className="bg-white text-black hover:bg-gray-200 rounded-none px-8 py-4 text-lg"
-                >
-                  Suscribir otro correo
+        {/* Newsletter Call to Action */}
+        <section className="py-12 md:py-20 bg-white dark:bg-black">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-xlarge font-garamond font-bold mb-6">Sumate a la comunidad</h2>
+            <p className="text-regular max-w-2xl mx-auto mb-8">
+              Recibí mis análisis directamente en tu casilla de correo.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Link href="/suscripcion" passHref>
+                <Button size="lg">Suscribirse</Button>
+              </Link>
+              <Link href="/newsletter" passHref>
+                <Button size="lg" variant="outline">
+                  Ver Newsletters
                 </Button>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      <Separator className="border-t border-black" />
-
-      {/* Support Options - WHITE */}
-      <section id="sumate-a-la-comunidad" className="block-medium bg-white pt-24 scroll-mt-24">
-        <div className="px-4">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-xlarge mb-6">Sumate a la comunidad</h2>
-              <p className="text-regular max-w-2xl mx-auto">
-                Tu contribución hace posible que podamos seguir investigando y contando la verdad sin compromisos.
-              </p>
-            </div>
-
-            {/* Argentina Support */}
-            <div className="mb-12">
-              <div className="flex items-center justify-center mb-6">
-                <MapPin className="w-5 h-5 mr-2" />
-                <h3 className="text-large">Desde Argentina</h3>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4 mb-8">
-                {supportOptions.map((option, index) => (
-                  <Link key={index} href={option.url} target="_blank">
-                    <div className="border border-black p-6 hover:bg-black hover:text-white transition-colors group">
-                      <div className="text-center">
-                        <div className="text-medium mb-2">{option.amount}</div>
-                        <div className="text-regular mb-4">por {option.period}</div>
-                        <div className="flex items-center justify-center text-regular group-hover:text-white">
-                          Apoyar
-                          <ExternalLink className="ml-2 h-4 w-4" />
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <Separator className="border-t border-black my-16" />
-
-            {/* International Support */}
-            <div>
-              <div className="flex items-center justify-center mb-6">
-                <Globe className="w-5 h-5 mr-2" />
-                <h3 className="text-large">Desde el exterior</h3>
-              </div>
-
-              <div className="text-center">
-                <p className="text-regular mb-8 max-w-2xl mx-auto">
-                  Para apoyar La Justa desde cualquier parte del mundo con el monto que consideres justo.
-                </p>
-
-                <Link href="https://www.paypal.com/" target="_blank">
-                  <div className="border border-black p-8 hover:bg-black hover:text-white transition-colors group max-w-md mx-auto">
-                    <div className="text-center">
-                      <div className="text-medium mb-2">PayPal</div>
-                      <div className="text-regular mb-4">Monto personalizado</div>
-                      <div className="flex items-center justify-center text-regular group-hover:text-white">
-                        Apoyar internacionalmente
-                        <ExternalLink className="ml-2 h-4 w-4" />
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </div>
+              </Link>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Footer - WHITE */}
-      <footer className="bg-black text-white py-16">
-        <div className="px-4 md:px-20 2xl:px-60">
-          <div className="grid md:grid-cols-3 gap-12">
-            <div>
-              <h3 className="text-medium mb-6">Natalia Volosin</h3>
-              <p className="text-regular mb-4">
-                Abogada, consultora, académica y comunicadora. Doctora en Derecho por Yale Law School.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-medium mb-6">Contacto</h3>
-              <p className="text-regular mb-2">lajusta@nataliavolosin.com</p>
-              <p className="text-regular mb-2">comercial@nataliavolosin.com</p>
-            </div>
-            <div>
-              <h3 className="text-medium mb-6">Redes sociales</h3>
-              <div className="flex space-x-4">
-                <Link href="https://x.com/nataliavolosin" target="_blank" className="text-white hover:text-gray-300">
-                  Twitter
-                </Link>
-                <Link
-                  href="https://www.instagram.com/nataliavolosin"
-                  target="_blank"
-                  className="text-white hover:text-gray-300"
-                >
-                  Instagram
-                </Link>
-                <Link
-                  href="https://www.tiktok.com/@nataliaavolosin"
-                  target="_blank"
-                  className="text-white hover:text-gray-300"
-                >
-                  Music
-                </Link>
-              </div>
-            </div>
-          </div>
-          <Separator className="border-t border-white my-12" />
-          <div className="text-center">
-            <p className="text-small">© {new Date().getFullYear()} Natalia Volosin. Todos los derechos reservados.</p>
-          </div>
-        </div>
-      </footer>
+        </section>
+      </main>
 
       {/* Sticky Footer Banner */}
-      {showStickyFooter && (
-        <div className="fixed bottom-0 left-0 right-0 bg-black border-t-2 border-white shadow-lg z-50 transition-transform duration-300">
-          <div className="px-4 md:px-20 2xl:px-60 py-6">
-            <div className="flex items-center justify-between gap-6">
-              {/* Left side - Title and description */}
-              <div className="flex-1 min-w-0">
-                <h3 className="text-medium mb-1 text-white">Sumate a la comunidad</h3>
-                <p className="text-small text-gray-300 leading-tight">
-                  Tu contribución hace posible seguir investigando sin compromisos.
-                </p>
-              </div>
-
-              {/* Center - Support options grid */}
-              <div className="flex-shrink-0">
-                {/* Payment buttons grid - 3 on top, 3 on bottom */}
-                <div className="space-y-2">
-                  {/* Top row - 3 buttons */}
-                  <div className="flex gap-2">
-                    <Link
-                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849763dae001976bb14ba2031d"
-                      target="_blank"
-                    >
-                      <Button
-                        variant="outline"
-                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
-                      >
-                        $5.000
-                      </Button>
-                    </Link>
-                    <Link
-                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849764e81a01976bb1a6e402c6"
-                      target="_blank"
-                    >
-                      <Button
-                        variant="outline"
-                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
-                      >
-                        $8.000
-                      </Button>
-                    </Link>
-                    <Link
-                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849763dae001976ec4495d0412"
-                      target="_blank"
-                    >
-                      <Button className="bg-white text-black hover:bg-gray-200 rounded-lg px-4 py-2 text-sm w-[90px] h-12 font-medium">
-                        $12.000
-                      </Button>
-                    </Link>
-                  </div>
-
-                  {/* Bottom row - 3 buttons */}
-                  <div className="flex gap-2">
-                    <Link
-                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849764e81a01976bb4934202c7"
-                      target="_blank"
-                    >
-                      <Button
-                        variant="outline"
-                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
-                      >
-                        Anual
-                      </Button>
-                    </Link>
-                    <Link
-                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c938084976a0ea101976bb1fdc400be"
-                      target="_blank"
-                    >
-                      <Button
-                        variant="outline"
-                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
-                      >
-                        Otro monto
-                      </Button>
-                    </Link>
-                    <Link href="https://www.paypal.com/" target="_blank">
-                      <Button
-                        variant="outline"
-                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
-                      >
-                        PayPal
-                        <ExternalLink className="ml-1 h-3 w-3" />
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right side - Close button */}
-              <div className="flex items-center">
-                <button
-                  onClick={() => setShowStickyFooter(false)}
-                  className="p-2 text-white hover:text-gray-300 transition-colors"
-                  aria-label="Cerrar banner"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-          </div>
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-black text-white p-4 shadow-lg flex flex-col md:flex-row items-center justify-center gap-4">
+        <p className="text-regular text-center md:text-left flex-grow">
+          ¡No te pierdas mis análisis! Suscribite ahora.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+          <Link href="/suscripcion" passHref>
+            <Button className="w-full md:w-auto bg-white text-black hover:bg-gray-200 h-10 px-6 py-2">
+              Suscribirse
+            </Button>
+          </Link>
+          <Link href="/newsletter" passHref>
+            <Button
+              variant="outline"
+              className="w-full md:w-auto border-white text-white hover:bg-white hover:text-black h-10 px-6 py-2 bg-transparent"
+            >
+              Ver Newsletters
+            </Button>
+          </Link>
         </div>
-      )}
+      </div>
     </div>
   )
 }

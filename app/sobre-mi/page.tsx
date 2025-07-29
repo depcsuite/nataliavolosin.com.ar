@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from "next/image"
-import { ExternalLink, Globe, MapPin, Twitter, Instagram, Music, CheckCircle, X } from "lucide-react"
+import { ExternalLink, Globe, MapPin, Twitter, Instagram, Music, CheckCircle } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { ArrowRight } from "lucide-react"
 
@@ -149,65 +149,42 @@ export default function Page() {
       {/* Bio Section */}
       <section className="block-large bg-white">
         <div className="px-4 md:px-20 2xl:px-60">
-          <div className="grid md:grid-cols-2 gap-16">
-            <div>
-              <h2 className="text-xlarge mb-8">Natalia Volosin</h2>
-              <div className="space-y-6 text-regular">
-                <p>
-                  Abogada (2004), consultora, académica y comunicadora. Es diploma de honor magna cum laude y class
-                  valedictorian, LL.M. (Master of Laws) por Yale Law School en 2009 y J.S.D. (Doctor of the Science of
-                  Law) por la misma institución en 2018.
-                </p>
-                <p className="text-medium leading-relaxed font-medium">
-                  Se formó como penalista en el estudio Arslanian, Beraldi, Kaminker & Asociados, fue consultora de
-                  entidades académicas, organismos públicos, ONGs y organizaciones internacionales y durante 10 años
-                  lideró investigaciones complejas de criminalidad económica en la Procuración General de la Nación.
-                </p>
-                <p>
-                  Fue profesora en la Universidad de Buenos Aires, Universidad Di Tella, Universidad de Palermo,
-                  Universidad de San Andrés, Universidad Nacional de La Plata y Universidad Nacional de San Martín. En
-                  2019 publicó los libros "Corruption in Argentina: Towards an Institutional Approach" (Routledge) una
-                  investigación histórica, institucional y sectorial sobre la corrupción estructural en la Argentina y
-                  "La máquina de la corrupción" (Sudamericana), una versión de divulgación en español. Es autora de
-                  numerosos artículos, capítulos de libros e informes sobre corrupción, criminalidad económica y
-                  recupero de activos en la Argentina y en el extranjero.
-                </p>
-                <p className="text-medium leading-relaxed font-medium">
-                  Natalia comunica temas jurídicos complejos en formatos accesibles, dirigió un ciclo propio para
-                  Infobae bajo el concepto de "Justicia Abierta" y es consultada por medios de comunicación nacionales e
-                  internacionales.
-                </p>
-              </div>
-
-              {/* Photo for mobile - visible only on small screens */}
-              <div className="md:hidden mt-8">
-                <div className="relative w-full max-w-sm mx-auto">
-                  <Image
-                    src="/images/natalia-volosin.jpg"
-                    alt="Natalia Volosin"
-                    width={400}
-                    height={500}
-                    className="w-full h-auto object-cover grayscale hover:grayscale-0 transition-all duration-500 ease-in-out"
-                    priority
-                  />
-                </div>
-              </div>
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div className="relative w-full h-64 md:h-96 rounded-lg overflow-hidden shadow-lg">
+              <Image
+                src="/images/natalia-volosin.jpg"
+                alt="Natalia Volosin"
+                fill
+                objectFit="cover"
+                className="rounded-lg"
+              />
             </div>
-
-            <div className="space-y-8">
-              {/* Photo for desktop - visible only on medium screens and up */}
-              <div className="hidden md:block">
-                <div className="relative w-full">
-                  <Image
-                    src="/images/natalia-volosin.jpg"
-                    alt="Natalia Volosin"
-                    width={500}
-                    height={600}
-                    className="w-full h-auto object-cover grayscale hover:grayscale-0 transition-all duration-500 ease-in-out"
-                    priority
-                  />
-                </div>
-              </div>
+            <div className="space-y-4">
+              <h2 className="text-xlarge font-garamond font-bold">Natalia Volosin</h2>
+              <p className="text-regular text-muted-foreground">
+                Abogada (2004), consultora, académica y comunicadora. Es diploma de honor magna cum laude y class
+                valedictorian, LL.M. (Master of Laws) por Yale Law School en 2009 y J.S.D. (Doctor of the Science of
+                Law) por la misma institución en 2018.
+              </p>
+              <p className="text-regular text-muted-foreground">
+                Se formó como penalista en el estudio Arslanian, Beraldi, Kaminker & Asociados, fue consultora de
+                entidades académicas, organismos públicos, ONGs y organizaciones internacionales y durante 10 años
+                lideró investigaciones complejas de criminalidad económica en la Procuración General de la Nación.
+              </p>
+              <p className="text-regular text-muted-foreground">
+                Fue profesora en la Universidad de Buenos Aires, Universidad Di Tella, Universidad de Palermo,
+                Universidad de San Andrés, Universidad Nacional de La Plata y Universidad Nacional de San Martín. En
+                2019 publicó los libros "Corruption in Argentina: Towards an Institutional Approach" (Routledge) una
+                investigación histórica, institucional y sectorial sobre la corrupción estructural en la Argentina y "La
+                máquina de la corrupción" (Sudamericana), una versión de divulgación en español. Es autora de numerosos
+                artículos, capítulos de libros e informes sobre corrupción, criminalidad económica y recupero de activos
+                en la Argentina y en el extranjero.
+              </p>
+              <p className="text-regular text-muted-foreground">
+                Natalia comunica temas jurídicos complejos en formatos accesibles, dirigió un ciclo propio para Infobae
+                bajo el concepto de "Justicia Abierta" y es consultada por medios de comunicación nacionales e
+                internacionales.
+              </p>
             </div>
           </div>
         </div>

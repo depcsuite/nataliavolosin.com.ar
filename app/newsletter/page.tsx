@@ -1,11 +1,17 @@
 "use client"
 
-import type React from "react"
+import { useEffect } from "react"
 
-import { useState, useEffect, useRef } from "react"
+import { useRef } from "react"
+
+import { useState } from "react"
+
+import type React from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { getAllArticles } from "@/lib/article-data"
 import {
   Search,
   ArrowRight,
@@ -19,87 +25,16 @@ import {
   X,
 } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import Image from "next/image"
-// import { SupportModal } from "@/components/support-modal" // Import the new modal component
 
-// Featured Newsletter data
-const featuredNewsletter = {
-  id: 1,
-  slug: "el-telefono-de-vaudagna-es-una-bomba",
-  title: "El teléfono de Vaudagna es una bomba",
-  excerpt:
-    "El ex jefe regional de AFIP en Rosario protagoniza la segunda entrega de esta novela de narcos, complicidad política y corrupción judicial.",
-  date: "2025-07-12",
-  imageUrl: "/images/vaudagna-bomba.webp",
-}
+export default async function NewsletterPage() {
+  const articles = await getAllArticles()
 
-// Other newsletters data - simplified without images
-const otherNewsletters = [
-  {
-    id: 2,
-    slug: "el-telefono-de-vaudagna-es-una-bomba", // Redirect to existing page
-    title: "Si Bailaque habla, esto se va a la mierda",
-    excerpt:
-      "El presidente Milei le aceptó la renuncia al juez federal acusado de complicidad con los narcos de Rosario, pero fuentes judiciales dicen que esto recién empieza.",
-    date: "2025-07-11",
-    imageUrl: "/images/vaudagna-bomba.webp", // Updated to vaudagna-bomba.webp
-  },
-  {
-    id: 3,
-    slug: "el-telefono-de-vaudagna-es-una-bomba", // Redirect to existing page
-    title: 'Los "intelectuales" de Milei y la brecha de la felicidad',
-    excerpt:
-      "Axel Kaiser, Secretario Académico de la Fundación Faro, trató a los progresistas de parásitos y enfermos mentales y dijo que los conservadores son más felices.",
-    date: "2025-07-10",
-    imageUrl: "/images/vaudagna-bomba.webp", // Updated to vaudagna-bomba.webp
-  },
-  {
-    id: 4,
-    slug: "el-telefono-de-vaudagna-es-una-bomba", // Redirect to existing page
-    title: "¿Peligra el decomiso contra Cristina Fernández de Kirchner?",
-    excerpt:
-      "En el newsletter de hoy te canto La Justa sobre cómo se debe gestionar el recupero de activos en una causa compleja y por qué se hizo mal en Vialidad.",
-    date: "2025-07-09",
-    imageUrl: "/images/vaudagna-bomba.webp", // Updated to vaudagna-bomba.webp
-  },
-  {
-    id: 5,
-    slug: "el-telefono-de-vaudagna-es-una-bomba", // Redirect to existing page
-    title: "Cristina presa",
-    excerpt: "Todo sobre la decisión más grietera de la Corte Suprema.",
-    date: "2025-07-08",
-    imageUrl: "/images/vaudagna-bomba.webp", // Updated to vaudagna-bomba.webp
-  },
-]
+  const featuredNewsletter =
+    articles.find((article) => article.slug === "el-telefono-de-vaudagna-es-una-bomba") || articles[0]
+  const otherNewsletters = articles.filter((article) => article.slug !== featuredNewsletter.slug)
 
-// Support options data (copied from /por-que/page.tsx)
-const supportOptions = [
-  {
-    amount: "$5.000",
-    period: "mes",
-    url: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849763dae001976bb14ba2031d",
-  },
-  {
-    amount: "$8.000",
-    period: "mes",
-    url: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849764e81a01976bb1a6e402c6",
-  },
-  {
-    amount: "$12.000",
-    period: "mes",
-    url: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849763dae001976ec4495d0412",
-  },
-  {
-    amount: "Otro monto",
-    period: "única vez",
-    url: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c938084976a0ea101976bb1fdc400be",
-  }, // Added "Otro monto" option
-]
-
-export default function NewsletterPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [isScrolled, setIsScrolled] = useState(false)
-  // const [showSupportModal, setShowSupportModal] = useState(false) // State for the modal
   const [email, setEmail] = useState("") // State for email input
   const [isSubmitted, setIsSubmitted] = useState(false) // State for form submission success
   const [isLoading, setIsLoading] = useState(false) // State for loading during submission
@@ -118,11 +53,6 @@ export default function NewsletterPage() {
   }, [])
 
   // Effect to show the modal on page load
-  // useEffect(() => {
-  //   setShowSupportModal(true)
-  // }, [])
-
-  // Add this useEffect hook to scroll to top on page load
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -131,13 +61,11 @@ export default function NewsletterPage() {
     setSearchQuery("")
   }
 
-  const filteredOtherNewsletters = otherNewsletters.filter((newsletter) => {
+  const filteredOtherNewsletters = otherNewsletters.filter((article) => {
     if (!searchQuery) return true
 
     const searchLower = searchQuery.toLowerCase()
-    return (
-      newsletter.title.toLowerCase().includes(searchLower) || newsletter.excerpt.toLowerCase().includes(searchLower)
-    )
+    return article.title.toLowerCase().includes(searchLower) || article.description.toLowerCase().includes(searchLower)
   })
 
   const hasActiveFilters = searchQuery.length > 0
@@ -167,8 +95,6 @@ export default function NewsletterPage() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      {/* Support Modal */}
-      {/* <SupportModal open={showSupportModal} onOpenChange={setShowSupportModal} targetId="sumate-a-la-comunidad" /> */}
       {/* Minimalist Header */}
       <header className="bg-white border-b border-black">
         <div className="px-4 py-6 md:px-20 2xl:px-60 flex justify-between items-center">
@@ -268,38 +194,40 @@ export default function NewsletterPage() {
       {/* Featured Newsletter */}
       <section className="py-12 bg-white">
         <div className="px-4 md:px-20 2xl:px-60">
-          <Link href={`/newsletter/${featuredNewsletter.slug}`}>
-            <article className="grid md:grid-cols-2 gap-12 items-center border-2 border-black hover:bg-black hover:text-white transition-colors group cursor-pointer p-8 md:p-0">
-              {/* Text block on the left */}
-              <div className="md:p-8 flex flex-col justify-center">
-                <div className="mb-2">
-                  <span className="text-small uppercase bg-black text-white group-hover:bg-white group-hover:text-black px-2 py-1">
-                    Destacado
+          {featuredNewsletter && (
+            <Link href={`/articulo/${featuredNewsletter.slug}`}>
+              <article className="grid md:grid-cols-2 gap-12 items-center border-2 border-black hover:bg-black hover:text-white transition-colors group cursor-pointer p-8 md:p-0">
+                {/* Text block on the left */}
+                <div className="md:p-8 flex flex-col justify-center">
+                  <div className="mb-2">
+                    <span className="text-small uppercase bg-black text-white group-hover:bg-white group-hover:text-black px-2 py-1">
+                      Destacado
+                    </span>
+                  </div>
+                  <h2 className="text-large mb-4 leading-tight">{featuredNewsletter.title}</h2>
+                  <p className="text-regular mb-6 line-clamp-4">{featuredNewsletter.description}</p>
+                  <span className="text-small text-gray-600 group-hover:text-gray-300">
+                    {new Date(featuredNewsletter.date).toLocaleDateString("es-ES", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    })}
                   </span>
                 </div>
-                <h2 className="text-large mb-4 leading-tight">{featuredNewsletter.title}</h2>
-                <p className="text-regular mb-6 line-clamp-4">{featuredNewsletter.excerpt}</p>
-                <span className="text-small text-gray-600 group-hover:text-gray-300">
-                  {new Date(featuredNewsletter.date).toLocaleDateString("es-AR", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  })}
-                </span>
-              </div>
-              {/* Image on the right */}
-              <div className="relative w-full h-auto md:order-last">
-                <Image
-                  src={featuredNewsletter.imageUrl || "/placeholder.svg"} // Dynamically use imageUrl
-                  alt={featuredNewsletter.title}
-                  width={800}
-                  height={450}
-                  className="w-full h-auto object-cover"
-                  priority
-                />
-              </div>
-            </article>
-          </Link>
+                {/* Image on the right */}
+                <div className="relative w-full h-auto md:order-last">
+                  <Image
+                    src={featuredNewsletter.imageUrl || "/placeholder.svg"} // Dynamically use imageUrl
+                    alt={featuredNewsletter.title}
+                    width={800}
+                    height={450}
+                    className="w-full h-auto object-cover"
+                    priority
+                  />
+                </div>
+              </article>
+            </Link>
+          )}
         </div>
       </section>
       {/* Search Section - Between featured and recent newsletters */}
@@ -352,14 +280,14 @@ export default function NewsletterPage() {
             <div>
               <h3 className="text-xlarge mb-8">{searchQuery ? "Resultados de búsqueda" : "Newsletter recientes"}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {filteredOtherNewsletters.map((newsletter) => (
-                  <Link key={newsletter.id} href={`/newsletter/${newsletter.slug}`}>
+                {filteredOtherNewsletters.map((article) => (
+                  <Link key={article.slug} href={`/articulo/${article.slug}`}>
                     <article className="group cursor-pointer">
                       {/* Image */}
                       <div className="relative w-full h-40 overflow-hidden mb-4 border border-black">
                         <Image
-                          src={newsletter.imageUrl || "/placeholder.svg"} // Dynamically use imageUrl
-                          alt={newsletter.title}
+                          src={article.imageUrl || "/placeholder.svg"} // Dynamically use imageUrl
+                          alt={article.title}
                           width={300}
                           height={160}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -369,19 +297,19 @@ export default function NewsletterPage() {
                       {/* Content */}
                       <div className="space-y-3">
                         <h4 className="text-regular font-medium leading-tight line-clamp-2 group-hover:underline">
-                          {newsletter.title}
+                          {article.title}
                         </h4>
 
                         {/* Date */}
                         <span className="text-small text-gray-600 block">
-                          {new Date(newsletter.date).toLocaleDateString("es-AR", {
+                          {new Date(article.date).toLocaleDateString("es-ES", {
                             day: "2-digit",
-                            month: "2-digit",
+                            month: "long",
                             year: "numeric",
                           })}
                         </span>
 
-                        <p className="text-small text-gray-700 leading-relaxed">{newsletter.excerpt}</p>
+                        <p className="text-small text-gray-700 leading-relaxed">{article.description}</p>
 
                         <div className="flex items-center text-black font-medium text-small group-hover:text-gray-700 transition-colors">
                           Leer más
@@ -412,14 +340,14 @@ export default function NewsletterPage() {
             <div>
               <h3 className="text-xlarge mb-8">Newsletter recientes</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {otherNewsletters.map((newsletter) => (
-                  <Link key={newsletter.id} href={`/newsletter/${newsletter.slug}`}>
+                {otherNewsletters.map((article) => (
+                  <Link key={article.slug} href={`/articulo/${article.slug}`}>
                     <article className="group cursor-pointer">
                       {/* Image */}
                       <div className="relative w-full h-40 overflow-hidden mb-4 border border-black">
                         <Image
-                          src={newsletter.imageUrl || "/placeholder.svg"} // Dynamically use imageUrl
-                          alt={newsletter.title}
+                          src={article.imageUrl || "/placeholder.svg"} // Dynamically use imageUrl
+                          alt={article.title}
                           width={300}
                           height={160}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -429,19 +357,19 @@ export default function NewsletterPage() {
                       {/* Content */}
                       <div className="space-y-3">
                         <h4 className="text-regular font-medium leading-tight line-clamp-2 group-hover:underline">
-                          {newsletter.title}
+                          {article.title}
                         </h4>
 
                         {/* Date */}
                         <span className="text-small text-gray-600 block">
-                          {new Date(newsletter.date).toLocaleDateString("es-AR", {
+                          {new Date(article.date).toLocaleDateString("es-ES", {
                             day: "2-digit",
-                            month: "2-digit",
+                            month: "long",
                             year: "numeric",
                           })}
                         </span>
 
-                        <p className="text-small text-gray-700 leading-relaxed">{newsletter.excerpt}</p>
+                        <p className="text-small text-gray-700 leading-relaxed">{article.description}</p>
 
                         <div className="flex items-center text-black font-medium text-small group-hover:text-gray-700 transition-colors">
                           Leer más
@@ -536,12 +464,12 @@ export default function NewsletterPage() {
               </div>
 
               <div className="grid md:grid-cols-2 gap-4 mb-8">
-                {supportOptions.map((option, index) => (
-                  <Link key={index} href={option.url} target="_blank">
+                {articles.map((article, index) => (
+                  <Link key={index} href={article.url} target="_blank">
                     <div className="border border-black p-6 hover:bg-black hover:text-white transition-colors group">
                       <div className="text-center">
-                        <div className="text-medium mb-2">{option.amount}</div>
-                        <div className="text-regular mb-4">por {option.period}</div>
+                        <div className="text-medium mb-2">{article.amount}</div>
+                        <div className="text-regular mb-4">por {article.period}</div>
                         <div className="flex items-center justify-center text-regular group-hover:text-white">
                           Apoyar
                           <ExternalLink className="ml-2 h-4 w-4" />
@@ -647,62 +575,20 @@ export default function NewsletterPage() {
                 <div className="space-y-2">
                   {/* Top row - 3 buttons */}
                   <div className="flex gap-2">
-                    <Link
-                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849763dae001976bb14ba2031d"
-                      target="_blank"
-                    >
-                      <Button
-                        variant="outline"
-                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
-                      >
-                        $5.000
-                      </Button>
-                    </Link>
-                    <Link
-                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849764e81a01976bb1a6e402c6"
-                      target="_blank"
-                    >
-                      <Button
-                        variant="outline"
-                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
-                      >
-                        $8.000
-                      </Button>
-                    </Link>
-                    <Link
-                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849763dae001976ec4495d0412"
-                      target="_blank"
-                    >
-                      <Button className="bg-white text-black hover:bg-gray-200 rounded-lg px-4 py-2 text-sm w-[90px] h-12 font-medium">
-                        $12.000
-                      </Button>
-                    </Link>
+                    {articles.map((article, index) => (
+                      <Link key={index} href={article.url} target="_blank">
+                        <Button
+                          variant="outline"
+                          className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
+                        >
+                          {article.amount}
+                        </Button>
+                      </Link>
+                    ))}
                   </div>
 
                   {/* Bottom row - 3 buttons */}
                   <div className="flex gap-2">
-                    <Link
-                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380849764e81a01976bb4934202c7"
-                      target="_blank"
-                    >
-                      <Button
-                        variant="outline"
-                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
-                      >
-                        Anual
-                      </Button>
-                    </Link>
-                    <Link
-                      href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c938084976a0ea101976bb1fdc400be"
-                      target="_blank"
-                    >
-                      <Button
-                        variant="outline"
-                        className="border-white text-white hover:bg-white hover:text-black rounded-lg px-4 py-2 text-sm bg-transparent w-[90px] h-12"
-                      >
-                        Otro monto
-                      </Button>
-                    </Link>
                     <Link href="https://www.paypal.com/" target="_blank">
                       <Button
                         variant="outline"
